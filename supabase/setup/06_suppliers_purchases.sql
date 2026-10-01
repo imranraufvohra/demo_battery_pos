@@ -378,7 +378,7 @@ set search_path = ''
 as $$
 declare
   v_uid          uuid := auth.uid();
-  v_today        date := (now() at time zone 'Asia/Karachi')::date;
+  v_today        date := (now() at time zone 'UTC')::date;
   v_date         date;
   v_supplier_id  uuid;
   v_purchase_id  uuid;

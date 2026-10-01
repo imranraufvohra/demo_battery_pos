@@ -475,7 +475,7 @@ async function resolveSlipCustomer(
 
   if (!customer.id) {
     const phone = normalizePhone(text(args.walk_in_phone, 30));
-    if (phone && !isValidPhone(phone)) return { ok: false, error: "That phone number isn't valid (10 to 15 digits, e.g. 0300 1234567). Ask the person to check it, or leave it out." };
+    if (phone && !isValidPhone(phone)) return { ok: false, error: "That phone number isn't valid (10 to 15 digits, e.g. +1 555 010 0123). Ask the person to check it, or leave it out." };
     if (phone) customer.phone = formatPhone(phone);
   }
   return { ok: true, customer };

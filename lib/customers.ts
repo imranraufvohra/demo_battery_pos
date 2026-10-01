@@ -20,16 +20,17 @@ export function isValidPhone(normalized: string): boolean {
   return /^\+?\d{10,15}$/.test(normalized);
 }
 
-/** 03001234567 -> 0300 1234567 (only for 11-digit local numbers). */
+/** 03001234567 -> +1 555 010 0123 (only for 11-digit local numbers). */
 export function formatPhone(phone: string | null): string {
   if (!phone) return "";
   return /^0\d{10}$/.test(phone) ? `${phone.slice(0, 4)} ${phone.slice(4)}` : phone;
 }
 
-/** Link that opens a WhatsApp chat. Local 03xx numbers become 92 3xx. */
+/** Link that opens a WhatsApp chat. A leading 0 is replaced by the country code (NEXT_PUBLIC_PHONE_COUNTRY_CODE). */
 export function whatsappLink(phone: string): string {
   const digits = phone.replace(/\D/g, "");
-  const intl = digits.startsWith("0") ? "92" + digits.slice(1) : digits;
+  const cc = process.env.NEXT_PUBLIC_PHONE_COUNTRY_CODE ?? "1";
+  const intl = digits.startsWith("0") ? cc + digits.slice(1) : digits;
   return `https://wa.me/${intl}`;
 }
 
@@ -75,7 +76,7 @@ export function validateCustomer(f: CustomerFormValues): CustomerErrors {
 
   const phone = normalizePhone(f.phone);
   if (phone && !isValidPhone(phone)) {
-    e.phone = "Enter a phone number with 10 to 15 digits, for example 0300 1234567.";
+    e.phone = "Enter a phone number with 10 to 15 digits, for example +1 555 010 0123.";
   }
 
   const reg = cleanRegNo(f.cnic_or_ntn);

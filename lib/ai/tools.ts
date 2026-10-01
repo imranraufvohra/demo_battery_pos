@@ -72,7 +72,7 @@ export const TOOL_DEFS: ToolDef[] = [
       parameters: {
         type: "object",
         properties: {
-          query: { type: "string", description: "The customer's name or phone number, e.g. 'ali traders' or '0300 1234567'." },
+          query: { type: "string", description: "The customer's name or phone number, e.g. 'ali traders' or '+1 555 010 0123'." },
         },
         required: ["query"],
       },

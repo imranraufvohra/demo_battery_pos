@@ -837,7 +837,7 @@ export default function NewBill({
                           setWalkinPhone(e.target.value);
                           setError(null);
                         }}
-                        placeholder="0300 1234567"
+                        placeholder="+1 555 010 0123"
                         className="input"
                         autoComplete="off"
                       />

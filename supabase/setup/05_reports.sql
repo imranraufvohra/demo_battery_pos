@@ -23,7 +23,7 @@ as $$
     from public.payments p
     join public.invoices i on i.id = p.invoice_id
     where i.status <> 'Cancelled'
-      and (p.paid_at at time zone 'Asia/Karachi')::date between p_from and p_to
+      and (p.paid_at at time zone 'UTC')::date between p_from and p_to
   ),
   buckets as (
     select generate_series(

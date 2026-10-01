@@ -49,7 +49,7 @@ export const PAYMENT_LABEL: Record<PaymentStatus, string> = {
 
 /** Today as YYYY-MM-DD in Pakistan time. */
 export function todayKarachi(now: Date = new Date()): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(now);
+  return new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(now);
 }
 
 /** Adds days to a YYYY-MM-DD string (calendar arithmetic, no time zones involved). */
@@ -73,7 +73,7 @@ export function formatTime(iso: string): string {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-    timeZone: "Asia/Karachi",
+    timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC"),
   }).format(new Date(iso));
 }
 

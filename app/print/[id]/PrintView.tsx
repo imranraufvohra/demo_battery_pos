@@ -286,7 +286,7 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
               {payments.map((p) => (
                 <li key={p.id} className="flex max-w-xs justify-between tabular-nums">
                   <span>
-                    {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(new Date(p.paid_at)))},{" "}
+                    {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))},{" "}
                     {formatTime(p.paid_at)} · {methodLabel(p.method)}
                   </span>
                   <span>{formatRs(p.amount)}</span>

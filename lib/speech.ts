@@ -29,6 +29,6 @@ export function getRecognition(): RecognitionCtor | null {
 export type VoiceLang = "en" | "ur";
 
 export const VOICE_LOCALE: Record<VoiceLang, string> = {
-  en: "en-PK",
+  en: (process.env.NEXT_PUBLIC_LOCALE ?? "en-US"),
   ur: "ur-PK",
 };

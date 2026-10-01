@@ -59,7 +59,7 @@ export default function AddUdhaarForm({
     if (isNew) {
       if (!newName.trim()) next.customer = "Enter the customer's name.";
       else if (newName.trim().length > 120) next.customer = "Name is too long. Use 120 characters or fewer.";
-      if (phone && !isValidPhone(phone)) next.phone = "Enter a phone number with 10 to 15 digits, for example 0300 1234567.";
+      if (phone && !isValidPhone(phone)) next.phone = "Enter a phone number with 10 to 15 digits, for example +1 555 010 0123.";
       const same = phone && !createdId ? customers.find((c) => c.phone === phone) : undefined;
       if (same) next.phone = `This phone is already saved for ${same.name}. Search for that customer instead.`;
     } else if (!customer) next.customer = "Choose a customer.";
@@ -185,7 +185,7 @@ export default function AddUdhaarForm({
                       setNewPhone(e.target.value);
                       setErrors((p) => ({ ...p, phone: undefined }));
                     }}
-                    placeholder="Phone (optional), e.g. 0300 1234567"
+                    placeholder="Phone (optional), e.g. +1 555 010 0123"
                     autoComplete="off"
                     disabled={!!createdId}
                     aria-invalid={errors.phone ? true : undefined}

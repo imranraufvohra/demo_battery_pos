@@ -153,7 +153,7 @@ set search_path = ''
 as $$
 declare
   v_uid       uuid := auth.uid();
-  v_today     date := (now() at time zone 'Asia/Karachi')::date;
+  v_today     date := (now() at time zone 'UTC')::date;
   v_date      date;
   v_cust      public.customers%rowtype;
   v_inv       public.inventory%rowtype;
@@ -351,7 +351,7 @@ as $$
     'cash_received', coalesce((select sum(p.amount) from public.payments p
                                join public.invoices i on i.id = p.invoice_id
                                where i.status <> 'Cancelled'
-                                 and (p.paid_at at time zone 'Asia/Karachi')::date = p_day), 0),
+                                 and (p.paid_at at time zone 'UTC')::date = p_day), 0),
     'udhaar_total',  coalesce((select sum(due_total) from public.invoice_balances
                                where status <> 'Cancelled' and due_total > 0), 0),
     'udhaar_count',  (select count(*) from public.invoice_balances

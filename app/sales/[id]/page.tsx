@@ -14,7 +14,7 @@ const when = new Intl.DateTimeFormat("en-GB", {
   hour: "numeric",
   minute: "2-digit",
   hour12: true,
-  timeZone: "Asia/Karachi",
+  timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC"),
 });
 
 export default async function InvoicePage({ params }: { params: Promise<{ id: string }> }) {

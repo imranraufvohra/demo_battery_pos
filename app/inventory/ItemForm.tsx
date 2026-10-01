@@ -192,7 +192,7 @@ function StockHistory({ itemId }: { itemId: string }) {
             {rows.map((m) => (
               <li key={m.id} className="flex items-center justify-between gap-3 text-sm">
                 <span className="text-lead">
-                  {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(new Date(m.created_at)))} ·{" "}
+                  {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(m.created_at)))} ·{" "}
                   {REASON_LABEL[m.reason]}
                 </span>
                 <span className={`font-semibold tabular-nums ${m.change >= 0 ? "text-cell-deep" : "text-terminal-deep"}`}>

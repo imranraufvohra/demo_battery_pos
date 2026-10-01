@@ -152,7 +152,7 @@ export default function CustomerForm({
                 type="tel"
                 inputMode="tel"
                 autoComplete="off"
-                placeholder="0300 1234567"
+                placeholder="+1 555 010 0123"
                 value={form.phone}
                 onChange={(e) => set("phone", e.target.value)}
                 aria-invalid={errors.phone ? true : undefined}

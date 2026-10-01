@@ -346,7 +346,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                     <span>
                       <span className="block font-semibold">{methodLabel(p.method)}</span>
                       <span className="block text-sm text-lead">
-                        {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Karachi" }).format(new Date(p.paid_at)))},{" "}
+                        {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))},{" "}
                         {formatTime(p.paid_at)}
                       </span>
                     </span>

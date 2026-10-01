@@ -49,7 +49,7 @@ type MoneySummary = {
 
 function greeting() {
   const hour = Number(
-    new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: "Asia/Karachi" }).format(new Date())
+    new Intl.DateTimeFormat("en-GB", { hour: "numeric", hourCycle: "h23", timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date())
   );
   return hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 }
@@ -59,7 +59,7 @@ function todayLabel() {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: "Asia/Karachi",
+    timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC"),
   }).format(new Date());
 }
 

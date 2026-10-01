@@ -100,7 +100,7 @@ const fmtTime = new Intl.DateTimeFormat("en-GB", {
   hour: "numeric",
   minute: "2-digit",
   hour12: true,
-  timeZone: "Asia/Karachi",
+  timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC"),
 });
 
 const MONEY_KEYS = new Set([
