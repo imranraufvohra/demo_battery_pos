@@ -1,6 +1,10 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+/** Demo only: the demo runs inside an iframe on another site, so its login cookie must be SameSite=None. */
+const demoCookie = (o: object | undefined) =>
+  process.env.NEXT_PUBLIC_DEMO_MODE === "true" ? { ...(o ?? {}), sameSite: "none" as const, secure: true } : o;
+
 export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -27,7 +31,7 @@ export async function updateSession(request: NextRequest) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
+          response.cookies.set(name, value, demoCookie(options))
         );
       },
     },
