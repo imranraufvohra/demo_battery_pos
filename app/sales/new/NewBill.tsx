@@ -30,9 +30,6 @@ import {
   todayKarachi,
 } from "@/lib/invoices";
 import { getBrowserClient } from "@/lib/supabase/lazy";
-import { billTax, isThirdSchedule, type TaxLineInput } from "@/lib/tax";
-import { FALLBACK_PROVINCES } from "@/lib/fbr";
-import { useFbrRef, useFbrSettings } from "@/lib/fbrRef";
 import { checkRealConnectivity, isBrowserOnline } from "@/lib/offline/net";
 import { offlineDb, hasIndexedDb, type LocalInvoice } from "@/lib/offline/db";
 import { notifySyncListeners, runSync } from "@/lib/offline/sync";
@@ -121,9 +118,6 @@ export default function NewBill({
   const roleInfo = useRoleInfo();
   const canOverridePrice = can(roleInfo, "price.override");
   const canAddManualItem = can(roleInfo, "inventory.edit");
-  const isOwner = can(roleInfo, "team.manage");
-  const fbrSettings = useFbrSettings();
-  const provinceRows = useFbrRef("province");
 
   // Same offline-cache pattern as Inventory/Customers: mirror fresh server data
   // into IndexedDB, then always read the bill screen's stock and customer list
@@ -172,10 +166,6 @@ export default function NewBill({
   // Old batteries taken in exchange, one optional entry per battery line. See the Replacement type above.
   const [replacements, setReplacements] = useState<Record<string, Replacement>>({});
 
-  // FBR bill: OFF by default for every bill. The Owner switches it ON per bill with the big switch at the top.
-  const [fbrTick, setFbrTick] = useState<boolean | null>(null);
-  const [buyerProvince, setBuyerProvince] = useState("");
-  const [buyerAddress, setBuyerAddress] = useState("");
 
   const [mode, setMode] = useState<PayMode>(initialDraft?.mode ?? "full");
   const [partText, setPartText] = useState(initialDraft?.partText ?? "");
@@ -307,31 +297,7 @@ export default function NewBill({
   });
   const subtotal = round2(computed.reduce((s, c) => s + c.amount, 0));
 
-  /* ---------- FBR: tick, tax, buyer details ----------
-   * Every bill defaults to NOT an FBR bill, whatever it contains. Only the Owner can turn the
-   * tick on, one bill at a time -- there is no automatic tick and nothing is logged when it is
-   * left off. This is a deliberate shop policy, not the app deciding for you. */
-  const fbrBill = fbrSettings.enabled && isOwner && (fbrTick ?? false);
-  const taxInputs: TaxLineInput[] = computed
-    .filter((c) => c.qty != null && c.rate != null)
-    .map((c) => ({
-      name: `${c.item.brand} ${c.item.model}`,
-      saleType: c.item.sale_type ?? null,
-      rateDesc: c.item.is_taxable === false ? "Exempt" : c.item.fbr_rate_desc ?? null,
-      qty: c.qty!,
-      price: c.rate!,
-      retailPrice: c.item.retail_price ?? null,
-      sroScheduleNo: c.item.sro_schedule_no ?? null,
-      sroItemSerialNo: c.item.sro_item_serial_no ?? null,
-      pricesIncludeTax: fbrSettings.pricesIncludeTax,
-    }));
-  const taxSummary = fbrBill ? billTax(taxInputs) : null;
-  const taxAdded = taxSummary ? taxSummary.taxAdded : 0;
-  const taxInside = taxSummary ? round2(taxSummary.taxReported - taxSummary.taxAdded) : 0;
-  const total = round2(subtotal + taxAdded);
-  const provinceOptions = provinceRows.length > 0 ? provinceRows.map((r) => r.label ?? r.code) : FALLBACK_PROVINCES;
-  const effectiveProvince = buyerProvince || customer?.province || fbrSettings.shopProvince || "";
-  const effectiveAddress = buyerAddress.trim() || customer?.address || walkinAddress.trim() || "";
+  const total = subtotal;
 
   const partValue = parseAmount(partText);
   const paidNow = mode === "full" ? total : mode === "credit" ? 0 : Math.min(partValue ?? 0, total);
@@ -359,15 +325,6 @@ export default function NewBill({
           return `Enter a valid weight in kg for the old battery taken in for ${name}, or leave it blank.`;
         }
       }
-    }
-    if (fbrBill) {
-      for (const c of computed) {
-        if (!c.item.hs_code) {
-          return `${c.item.brand} ${c.item.model} has no HS code. Add it in Inventory before making an FBR bill (FBR errors 0019, 0044).`;
-        }
-      }
-      if (taxSummary && taxSummary.errors.length > 0) return taxSummary.errors[0];
-      if (!effectiveProvince) return "Choose the buyer's province for the FBR bill (FBR error 0074).";
     }
     if (total <= 0) return "The bill total is zero. Check the prices.";
     if (mode === "part") {
@@ -426,11 +383,6 @@ export default function NewBill({
       p_walkin_registration_type: customerId ? null : walkinRegType,
       p_walkin_cnic_or_ntn: customerId ? null : cleanRegNo(walkinCnic) || null,
     };
-    if (fbrBill) {
-      createInvoiceParams.p_buyer_province = effectiveProvince;
-      createInvoiceParams.p_buyer_address = effectiveAddress || null;
-      createInvoiceParams.p_created_offline = true;
-    }
 
     const localInvoice: LocalInvoice = {
       id: localId,
@@ -482,7 +434,7 @@ export default function NewBill({
 
       await offlineDb.pending_sync.add({
         table_name: "rpc",
-        rpc_name: fbrBill ? "create_fbr_bill" : "create_invoice",
+        rpc_name: "create_invoice",
         record_id: localId,
         action: "rpc",
         payload: createInvoiceParams,
@@ -605,14 +557,7 @@ export default function NewBill({
         p_walkin_registration_type: billCustomerId ? null : walkinRegType,
         p_walkin_cnic_or_ntn: billCustomerId ? null : cleanRegNo(walkinCnic) || null,
       };
-      let rpcName = "create_invoice";
-      if (fbrBill) {
-        rpcName = "create_fbr_bill";
-        billParams.p_buyer_province = effectiveProvince;
-        billParams.p_buyer_address = effectiveAddress || null;
-        billParams.p_created_offline = false;
-      }
-      const { data, error: dbError } = await supabase.rpc(rpcName, billParams);
+      const { data, error: dbError } = await supabase.rpc("create_invoice", billParams);
       if (dbError || !data) {
         setError(dbError ? friendlyInvoiceError(dbError) : "The bill was not saved. Please try again.");
         savingRef.current = false;
@@ -728,41 +673,6 @@ export default function NewBill({
       <PageHeader
         title="New bill"
         subtitle="Choose a customer, add items, then save."
-        action={
-          <button
-            type="button"
-            role="switch"
-            aria-checked={fbrBill}
-            disabled={!fbrSettings.enabled || !isOwner}
-            onClick={() => setFbrTick(!fbrBill)}
-            className={`flex min-h-16 items-center gap-4 rounded-2xl border-2 px-5 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-60 ${
-              fbrBill ? "border-emerald-600 bg-emerald-50" : "border-line bg-white"
-            }`}
-          >
-            <span
-              aria-hidden="true"
-              className={`relative inline-block h-9 w-16 shrink-0 rounded-full transition-colors ${fbrBill ? "bg-emerald-600" : "bg-gray-300"}`}
-            >
-              <span
-                className={`absolute top-1 h-7 w-7 rounded-full bg-white shadow transition-all ${fbrBill ? "left-8" : "left-1"}`}
-              />
-            </span>
-            <span>
-              <span className="block font-display text-xl font-bold leading-tight">
-                FBR bill: {fbrBill ? "ON" : "OFF"}
-              </span>
-              <span className="block text-sm text-lead">
-                {!fbrSettings.enabled
-                  ? "FBR is switched off in the shop profile"
-                  : !isOwner
-                    ? "Only the Owner can use this"
-                    : fbrBill
-                      ? "This bill will be reported to FBR"
-                      : "This bill will NOT go to FBR"}
-              </span>
-            </span>
-          </button>
-        }
       />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
@@ -1341,82 +1251,7 @@ export default function NewBill({
               <dt className="text-lead">Subtotal</dt>
               <dd className="tabular-nums">{formatRs(subtotal)}</dd>
             </div>
-            {fbrBill ? (
-              <>
-                <div className="flex justify-between">
-                  <dt className="text-lead">GST added</dt>
-                  <dd className="tabular-nums">{formatRs(taxAdded)}</dd>
-                </div>
-                {taxInside > 0 && (
-                  <div className="flex justify-between">
-                    <dt className="text-lead">GST already in printed price</dt>
-                    <dd className="tabular-nums text-lead">{formatRs(taxInside)}</dd>
-                  </div>
-                )}
-              </>
-            ) : null}
           </dl>
-
-          {fbrBill && (
-            <div className="mt-3 rounded-xl border border-line bg-plate p-3">
-              {fbrSettings.environment === "sandbox" && fbrBill && (
-                <p className="mt-2 rounded-lg bg-white px-2 py-1 text-sm text-lead">Test mode: this bill goes to the FBR sandbox, not the real FBR.</p>
-              )}
-
-              {fbrBill && (
-                <div className="mt-3 space-y-2">
-                  <div>
-                    <label htmlFor="fbr-province" className="mb-1 block text-sm font-medium">
-                      Buyer province
-                    </label>
-                    <select
-                      id="fbr-province"
-                      className="input"
-                      value={effectiveProvince}
-                      onChange={(e) => setBuyerProvince(e.target.value)}
-                    >
-                      <option value="">Choose the province</option>
-                      {provinceOptions.map((p) => (
-                        <option key={p} value={p}>
-                          {p}
-                        </option>
-                      ))}
-                      {effectiveProvince && !provinceOptions.includes(effectiveProvince) && (
-                        <option value={effectiveProvince}>{effectiveProvince}</option>
-                      )}
-                    </select>
-                  </div>
-                  <div>
-                    <label htmlFor="fbr-address" className="mb-1 block text-sm font-medium">
-                      Buyer address
-                    </label>
-                    <input
-                      id="fbr-address"
-                      type="text"
-                      className="input"
-                      autoComplete="off"
-                      value={buyerAddress}
-                      placeholder={effectiveAddress || "Shop address is used if left empty"}
-                      onChange={(e) => setBuyerAddress(e.target.value)}
-                    />
-                  </div>
-                  {lines.some((l) => isThirdSchedule(byId.get(l.itemId)?.sale_type)) && (
-                    <p className="text-sm text-lead">
-                      Batteries: the customer pays the printed price. The FBR tax is worked out on the printed retail price.
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {fbrBill && taxSummary && taxSummary.errors.length > 0 && (
-                <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-terminal-deep">
-                  {taxSummary.errors.map((m) => (
-                    <li key={m}>{m}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
 
           <div className="mt-3 flex items-baseline justify-between border-t border-line pt-3">
             <span className="font-display text-xl font-semibold">Total</span>
