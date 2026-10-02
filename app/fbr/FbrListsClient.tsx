@@ -82,9 +82,6 @@ export default function FbrListsClient({
             <dd>{seenAgo == null ? "Not running yet (phase D4)" : seenAgo <= 3 ? "Online" : `Last seen ${seenAgo} min ago`}</dd>
           </div>
         </dl>
-        <p className="mt-3 text-sm text-lead">
-          To switch FBR bills on or off, run in Supabase: <code className="rounded bg-plate px-1.5 py-0.5">update public.business_profile set fbr_enabled = true;</code>
-        </p>
       </section>
 
       <section className="card p-4 sm:p-5">
