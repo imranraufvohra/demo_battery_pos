@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow, Barlow_Condensed } from "next/font/google";
 import { BRAND } from "@/lib/brand";
+import { SITE_URL } from "@/lib/seo";
 import RegisterSW from "@/components/RegisterSW";
 import SyncProvider from "@/components/SyncProvider";
 import "./globals.css";
@@ -20,8 +21,10 @@ const barlowCondensed = Barlow_Condensed({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: { default: BRAND.shortName, template: `%s | ${BRAND.shortName}` },
   description: BRAND.tagline,
+  // Private by default: everything inside the app is behind a login. /demo-start opts in to indexing.
   robots: { index: false, follow: false },
   manifest: "/manifest.webmanifest",
   icons: {
