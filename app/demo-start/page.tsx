@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
 import InstallAppButton from "@/components/InstallAppButton";
 import { DEMO_DESCRIPTION, DEMO_FEATURES, DEMO_KEYWORDS, DEMO_TITLE, INDEXABLE, SITE_URL } from "@/lib/seo";
-import DemoStartForafrom "./DemoStartForm";
+import DemoStartForm from "./DemoStartForm";
 
 const PAGE_URL = `${SITE_URL}/demo-start`;
 
