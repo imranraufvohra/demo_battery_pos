@@ -65,19 +65,12 @@ function todayLabel() {
 
 export default async function HomePage() {
   const supabase = await createClient();
-  const roleInfo = await loadRoleInfo();
-  const canBill = can(roleInfo, "sales.create");
-  const tiles = QUICK_TILES.filter((t) =>
-    t.href === "/inventory?add=1"
-      ? can(roleInfo, "inventory.edit")
-      : t.href === "/customers?add=1"
-        ? can(roleInfo, "customers.edit")
-        : canOpen(roleInfo, t.href.split("?")[0])
-  );
-  // Only the Owner and Accountant see FBR trouble on Home (same audience that sees FBR error detail on a bill).
-  const seesFbrWarnings = effectiveRole(roleInfo) === "owner" || effectiveRole(roleInfo) === "accountant";
+  // Start the role lookup, the FBR warnings and the four queries all at once instead of one after another.
+  // (The FBR warnings are only shown to Owner/Accountant, see seesFbrWarnings below.)
+  const rolePromise = loadRoleInfo();
+  const fbrPromise = loadFbrHomeWarnings();
   const today = todayKarachi();
-  const [inventory, recent, money, recentBills, fbrWarnings] = await Promise.all([
+  const homeQueries = Promise.all([
     supabase
       .from("inventory")
       .select("id,category,brand,model,type,voltage,plates,ah_rating,wattage,warranty_months,quantity,reorder_level,cost_price,sale_price"),
@@ -93,8 +86,23 @@ export default async function HomePage() {
       .select("id,invoice_number,buyer_name,invoice_date,total_value,due_total,payment_status,status")
       .order("created_at", { ascending: false })
       .limit(5),
-    seesFbrWarnings ? loadFbrHomeWarnings() : Promise.resolve(null),
   ]);
+  const [roleInfo, [inventory, recent, money, recentBills], fbrAll] = await Promise.all([
+    rolePromise,
+    homeQueries,
+    fbrPromise,
+  ]);
+  const canBill = can(roleInfo, "sales.create");
+  const tiles = QUICK_TILES.filter((t) =>
+    t.href === "/inventory?add=1"
+      ? can(roleInfo, "inventory.edit")
+      : t.href === "/customers?add=1"
+        ? can(roleInfo, "customers.edit")
+        : canOpen(roleInfo, t.href.split("?")[0])
+  );
+  // Only the Owner and Accountant see FBR trouble on Home (same audience that sees FBR error detail on a bill).
+  const seesFbrWarnings = effectiveRole(roleInfo) === "owner" || effectiveRole(roleInfo) === "accountant";
+  const fbrWarnings = seesFbrWarnings ? fbrAll : null;
   const billsReady = !money.error && !recentBills.error;
   const summary = (money.data ?? null) as MoneySummary | null;
   const bills = (recentBills.data ?? []) as Pick<
