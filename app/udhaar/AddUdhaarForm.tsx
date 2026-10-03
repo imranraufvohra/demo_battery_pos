@@ -24,7 +24,7 @@ export default function AddUdhaarForm({
   const today = todayKarachi();
   const [customer, setCustomer] = useState<CustomerPick | null>(null);
   const [search, setSearch] = useState("");
-  // "New customer" mode: the customer is not in the list, so it is created together with the udhaar.
+  // "New customer" mode: the customer is not in the list, so it is created together with the credit.
   const [isNew, setIsNew] = useState(false);
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -72,7 +72,7 @@ export default function AddUdhaarForm({
     setSaving(true);
     setSaveError(null);
     if (!(await checkRealConnectivity())) {
-      setSaveError("Saving udhaar needs internet. Try again when you are online.");
+      setSaveError("Saving credit needs internet. Try again when you are online.");
       setSaving(false);
       return;
     }
@@ -113,7 +113,7 @@ export default function AddUdhaarForm({
       }
       onSaved(`Credit of ${formatMoney(value)} added for ${customerName}.`);
     } catch {
-      setSaveError("The connection dropped. Check the Udhaar list before you try again.");
+      setSaveError("The connection dropped. Check the Credit list before you try again.");
       setSaving(false);
     }
   }
@@ -123,7 +123,7 @@ export default function AddUdhaarForm({
       <form onSubmit={save} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-4">
           <h2 id="udhaar-form-title" className="font-display text-2xl font-semibold">
-            Add udhaar
+            Add credit
           </h2>
           <button
             type="button"
@@ -194,7 +194,7 @@ export default function AddUdhaarForm({
                   {errors.phone && <p className="mt-1 text-sm text-terminal-deep">{errors.phone}</p>}
                 </div>
                 {createdId && (
-                  <p className="text-sm text-lead">The customer is saved. Press Save udhaar again to finish.</p>
+                  <p className="text-sm text-lead">The customer is saved. Press Save credit again to finish.</p>
                 )}
               </div>
             ) : customer ? (
@@ -337,7 +337,7 @@ export default function AddUdhaarForm({
             Cancel
           </button>
           <button type="submit" disabled={saving} className="btn btn-primary flex-1">
-            {saving ? "Saving..." : "Save udhaar"}
+            {saving ? "Saving..." : "Save credit"}
           </button>
         </div>
       </form>

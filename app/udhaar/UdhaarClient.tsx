@@ -122,12 +122,12 @@ export default function UdhaarClient({
   return (
     <div>
       <PageHeader
-        title="Udhaar"
+        title="Credit"
         subtitle="Money customers still have to pay you"
         action={
           canAdd && (
             <button type="button" onClick={() => setAdding(true)} className="btn btn-primary">
-              <Icon name="plus" className="h-5 w-5" /> Add udhaar
+              <Icon name="plus" className="h-5 w-5" /> Add credit
             </button>
           )
         }
@@ -155,7 +155,7 @@ export default function UdhaarClient({
             <Icon name="receipt" className="h-5 w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm text-lead">Udhaar bills</span>
+            <span className="block text-sm text-lead">Credit bills</span>
             <span className="block font-display text-3xl font-semibold leading-none tabular-nums">{dueBills.length}</span>
           </span>
         </div>
@@ -175,11 +175,11 @@ export default function UdhaarClient({
           <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cell/10 text-cell">
             <Icon name="check" className="h-7 w-7" strokeWidth={2.2} />
           </span>
-          <h2 className="mt-3 font-display text-2xl font-semibold">No udhaar</h2>
-          <p className="mx-auto mt-1 max-w-sm text-lead">Every bill is paid. Udhaar bills will show here.</p>
+          <h2 className="mt-3 font-display text-2xl font-semibold">No credit</h2>
+          <p className="mx-auto mt-1 max-w-sm text-lead">Every bill is paid. Credit bills will show here.</p>
           {canAdd && (
             <button type="button" onClick={() => setAdding(true)} className="btn btn-quiet mt-4">
-              Add udhaar by hand
+              Add credit by hand
             </button>
           )}
         </section>
@@ -187,7 +187,7 @@ export default function UdhaarClient({
         <>
           <div className="anim-rise mt-5 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 2 } as React.CSSProperties}>
             <label className="relative block w-full sm:max-w-md">
-              <span className="sr-only">Search udhaar</span>
+              <span className="sr-only">Search credit</span>
               <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 type="search"
@@ -198,7 +198,7 @@ export default function UdhaarClient({
                 autoComplete="off"
               />
             </label>
-            <div role="group" aria-label="Sort udhaar" className="flex gap-2">
+            <div role="group" aria-label="Sort credit" className="flex gap-2">
               {SORTS.map((s) => (
                 <button
                   key={s.value}
