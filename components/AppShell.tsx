@@ -20,14 +20,13 @@ export default async function AppShell({
   children: React.ReactNode;
 }) {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Check the login token locally and load the role at the same time (was: two steps one after the other).
+  const [{ data: claimsData }, info] = await Promise.all([supabase.auth.getClaims(), loadRoleInfo()]);
+  const user = claimsData?.claims;
 
   if (!user) redirect(process.env.NEXT_PUBLIC_DEMO_MODE === "true" ? "/demo-start" : "/login");
-  const email = user.email ?? "Signed in";
+  const email = (user.email as string | undefined) ?? "Signed in";
 
-  const info = await loadRoleInfo();
   if (info.status === "no_role" || info.status === "inactive") {
     return <NoAccess email={email} turnedOff={info.status === "inactive"} />;
   }
