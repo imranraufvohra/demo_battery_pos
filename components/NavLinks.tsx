@@ -7,6 +7,7 @@ import Icon from "./Icons";
 import QuickActionsSheet from "./QuickActionsSheet";
 import { useRoleInfo } from "./RoleProvider";
 import { canOpen } from "@/lib/roles";
+import { useT } from "@/lib/i18n/client";
 import { MORE_ITEM, NAV_ITEMS, type NavItem } from "./nav";
 
 function isActive(pathname: string, item: NavItem) {
@@ -19,10 +20,11 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
   const pathname = usePathname();
   const [quickOpen, setQuickOpen] = useState(false);
   const roleInfo = useRoleInfo();
+  const t = useT();
 
   if (variant === "sidebar") {
     return (
-      <nav aria-label="Main" className="space-y-1">
+      <nav aria-label={t("nav.main")} className="space-y-1">
         {NAV_ITEMS.filter((item) => canOpen(roleInfo, item.href)).map((item) => {
           const active = isActive(pathname, item);
           return (
@@ -35,13 +37,13 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
               }`}
             >
               {active && (
-                <span aria-hidden="true" className="absolute inset-y-2.5 left-0 w-1 rounded-r-full bg-sun" />
+                <span aria-hidden="true" className="absolute inset-y-2.5 start-0 w-1 rounded-e-full bg-sun" />
               )}
               <Icon
                 name={item.icon}
                 className={`h-5 w-5 transition-colors ${active ? "text-sun" : "text-white/55 group-hover:text-white"}`}
               />
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}
@@ -59,7 +61,7 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
   return (
     <>
       <nav
-        aria-label="Main"
+        aria-label={t("nav.main")}
         className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-line/70 bg-white/92 backdrop-blur-md lg:hidden"
       >
         <ul className="mx-auto grid h-16 max-w-md grid-cols-5">
@@ -80,7 +82,7 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
                     <Icon name={item.icon} className="h-[22px] w-[22px]" strokeWidth={active ? 2.2 : 1.8} />
                   </span>
                   <span className={`text-[11px] leading-none ${active ? "font-semibold text-casing" : "text-lead"}`}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </span>
                 </Link>
               </li>
@@ -91,7 +93,7 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
             <button
               type="button"
               onClick={() => setQuickOpen(true)}
-              aria-label="Quick actions"
+              aria-label={t("shell.quickActions")}
               className="flex h-full flex-col items-center justify-center gap-0.5"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-casing text-white shadow-lift transition-transform active:scale-95">
@@ -117,7 +119,7 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
                     <Icon name={item.icon} className="h-[22px] w-[22px]" strokeWidth={active ? 2.2 : 1.8} />
                   </span>
                   <span className={`text-[11px] leading-none ${active ? "font-semibold text-casing" : "text-lead"}`}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </span>
                 </Link>
               </li>
@@ -138,7 +140,7 @@ export default function NavLinks({ variant }: { variant: "sidebar" | "bottom" })
                 <Icon name={MORE_ITEM.icon} className="h-[22px] w-[22px]" strokeWidth={isActive(pathname, MORE_ITEM) ? 2.2 : 1.8} />
               </span>
               <span className={`text-[11px] leading-none ${isActive(pathname, MORE_ITEM) ? "font-semibold text-casing" : "text-lead"}`}>
-                {MORE_ITEM.label}
+                {t(MORE_ITEM.labelKey)}
               </span>
             </Link>
           </li>

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ROLE_LABEL } from "@/lib/roles";
 import { loadRoleInfo } from "@/lib/rolesServer";
+import { getT } from "@/lib/i18n/server";
 import DemoBanner from "./DemoBanner";
 import CommandHost from "./CommandHost";
 import NavLinks from "./NavLinks";
@@ -43,14 +43,15 @@ export default async function AppShell({
   }
 
   const displayName = info.fullName || email;
-  const roleLabel = info.role ? ROLE_LABEL[info.role] : "";
+  const t = await getT();
+  const roleLabel = info.role ? t(`role.${info.role}`) : "";
 
   return (
     <RoleProvider info={info}>
       <div className="min-h-dvh">
         <DemoBanner />
         <Sidebar email={email} name={displayName} roleLabel={roleLabel} />
-        <div className="lg:pl-64">
+        <div className="lg:ps-64">
           <TopBar email={displayName} />
           <main className="mx-auto w-full max-w-7xl px-4 pb-28 pt-5 lg:px-8 lg:pb-14 lg:pt-8">{children}</main>
         </div>

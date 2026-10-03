@@ -70,7 +70,7 @@ export default function FbrPicker({
             <li key={r.code}>
               <button
                 type="button"
-                className="block w-full px-3 py-2 text-left text-sm hover:bg-plate"
+                className="block w-full px-3 py-2 text-start text-sm hover:bg-plate"
                 onMouseDown={(e) => {
                   e.preventDefault();
                   onChange(pick === "code" ? r.code : r.label ?? r.code);

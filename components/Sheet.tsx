@@ -37,7 +37,7 @@ export default function Sheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
-        className="sheet-panel flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl md:h-full md:max-h-none md:max-w-xl md:rounded-l-3xl md:rounded-tr-none"
+        className="sheet-panel flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-3xl bg-white shadow-2xl md:h-full md:max-h-none md:max-w-xl md:rounded-s-3xl md:rounded-se-none"
       >
         <div aria-hidden="true" className="mx-auto mt-2.5 h-1.5 w-10 shrink-0 rounded-full bg-line md:hidden" />
         {children}

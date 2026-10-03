@@ -12,11 +12,11 @@ export default function HomeCommandBar() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-4 pb-2.5 lg:hidden">
-      <div className="pointer-events-auto mx-auto flex max-w-md items-center gap-1.5 rounded-full border border-line/70 bg-white p-1.5 pl-2 shadow-lift">
+      <div className="pointer-events-auto mx-auto flex max-w-md items-center gap-1.5 rounded-full border border-line/70 bg-white p-1.5 ps-2 shadow-lift">
         <button
           type="button"
           onClick={() => openCommand()}
-          className="flex min-h-11 flex-1 items-center gap-2.5 rounded-full px-3 text-left text-[15px] text-lead"
+          className="flex min-h-11 flex-1 items-center gap-2.5 rounded-full px-3 text-start text-[15px] text-lead"
         >
           <Icon name="sparkle" className="h-5 w-5 text-sun-deep" />
           Search or speak

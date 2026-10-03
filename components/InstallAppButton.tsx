@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Icon from "./Icons";
+import { useT } from "@/lib/i18n/client";
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -24,6 +25,7 @@ function isIos() {
 
 export default function InstallAppButton() {
   if (typeof window !== "undefined" && window.self !== window.top) return null;
+  const t = useT();
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [installed, setInstalled] = useState(false);
   const [showIosHint, setShowIosHint] = useState(false);
@@ -71,11 +73,11 @@ export default function InstallAppButton() {
     <div>
       <button type="button" onClick={handleClick} className="btn btn-quiet w-full">
         <Icon name="download" className="h-[18px] w-[18px]" />
-        Install app
+        {t("shell.installApp")}
       </button>
       {showIosHint && (
         <p className="mt-2 px-1 text-sm text-lead">
-          On iPhone/iPad: tap the Share icon in Safari, then &ldquo;Add to Home Screen&rdquo;.
+          {t("shell.iosHint")}
         </p>
       )}
     </div>

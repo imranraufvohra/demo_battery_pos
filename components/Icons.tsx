@@ -190,6 +190,9 @@ const ICONS = {
 
 export type IconName = keyof typeof ICONS;
 
+/** Icons that point somewhere, so they mirror in right-to-left languages. */
+const FLIPS_IN_RTL = new Set<IconName>(["chevron", "back", "logout"]);
+
 export default function Icon({
   name,
   className = "h-5 w-5",
@@ -208,7 +211,7 @@ export default function Icon({
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-      className={className}
+      className={FLIPS_IN_RTL.has(name) ? `${className} rtl:-scale-x-100` : className}
     >
       {ICONS[name]}
     </svg>

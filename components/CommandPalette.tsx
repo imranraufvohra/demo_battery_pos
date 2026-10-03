@@ -381,7 +381,7 @@ export default function CommandPalette({
                   aria-selected={isActive}
                   onMouseMove={() => setActive(i)}
                   onClick={() => go(hit)}
-                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-start transition-colors ${
                     isActive ? "bg-plate" : ""
                   }`}
                 >

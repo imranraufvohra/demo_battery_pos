@@ -175,7 +175,7 @@ function Row({ label, value, tone }: { label: string; value: string; tone?: "bad
   return (
     <div className="flex items-baseline justify-between gap-3 text-sm">
       <span className="text-lead">{label}</span>
-      <span className={`text-right font-semibold ${tone === "bad" ? "text-terminal-deep" : "text-casing"}`}>{value}</span>
+      <span className={`text-end font-semibold ${tone === "bad" ? "text-terminal-deep" : "text-casing"}`}>{value}</span>
     </div>
   );
 }
@@ -197,7 +197,7 @@ function BillBody({ p }: { p: BillProposal }) {
             <p className="mt-0.5 text-xs text-lead">
               {l.qty} × {formatRs(l.rate)}
               {l.priceChanged && (
-                <span className="ml-2 rounded-full bg-sun/25 px-2 py-0.5 font-semibold text-amber-900">Price changed</span>
+                <span className="ms-2 rounded-full bg-sun/25 px-2 py-0.5 font-semibold text-amber-900">Price changed</span>
               )}
             </p>
           </li>

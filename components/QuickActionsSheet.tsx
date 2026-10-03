@@ -5,11 +5,13 @@ import Link from "next/link";
 import Icon, { type IconName } from "./Icons";
 import { useRoleInfo } from "./RoleProvider";
 import { can, canOpen } from "@/lib/roles";
+import { useT } from "@/lib/i18n/client";
+import type { TKey } from "@/lib/i18n/en";
 
 type Action = {
   href: string;
-  label: string;
-  hint: string;
+  /** Translation key; the hint lives at `${tkey}.hint`. */
+  tkey: "qa.newBill" | "qa.receiveStock" | "qa.makePayment" | "qa.addExpense" | "qa.addCustomer";
   icon: IconName;
   tone: string;
   /** Set for a button whose screen doesn't exist yet, shown greyed out so the full set of buttons
@@ -19,11 +21,11 @@ type Action = {
 };
 
 const ACTIONS: Action[] = [
-  { href: "/sales/new", label: "New bill", hint: "Sell to a customer", icon: "receipt", tone: "bg-sun/25 text-amber-800" },
-  { href: "/purchases/new", label: "Receive stock", hint: "Buy from a supplier", icon: "truck", tone: "bg-focus/10 text-focus" },
-  { href: "/payments/new", label: "Make payment", hint: "Pay a supplier", icon: "banknote", tone: "bg-cell/10 text-cell" },
-  { href: "/expenses?add=1", label: "Add expense", hint: "Log rent, salaries, fuel, etc.", icon: "minus", tone: "bg-terminal/10 text-terminal-deep" },
-  { href: "/customers?add=1", label: "Add customer", hint: "Save a new customer", icon: "userplus", tone: "bg-focus/10 text-focus" },
+  { href: "/sales/new", tkey: "qa.newBill", icon: "receipt", tone: "bg-sun/25 text-amber-800" },
+  { href: "/purchases/new", tkey: "qa.receiveStock", icon: "truck", tone: "bg-focus/10 text-focus" },
+  { href: "/payments/new", tkey: "qa.makePayment", icon: "banknote", tone: "bg-cell/10 text-cell" },
+  { href: "/expenses?add=1", tkey: "qa.addExpense", icon: "minus", tone: "bg-terminal/10 text-terminal-deep" },
+  { href: "/customers?add=1", tkey: "qa.addCustomer", icon: "userplus", tone: "bg-focus/10 text-focus" },
 ];
 
 /** The sheet opened by the phone bottom bar's center "+" (decision D7, Option B). Unlike the form
@@ -31,6 +33,7 @@ const ACTIONS: Action[] = [
  * can be half-typed and lost. */
 export default function QuickActionsSheet({ onClose }: { onClose: () => void }) {
   const roleInfo = useRoleInfo();
+  const t = useT();
   const actions = ACTIONS.filter((a) =>
     a.href.startsWith("/customers") ? can(roleInfo, "customers.edit") : canOpen(roleInfo, a.href.split("?")[0])
   );
@@ -62,12 +65,12 @@ export default function QuickActionsSheet({ onClose }: { onClose: () => void }) 
         <div aria-hidden="true" className="mx-auto mt-2.5 h-1.5 w-10 rounded-full bg-line" />
         <div className="flex items-center justify-between px-5 pb-2 pt-3">
           <h2 id="quick-actions-title" className="font-display text-2xl font-bold">
-            Quick actions
+            {t("shell.quickActions")}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={t("common.close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -82,8 +85,8 @@ export default function QuickActionsSheet({ onClose }: { onClose: () => void }) 
                     <Icon name={a.icon} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-semibold">{a.label}</span>
-                    <span className="block text-sm text-lead">{a.hint}</span>
+                    <span className="block font-semibold">{t(a.tkey)}</span>
+                    <span className="block text-sm text-lead">{t(`${a.tkey}.hint` as TKey)}</span>
                   </span>
                 </div>
               </li>
@@ -94,8 +97,8 @@ export default function QuickActionsSheet({ onClose }: { onClose: () => void }) 
                     <Icon name={a.icon} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block font-semibold">{a.label}</span>
-                    <span className="block text-sm text-lead">{a.hint}</span>
+                    <span className="block font-semibold">{t(a.tkey)}</span>
+                    <span className="block text-sm text-lead">{t(`${a.tkey}.hint` as TKey)}</span>
                   </span>
                   <Icon name="chevron" className="h-4 w-4 text-lead/60" />
                 </Link>
