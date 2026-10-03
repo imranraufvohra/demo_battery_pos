@@ -125,7 +125,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             <Row label="Received by bank transfer" value={formatRs(s.by_method.bank)} />
             {s.by_method.other > 0 && <Row label="Received, other" value={formatRs(s.by_method.other)} />}
             <Row label="Total money received" value={formatRs(s.cash_received)} strong />
-            <Row label="Of which from older bills (udhaar)" value={formatRs(s.received_on_older_bills)} />
+            <Row label="Of which from older bills (credit)" value={formatRs(s.received_on_older_bills)} />
             <Row
               label="Still unpaid on these bills"
               value={formatRs(s.credit_given)}
@@ -216,7 +216,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
             <Row label="Stock value (at cost)" value={formatRs(stockCost)} />
             <Row label="Stock worth (at sale price)" value={formatRs(stockSale)} />
             <Row
-              label={`Udhaar to collect (${owedCount} ${owedCount === 1 ? "bill" : "bills"})`}
+              label={`Credit to collect (${owedCount} ${owedCount === 1 ? "bill" : "bills"})`}
               value={formatRs(owedTotal)}
               tone={owedTotal > 0 ? "text-terminal-deep" : undefined}
             />
@@ -231,7 +231,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           </dl>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href="/sales?filter=due" className="btn btn-quiet btn-sm">
-              See udhaar bills
+              See credit bills
             </Link>
             <Link href="/inventory?filter=low" className="btn btn-quiet btn-sm">
               See low stock
