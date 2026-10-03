@@ -37,12 +37,24 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  // Do not put any code between createServerClient and getClaims.
-  // getClaims() checks the login token locally (no network trip to Supabase) when the project uses
-  // asymmetric JWT signing keys, and refreshes the session when it has expired. This is much faster
-  // than getUser(), which always calls Supabase.
-  const { data: claimsData } = await supabase.auth.getClaims();
-  const user = claimsData?.claims ?? null;
+  // Do not put any code between createServerClient and the user check.
+  // Fast path: getClaims() checks the login token locally. If it fails for ANY reason (or finds no
+  // user) we fall back to getUser(), the slower but always-working check. So middleware never crashes.
+  let user: unknown = null;
+  try {
+    const { data } = await supabase.auth.getClaims();
+    user = data?.claims ?? null;
+  } catch {
+    user = null;
+  }
+  if (!user) {
+    try {
+      const { data } = await supabase.auth.getUser();
+      user = data?.user ?? null;
+    } catch {
+      user = null;
+    }
+  }
 
   const path = request.nextUrl.pathname;
   const demo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
