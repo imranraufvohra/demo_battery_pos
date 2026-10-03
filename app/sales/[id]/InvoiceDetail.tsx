@@ -260,7 +260,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                   {items.length === 0 && (
                     <tr>
                       <td colSpan={4} className="px-5 py-4 text-lead">
-                        Udhaar entered by hand. This bill has no items, so stock did not change.
+                        Credit entered by hand. This bill has no items, so stock did not change.
                       </td>
                     </tr>
                   )}
@@ -338,7 +338,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
               )}
             </div>
             {payments.length === 0 ? (
-              <p className="mt-2 text-lead">Nothing received yet. The full {formatRs(inv.total_value)} is udhaar.</p>
+              <p className="mt-2 text-lead">Nothing received yet. The full {formatRs(inv.total_value)} is credit.</p>
             ) : (
               <ul className="mt-2 divide-y divide-line/60">
                 {payments.map((p) => (
