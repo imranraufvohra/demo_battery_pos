@@ -33,8 +33,8 @@ export default function LoginForm() {
         return;
       }
 
+      // replace() already loads the home page fresh; the extra refresh() fetched it a second time.
       router.replace("/");
-      router.refresh();
     } catch {
       setError("Could not reach the server. Check your internet and try again.");
       setBusy(false);
