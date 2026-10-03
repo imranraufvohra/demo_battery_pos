@@ -42,7 +42,7 @@ export function methodLabel(m: PaymentMethod): string {
 export const PAYMENT_LABEL: Record<PaymentStatus, string> = {
   Paid: "Paid",
   Partial: "Part paid",
-  Credit: "Udhaar",
+  Credit: "Credit",
 };
 
 /* ---------- Dates (Pakistan time, so server and browser agree) ---------- */
