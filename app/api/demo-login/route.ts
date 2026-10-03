@@ -10,12 +10,19 @@ export async function POST(req: NextRequest) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
   if (secret) {
     const token = String(form.get("cf-turnstile-response") ?? "");
-    const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      body: new URLSearchParams({ secret, response: token }),
-    });
-    const j = (await r.json()) as { success?: boolean };
-    if (!j.success) return fail();
+    let ok = false;
+    try {
+      const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        body: new URLSearchParams({ secret, response: token }),
+        signal: AbortSignal.timeout(4000), // never hang the login if Cloudflare is slow
+      });
+      const j = (await r.json()) as { success?: boolean };
+      ok = !!j.success;
+    } catch {
+      ok = false;
+    }
+    if (!ok) return fail();
   }
 
   const email = process.env.DEMO_USER_EMAIL;
