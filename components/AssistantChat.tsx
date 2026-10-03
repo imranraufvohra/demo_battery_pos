@@ -141,7 +141,7 @@ export default function AssistantChat() {
             </span>
             <p className="font-semibold text-casing">{personaName}</p>
             <p className="max-w-sm text-sm text-lead">
-              Ask about stock, prices or a customer&apos;s udhaar. You can also ask it to prepare a bill, a new item or a
+              Ask about stock, prices or a customer&apos;s credit. You can also ask it to prepare a bill, a new item or a
               new customer — nothing is saved until you tap Confirm.
               {voiceOk && " Tap the microphone to speak instead of typing."}
             </p>
@@ -212,7 +212,7 @@ export default function AssistantChat() {
           ref={inputRef}
           className="input min-h-11 flex-1 resize-none"
           rows={1}
-          placeholder={listening ? "Listening…" : "Ask, or e.g. bill Ali Traders 2 Phoenix 150Ah on udhaar"}
+          placeholder={listening ? "Listening…" : "Ask, or e.g. bill Ali Traders 2 Phoenix 150Ah on credit"}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}

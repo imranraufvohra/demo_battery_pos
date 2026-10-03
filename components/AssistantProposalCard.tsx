@@ -206,7 +206,7 @@ function BillBody({ p }: { p: BillProposal }) {
       <div className="space-y-1">
         <Row label="Total" value={formatRs(p.total)} />
         <Row label={p.mode === "credit" ? "Paying now" : `Paying now (${methodLabel(p.method)})`} value={formatRs(p.paid)} />
-        {p.due > 0 && <Row label="Udhaar" value={formatRs(p.due)} tone="bad" />}
+        {p.due > 0 && <Row label="Credit" value={formatRs(p.due)} tone="bad" />}
       </div>
       {p.note && <p className="text-xs text-lead">Note: {p.note}</p>}
     </div>
