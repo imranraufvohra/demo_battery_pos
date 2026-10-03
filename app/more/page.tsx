@@ -19,7 +19,7 @@ export const metadata: Metadata = { title: "More" };
 const SHORTCUTS: { href: string; label: string; hint: string; icon: IconName; tone: string }[] = [
   { href: "/assistant", label: "Assistant", hint: "Ask about stock, sales or customers", icon: "sparkle", tone: "bg-sun/25 text-amber-800" },
   { href: "/sales/new", label: "New bill", hint: "Make a sale and take payment", icon: "receipt", tone: "bg-sun/25 text-amber-800" },
-  { href: "/udhaar", label: "Udhaar to collect", hint: "Who owes you money, and how much", icon: "banknote", tone: "bg-terminal/10 text-terminal" },
+  { href: "/udhaar", label: "Credit to collect", hint: "Who owes you money, and how much", icon: "banknote", tone: "bg-terminal/10 text-terminal" },
   { href: "/purchases/new", label: "Receive stock", hint: "Record a new purchase bill", icon: "truck", tone: "bg-focus/10 text-focus" },
   { href: "/payments/new", label: "Make payment", hint: "Pay a supplier, against a bill or on account", icon: "banknote", tone: "bg-cell/10 text-cell" },
   { href: "/suppliers", label: "Suppliers", hint: "Who you buy from, and what you owe", icon: "truck", tone: "bg-lead/10 text-casing" },
