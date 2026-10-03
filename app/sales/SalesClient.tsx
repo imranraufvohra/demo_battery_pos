@@ -26,7 +26,7 @@ type Filter = "all" | "due" | "paid";
 
 const TABS: { value: Filter; label: string }[] = [
   { value: "all", label: "All" },
-  { value: "due", label: "Udhaar due" },
+  { value: "due", label: "Credit due" },
   { value: "paid", label: "Paid" },
 ];
 
@@ -110,7 +110,7 @@ export default function SalesClient({
 }) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>(initialFilter);
-  // Charging slips and battery-claim charges only show up under "All" -- "Udhaar due" and "Paid"
+  // Charging slips and battery-claim charges only show up under "All" -- "Credit due" and "Paid"
   // are bill-specific ideas that don't apply to them, so mixing them in there would be confusing.
   const includeOthers = filter === "all";
   const router = useRouter();
@@ -378,7 +378,7 @@ export default function SalesClient({
           </span>
           <h2 className="mt-3 font-display text-2xl font-semibold">No bills yet</h2>
           <p className="mx-auto mt-1 max-w-sm text-lead">
-            Make your first bill. Stock goes down and udhaar is tracked for you.
+            Make your first bill. Stock goes down and credit is tracked for you.
           </p>
           {canCreateBill && (
 <Link href="/sales/new" className="btn btn-primary mt-5">
