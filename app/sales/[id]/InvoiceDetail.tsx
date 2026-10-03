@@ -227,7 +227,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
               {inv.status === "Cancelled" && <span className="text-sm text-white/70">This bill is cancelled.</span>}
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="text-sm text-white/70">Total</p>
             <p className="font-display text-4xl font-bold tabular-nums sm:text-5xl">{formatRs(inv.total_value)}</p>
             {inv.due_total > 0 && inv.status !== "Cancelled" ? (
@@ -247,13 +247,13 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
           <section className="card anim-rise overflow-hidden" style={{ "--i": 1 } as React.CSSProperties}>
             <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold">Items</h2>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[30rem] text-left">
+              <table className="w-full min-w-[30rem] text-start">
                 <thead className="bg-plate/70 text-sm text-lead">
                   <tr>
                     <th className="px-5 py-2.5 font-medium">Item</th>
-                    <th className="px-3 py-2.5 text-right font-medium">Qty</th>
-                    <th className="px-3 py-2.5 text-right font-medium">Rate</th>
-                    <th className="px-5 py-2.5 text-right font-medium">Amount</th>
+                    <th className="px-3 py-2.5 text-end font-medium">Qty</th>
+                    <th className="px-3 py-2.5 text-end font-medium">Rate</th>
+                    <th className="px-5 py-2.5 text-end font-medium">Amount</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
@@ -270,9 +270,9 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                         <span className="font-semibold">{it.description}</span>
                         {it.hs_code && <span className="block text-xs text-lead">HS code {it.hs_code}</span>}
                       </td>
-                      <td className="px-3 py-3 text-right tabular-nums">{it.quantity}</td>
-                      <td className="px-3 py-3 text-right tabular-nums">{formatRs(it.rate)}</td>
-                      <td className="px-5 py-3 text-right font-semibold tabular-nums">{formatRs(it.total)}</td>
+                      <td className="px-3 py-3 text-end tabular-nums">{it.quantity}</td>
+                      <td className="px-3 py-3 text-end tabular-nums">{formatRs(it.rate)}</td>
+                      <td className="px-5 py-3 text-end font-semibold tabular-nums">{formatRs(it.total)}</td>
                     </tr>
                   ))}
                 </tbody>

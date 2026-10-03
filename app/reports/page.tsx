@@ -150,7 +150,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
               <Row label="Paid to suppliers" value={formatRs(finance.paid_to_suppliers_total)} />
               <Row label="Expenses" value={formatRs(finance.expenses_total)} />
               {finance.expenses_excluded_total > 0 && (
-                <p className="py-1 pl-1 text-sm text-lead">
+                <p className="py-1 ps-1 text-sm text-lead">
                   Of which {formatRs(finance.expenses_excluded_total)} is owner withdrawal (left out of net profit).
                 </p>
               )}
@@ -192,7 +192,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                 <li key={t.description}>
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="min-w-0 truncate font-semibold">
-                      <span className="mr-2 text-lead tabular-nums">{i + 1}.</span>
+                      <span className="me-2 text-lead tabular-nums">{i + 1}.</span>
                       {t.description}
                     </span>
                     <span className="shrink-0 font-semibold tabular-nums">{formatRs(t.revenue)}</span>
@@ -201,7 +201,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-plate" aria-hidden="true">
                       <div className="h-full rounded-full bg-sun" style={{ width: `${Math.max(4, (t.revenue / maxRevenue) * 100)}%` }} />
                     </div>
-                    <span className="w-16 text-right text-sm text-lead tabular-nums">{t.quantity} sold</span>
+                    <span className="w-16 text-end text-sm text-lead tabular-nums">{t.quantity} sold</span>
                   </div>
                 </li>
               ))}

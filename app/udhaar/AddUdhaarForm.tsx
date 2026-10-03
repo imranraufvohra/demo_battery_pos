@@ -231,7 +231,7 @@ export default function AddUdhaarForm({
                           setCustomer(c);
                           setErrors((p) => ({ ...p, customer: undefined }));
                         }}
-                        className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left hover:bg-plate/70"
+                        className="flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-start hover:bg-plate/70"
                       >
                         <span className="truncate font-semibold">{c.name}</span>
                         {c.phone && <span className="shrink-0 text-sm text-lead">{formatPhone(c.phone)}</span>}
@@ -246,7 +246,7 @@ export default function AddUdhaarForm({
                         setNewName(search.trim());
                         setErrors((p) => ({ ...p, customer: undefined }));
                       }}
-                      className="flex w-full items-center gap-2 px-3.5 py-3 text-left font-semibold text-focus hover:bg-plate/70"
+                      className="flex w-full items-center gap-2 px-3.5 py-3 text-start font-semibold text-focus hover:bg-plate/70"
                     >
                       <Icon name="userplus" className="h-5 w-5" />
                       {search.trim() ? `Add "${search.trim()}" as a new customer` : "Add a new customer"}

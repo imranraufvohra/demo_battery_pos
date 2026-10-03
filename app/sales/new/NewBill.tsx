@@ -842,14 +842,14 @@ export default function NewBill({
               <div className="mt-3">
                 <label className="relative block">
                   <span className="sr-only">Search customers</span>
-                  <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+                  <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
                   <input
                     autoFocus
                     type="search"
                     value={customerQuery}
                     onChange={(e) => setCustomerQuery(e.target.value)}
                     placeholder="Search name or phone"
-                    className="input pl-11"
+                    className="input ps-11"
                     autoComplete="off"
                   />
                 </label>
@@ -862,7 +862,7 @@ export default function NewBill({
                         setPickingCustomer(false);
                         setCustomerQuery("");
                       }}
-                      className="flex min-h-12 w-full items-center gap-3 px-3.5 py-2.5 text-left hover:bg-plate"
+                      className="flex min-h-12 w-full items-center gap-3 px-3.5 py-2.5 text-start hover:bg-plate"
                     >
                       <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-casing/10 text-casing">
                         <Icon name="users" className="h-4 w-4" />
@@ -880,7 +880,7 @@ export default function NewBill({
                           setCustomerQuery("");
                           setError(null);
                         }}
-                        className="flex min-h-12 w-full items-center gap-3 px-3.5 py-2.5 text-left hover:bg-plate"
+                        className="flex min-h-12 w-full items-center gap-3 px-3.5 py-2.5 text-start hover:bg-plate"
                       >
                         <Avatar name={c.name} size="sm" />
                         <span className="min-w-0 flex-1">
@@ -939,7 +939,7 @@ export default function NewBill({
               <label htmlFor="item-search" className="sr-only">
                 Search stock to add
               </label>
-              <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+              <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 id="item-search"
                 ref={itemInputRef}
@@ -956,7 +956,7 @@ export default function NewBill({
                 placeholder="Search stock: brand, model, 100Ah"
                 autoComplete="off"
                 spellCheck={false}
-                className="input pl-11"
+                className="input ps-11"
               />
             </div>
 
@@ -969,7 +969,7 @@ export default function NewBill({
                       type="button"
                       onClick={() => addItem(s)}
                       onMouseMove={() => setActiveHit(i)}
-                      className={`flex min-h-14 w-full items-center gap-3 px-3.5 py-2 text-left ${i === activeHit ? "bg-plate" : ""}`}
+                      className={`flex min-h-14 w-full items-center gap-3 px-3.5 py-2 text-start ${i === activeHit ? "bg-plate" : ""}`}
                     >
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-semibold">
@@ -977,7 +977,7 @@ export default function NewBill({
                         </span>
                         <span className="block truncate text-sm text-lead">{specText(s)}</span>
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-semibold tabular-nums">{formatRs(s.sale_price)}</span>
                         <span className={`block text-xs ${s.quantity <= 0 ? "font-semibold text-terminal-deep" : "text-lead"}`}>
                           {s.quantity <= 0 ? "Out of stock" : `${s.quantity} in stock`}
@@ -1008,11 +1008,11 @@ export default function NewBill({
               <div className="mt-4 overflow-x-auto rounded-xl border border-line">
                 <table className="w-full min-w-[38rem] border-collapse text-[15px]">
                   <thead>
-                    <tr className="bg-plate/70 text-left">
+                    <tr className="bg-plate/70 text-start">
                       <th className="border-b border-line px-3 py-2.5 font-display text-base font-semibold">Particulars</th>
                       <th className="w-28 border-b border-line px-2 py-2.5 text-center font-display text-base font-semibold">Qty</th>
-                      <th className="w-28 border-b border-line px-2 py-2.5 text-right font-display text-base font-semibold">Rate</th>
-                      <th className="w-32 border-b border-line px-3 py-2.5 text-right font-display text-base font-semibold">Amount</th>
+                      <th className="w-28 border-b border-line px-2 py-2.5 text-end font-display text-base font-semibold">Rate</th>
+                      <th className="w-32 border-b border-line px-3 py-2.5 text-end font-display text-base font-semibold">Amount</th>
                       <th className="w-10 border-b border-line" aria-hidden="true" />
                     </tr>
                   </thead>
@@ -1067,7 +1067,7 @@ export default function NewBill({
                                 type="button"
                                 onClick={() => stepQty(c.line, -1)}
                                 aria-label={`One less ${c.item.brand} ${c.item.model}`}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-l-lg border border-line bg-white hover:bg-plate"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-s-lg border border-line bg-white hover:bg-plate"
                               >
                                 <Icon name="minus" className="h-3.5 w-3.5" />
                               </button>
@@ -1084,7 +1084,7 @@ export default function NewBill({
                                 type="button"
                                 onClick={() => stepQty(c.line, 1)}
                                 aria-label={`One more ${c.item.brand} ${c.item.model}`}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-r-lg border border-line bg-white hover:bg-plate"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-e-lg border border-line bg-white hover:bg-plate"
                               >
                                 <Icon name="plus" className="h-3.5 w-3.5" />
                               </button>
@@ -1103,10 +1103,10 @@ export default function NewBill({
                               aria-invalid={c.rate == null}
                               readOnly={!canOverridePrice}
                               title={canOverridePrice ? undefined : "Only the Owner can change prices"}
-                              className={`input h-9 w-full text-right tabular-nums ${canOverridePrice ? "" : "bg-plate text-lead"}`}
+                              className={`input h-9 w-full text-end tabular-nums ${canOverridePrice ? "" : "bg-plate text-lead"}`}
                             />
                           </td>
-                          <td className="px-3 py-2.5 text-right align-top font-display text-lg font-semibold tabular-nums">
+                          <td className="px-3 py-2.5 text-end align-top font-display text-lg font-semibold tabular-nums">
                             {formatRs(c.amount)}
                           </td>
                           <td className="px-1 py-2.5 align-top">
@@ -1395,7 +1395,7 @@ export default function NewBill({
                 But the old {scrapFailure.names.length === 1 ? "battery" : "batteries"} taken in exchange could not be
                 recorded to the scrap pile after two tries:
               </p>
-              <ul className="list-disc space-y-1 pl-5 text-sm">
+              <ul className="list-disc space-y-1 ps-5 text-sm">
                 {scrapFailure.names.map((n, i) => (
                   <li key={i}>{n}</li>
                 ))}

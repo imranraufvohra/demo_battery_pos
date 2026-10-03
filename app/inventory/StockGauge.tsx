@@ -38,7 +38,7 @@ export default function StockGauge({
           />
         ))}
       </span>
-      <span className="h-2 w-[3px] rounded-r-sm bg-lead/60" />
+      <span className="h-2 w-[3px] rounded-e-sm bg-lead/60" />
     </span>
   );
 }

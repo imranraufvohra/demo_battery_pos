@@ -188,13 +188,13 @@ export default function UdhaarClient({
           <div className="anim-rise mt-5 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 2 } as React.CSSProperties}>
             <label className="relative block w-full sm:max-w-md">
               <span className="sr-only">Search credit</span>
-              <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+              <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search customer, phone or bill number"
-                className="input pl-11"
+                className="input ps-11"
                 autoComplete="off"
               />
             </label>
@@ -247,7 +247,7 @@ export default function UdhaarClient({
                         {g.phone ? ` · ${g.phone}` : ""}
                       </span>
                     </span>
-                    <span className="text-right">
+                    <span className="text-end">
                       <span className="block text-xs text-lead">Total due</span>
                       <span className="block font-display text-2xl font-semibold leading-none tabular-nums text-terminal-deep">
                         {formatRs(g.due)}
@@ -269,7 +269,7 @@ export default function UdhaarClient({
                               <PayBadge status={b.payment_status} bill={b.status} />
                             </span>
                           </span>
-                          <span className="text-right">
+                          <span className="text-end">
                             <span className="block text-sm text-lead tabular-nums">
                               Bill {formatRs(b.total_value)}
                               {b.paid_total > 0 ? ` · Paid ${formatRs(b.paid_total)}` : ""}

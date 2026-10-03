@@ -154,7 +154,7 @@ function Row({ r, open, onToggle }: { r: LogRow; open: boolean; onToggle: () => 
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${a.cls}`}>{a.label}</span>
         <span className="text-xs font-medium uppercase tracking-wide text-lead">{AREA_LABEL[r.table_name] ?? r.table_name}</span>
         {r.is_detail && <span className="text-xs text-lead">(automatic)</span>}
-        <span className="ml-auto text-sm tabular-nums text-lead">{fmtTime.format(new Date(r.created_at))}</span>
+        <span className="ms-auto text-sm tabular-nums text-lead">{fmtTime.format(new Date(r.created_at))}</span>
       </div>
       <p className="mt-1.5 break-words text-[15px] font-medium">{r.summary}</p>
       <div className="mt-1 flex flex-wrap items-center justify-between gap-2">

@@ -144,14 +144,14 @@ export default function PurchasesClient({
               <label htmlFor="purchase-search" className="sr-only">
                 Search purchase bills
               </label>
-              <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+              <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 id="purchase-search"
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search bill no., supplier, or their invoice no."
-                className="input pl-11"
+                className="input ps-11"
               />
             </div>
             <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
@@ -195,16 +195,16 @@ export default function PurchasesClient({
 
               {/* Tablet/desktop table */}
               <div className="card anim-rise mt-4 hidden overflow-hidden md:block">
-                <table className="w-full text-left text-[15px]">
+                <table className="w-full text-start text-[15px]">
                   <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                     <tr>
                       <th className="px-5 py-3 font-medium">Bill</th>
                       <th className="px-3 py-3 font-medium">Date</th>
                       <th className="px-3 py-3 font-medium">Supplier</th>
-                      <th className="px-3 py-3 text-right font-medium">Total</th>
-                      <th className="px-3 py-3 text-right font-medium">Due</th>
+                      <th className="px-3 py-3 text-end font-medium">Total</th>
+                      <th className="px-3 py-3 text-end font-medium">Due</th>
                       <th className="px-5 py-3 font-medium">Status</th>
-                      <th className="px-3 py-3 text-right font-medium">
+                      <th className="px-3 py-3 text-end font-medium">
                         <span className="sr-only">Cancel</span>
                       </th>
                     </tr>
@@ -224,9 +224,9 @@ export default function PurchasesClient({
                         <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">
                           {supplierNames[p.supplier_id] ?? "Unknown supplier"}
                         </td>
-                        <td className="px-3 py-3.5 text-right font-semibold tabular-nums">{formatRs(p.total_value)}</td>
+                        <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(p.total_value)}</td>
                         <td
-                          className={`px-3 py-3.5 text-right tabular-nums ${
+                          className={`px-3 py-3.5 text-end tabular-nums ${
                             p.status !== "Cancelled" && p.due_total > 0 ? "font-semibold text-terminal-deep" : "text-lead"
                           }`}
                         >
@@ -235,7 +235,7 @@ export default function PurchasesClient({
                         <td className="px-5 py-3.5">
                           <PurchasePayBadge tag={p.payment_tag} status={p.status} />
                         </td>
-                        <td className="px-3 py-3.5 text-right">
+                        <td className="px-3 py-3.5 text-end">
                           {p.status !== "Cancelled" && canManage && (
                             <button
                               type="button"
@@ -268,7 +268,7 @@ export default function PurchasesClient({
                           <PurchasePayBadge tag={p.payment_tag} status={p.status} />
                         </span>
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(p.total_value)}</span>
                         {p.status !== "Cancelled" && p.due_total > 0 && (
                           <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>

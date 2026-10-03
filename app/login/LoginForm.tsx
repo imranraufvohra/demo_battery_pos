@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase/lazy";
+import { useT } from "@/lib/i18n/client";
 
 export default function LoginForm() {
   const router = useRouter();
+  const t = useT();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export default function LoginForm() {
       if (error) {
         setError(
           error.message.toLowerCase().includes("invalid login")
-            ? "The email or password is wrong. Check both and try again."
+            ? t("login.badCredentials")
             : error.message
         );
         setBusy(false);
@@ -36,7 +38,7 @@ export default function LoginForm() {
       // replace() already loads the home page fresh; the extra refresh() fetched it a second time.
       router.replace("/");
     } catch {
-      setError("Could not reach the server. Check your internet and try again.");
+      setError(t("login.offline"));
       setBusy(false);
     }
   }
@@ -45,12 +47,13 @@ export default function LoginForm() {
     <form onSubmit={onSubmit} className="mt-8 space-y-5" noValidate>
       <div>
         <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
-          Email
+          {t("common.email")}
         </label>
         <input
           id="email"
           type="email"
           autoComplete="email"
+          dir="ltr"
           autoFocus
           required
           value={email}
@@ -61,7 +64,7 @@ export default function LoginForm() {
 
       <div>
         <label htmlFor="password" className="mb-1.5 block text-sm font-medium">
-          Password
+          {t("common.password")}
         </label>
         <input
           id="password"
@@ -81,7 +84,7 @@ export default function LoginForm() {
       )}
 
       <button type="submit" disabled={busy || !email || !password} className="btn btn-primary w-full">
-        {busy ? "Signing in" : "Sign in"}
+        {busy ? t("login.submitting") : t("login.submit")}
       </button>
     </form>
   );

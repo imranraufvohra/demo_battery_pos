@@ -177,14 +177,14 @@ export default function ExpensesClient({
             <label htmlFor="expenses-search" className="sr-only">
               Search
             </label>
-            <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+            <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
               id="expenses-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search category, paid to, reference"
-              className="input pl-11"
+              className="input ps-11"
             />
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function ExpensesClient({
           </dl>
 
           <div className="card anim-rise mt-4 hidden overflow-hidden md:block">
-            <table className="w-full text-left text-[15px]">
+            <table className="w-full text-start text-[15px]">
               <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                 <tr>
                   <th className="px-5 py-3 font-medium">Expense</th>
@@ -257,8 +257,8 @@ export default function ExpensesClient({
                   <th className="px-3 py-3 font-medium">Category</th>
                   <th className="px-3 py-3 font-medium">Paid to</th>
                   <th className="px-3 py-3 font-medium">Method</th>
-                  <th className="px-3 py-3 text-right font-medium">Amount</th>
-                  <th className="px-3 py-3 text-right font-medium">
+                  <th className="px-3 py-3 text-end font-medium">Amount</th>
+                  <th className="px-3 py-3 text-end font-medium">
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
@@ -267,7 +267,7 @@ export default function ExpensesClient({
                 {shown.map((e) => (
                   <tr key={e.id} className={`transition-colors hover:bg-plate/50 ${e.status === "Cancelled" ? "opacity-60" : ""}`}>
                     <td className="px-5 py-3.5 font-semibold">
-                      <button type="button" onClick={() => openEdit(e)} disabled={e.status === "Cancelled"} className="text-left enabled:hover:text-focus enabled:hover:underline disabled:cursor-default">
+                      <button type="button" onClick={() => openEdit(e)} disabled={e.status === "Cancelled"} className="text-start enabled:hover:text-focus enabled:hover:underline disabled:cursor-default">
                         {e.expense_number}
                       </button>
                     </td>
@@ -275,8 +275,8 @@ export default function ExpensesClient({
                     <td className="px-3 py-3.5 font-medium">{e.category_name}</td>
                     <td className="max-w-[12rem] truncate px-3 py-3.5 text-lead">{e.paid_to || "-"}</td>
                     <td className="px-3 py-3.5 text-lead">{supplierMethodLabel(e.method)}</td>
-                    <td className="px-3 py-3.5 text-right font-semibold tabular-nums">{formatRs(e.amount)}</td>
-                    <td className="px-3 py-3.5 text-right">
+                    <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(e.amount)}</td>
+                    <td className="px-3 py-3.5 text-end">
                       <div className="flex items-center justify-end gap-1">
                         {e.status === "Cancelled" ? (
                           <span className="text-sm text-lead">Cancelled</span>
@@ -317,7 +317,7 @@ export default function ExpensesClient({
                   type="button"
                   onClick={() => openEdit(e)}
                   disabled={e.status === "Cancelled"}
-                  className={`card flex min-w-0 flex-1 items-center gap-3 p-4 text-left ${e.status === "Cancelled" ? "opacity-60" : ""}`}
+                  className={`card flex min-w-0 flex-1 items-center gap-3 p-4 text-start ${e.status === "Cancelled" ? "opacity-60" : ""}`}
                 >
                   <span className="min-w-0 flex-1">
                     <span className="truncate font-semibold">{e.category_name}</span>

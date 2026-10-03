@@ -167,7 +167,7 @@ export default function BatteryClaimForm({
             ) : (
               <>
                 <div className="relative">
-                  <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+                  <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
                   <input
                     type="text"
                     value={customerQuery}
@@ -177,7 +177,7 @@ export default function BatteryClaimForm({
                     }}
                     onFocus={() => setPickerOpen(true)}
                     placeholder="Search a saved customer, or leave blank for walk-in"
-                    className="input pl-11"
+                    className="input ps-11"
                   />
                   {pickerOpen && hits.length > 0 && (
                     <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-xl border border-line bg-white shadow-lift">
@@ -190,7 +190,7 @@ export default function BatteryClaimForm({
                               setCustomerQuery("");
                               setPickerOpen(false);
                             }}
-                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-left hover:bg-plate"
+                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-start hover:bg-plate"
                           >
                             <span className="font-medium">{c.name}</span>
                             {c.phone && <span className="text-sm text-lead">{formatPhone(c.phone)}</span>}
@@ -265,13 +265,13 @@ export default function BatteryClaimForm({
               </div>
             ) : (
               <div className="relative">
-                <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+                <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
                 <input
                   type="text"
                   value={invoiceQuery}
                   onChange={(e) => searchInvoices(e.target.value)}
                   placeholder="Bill number or customer name"
-                  className="input pl-11"
+                  className="input ps-11"
                 />
                 {invoiceQuery.trim().length >= 2 && (invoiceLoading || invoiceHits.length > 0) && (
                   <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-xl border border-line bg-white shadow-lift">
@@ -287,7 +287,7 @@ export default function BatteryClaimForm({
                               setInvoiceQuery("");
                               setInvoiceHits([]);
                             }}
-                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-left hover:bg-plate"
+                            className="flex w-full items-center justify-between px-3.5 py-2.5 text-start hover:bg-plate"
                           >
                             <span className="font-medium">{inv.invoice_number}</span>
                             <span className="text-sm text-lead">{inv.buyer_name}</span>

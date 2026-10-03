@@ -148,14 +148,14 @@ export default function PaymentsClient({
           <label htmlFor="payments-search" className="sr-only">
             Search
           </label>
-          <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+          <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
           <input
             id="payments-search"
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={placeholder}
-            className="input pl-11"
+            className="input ps-11"
           />
         </div>
       </div>
@@ -190,7 +190,7 @@ export default function PaymentsClient({
               </dl>
 
               <div className="card anim-rise mt-4 hidden overflow-hidden md:block">
-                <table className="w-full text-left text-[15px]">
+                <table className="w-full text-start text-[15px]">
                   <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                     <tr>
                       <th className="px-5 py-3 font-medium">Payment</th>
@@ -198,8 +198,8 @@ export default function PaymentsClient({
                       <th className="px-3 py-3 font-medium">Supplier</th>
                       <th className="px-3 py-3 font-medium">Against</th>
                       <th className="px-3 py-3 font-medium">Method</th>
-                      <th className="px-3 py-3 text-right font-medium">Amount</th>
-                      <th className="px-3 py-3 text-right font-medium">
+                      <th className="px-3 py-3 text-end font-medium">Amount</th>
+                      <th className="px-3 py-3 text-end font-medium">
                         <span className="sr-only">Actions</span>
                       </th>
                     </tr>
@@ -224,8 +224,8 @@ export default function PaymentsClient({
                           )}
                         </td>
                         <td className="px-3 py-3.5 text-lead">{supplierMethodLabel(p.method)}</td>
-                        <td className="px-3 py-3.5 text-right font-semibold tabular-nums">{formatRs(p.amount)}</td>
-                        <td className="px-3 py-3.5 text-right">
+                        <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(p.amount)}</td>
+                        <td className="px-3 py-3.5 text-end">
                           <div className="flex items-center justify-end gap-1">
                             <Link
                               href={`/print/payment/${p.id}?auto=1`}
@@ -325,7 +325,7 @@ export default function PaymentsClient({
                         <PurchasePayBadge tag={p.payment_tag} status={p.status} />
                       </span>
                     </Link>
-                    <div className="text-right">
+                    <div className="text-end">
                       <span className="block font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(p.total_value)}</span>
                       {p.status !== "Cancelled" && p.due_total > 0 && (
                         <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>

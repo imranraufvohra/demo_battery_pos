@@ -391,13 +391,13 @@ export default function SalesClient({
           <div className="anim-rise mt-5 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 1 } as React.CSSProperties}>
             <label className="relative block w-full sm:max-w-md">
               <span className="sr-only">Search sale entries</span>
-              <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+              <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search customer, bill/slip number or date"
-                className="input pl-11"
+                className="input ps-11"
                 autoComplete="off"
               />
             </label>
@@ -445,17 +445,17 @@ export default function SalesClient({
             <>
               {/* Desktop table */}
               <div className="card mt-4 hidden overflow-hidden md:block">
-                <table className="w-full text-left">
+                <table className="w-full text-start">
                   <thead className="bg-plate/70 text-sm text-lead">
                     <tr>
                       <th className="px-5 py-3 font-medium">Bill</th>
                       <th className="px-3 py-3 font-medium">Type</th>
                       <th className="px-3 py-3 font-medium">Date</th>
                       <th className="px-3 py-3 font-medium">Customer</th>
-                      <th className="px-3 py-3 text-right font-medium">Total</th>
-                      <th className="px-3 py-3 text-right font-medium">Due</th>
+                      <th className="px-3 py-3 text-end font-medium">Total</th>
+                      <th className="px-3 py-3 text-end font-medium">Due</th>
                       <th className="px-5 py-3 font-medium">Status</th>
-                      <th className="px-3 py-3 text-right font-medium">
+                      <th className="px-3 py-3 text-end font-medium">
                         <span className="sr-only">Delete</span>
                       </th>
                     </tr>
@@ -488,9 +488,9 @@ export default function SalesClient({
                           <td className="px-3 py-3.5 text-lead">Invoice</td>
                           <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(inv.invoice_date)}</td>
                           <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">{inv.buyer_name}</td>
-                          <td className="px-3 py-3.5 text-right font-semibold tabular-nums">{formatRs(inv.total_value)}</td>
+                          <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(inv.total_value)}</td>
                           <td
-                            className={`px-3 py-3.5 text-right tabular-nums ${
+                            className={`px-3 py-3.5 text-end tabular-nums ${
                               inv.status !== "Cancelled" && inv.due_total > 0 ? "font-semibold text-terminal-deep" : "text-lead"
                             }`}
                           >
@@ -510,7 +510,7 @@ export default function SalesClient({
                               </span>
                             )}
                           </td>
-                          <td className="px-3 py-3.5 text-right">
+                          <td className="px-3 py-3.5 text-end">
                             {(canDeleteBills || inv.pending) && (
 <button
                               type="button"
@@ -537,14 +537,14 @@ export default function SalesClient({
                         <td className="px-3 py-3.5 text-lead">{row.kind === "charging" ? "Charging" : "Claim charge"}</td>
                         <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(row.date)}</td>
                         <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">{row.customer}</td>
-                        <td className="px-3 py-3.5 text-right font-semibold tabular-nums">{formatRs(row.total)}</td>
-                        <td className="px-3 py-3.5 text-right text-lead">-</td>
+                        <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(row.total)}</td>
+                        <td className="px-3 py-3.5 text-end text-lead">-</td>
                         <td className="px-5 py-3.5">
                           <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">
                             {row.statusLabel}
                           </span>
                         </td>
-                        <td className="px-3 py-3.5 text-right">
+                        <td className="px-3 py-3.5 text-end">
                           <div className="inline-flex items-center gap-1">
                             <Link
                               href={row.href}
@@ -610,7 +610,7 @@ export default function SalesClient({
                           )}
                         </span>
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums">
                           {formatRs(inv.total_value)}
                         </span>
@@ -668,7 +668,7 @@ export default function SalesClient({
                           </span>
                         </span>
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums">
                           {formatRs(row.total)}
                         </span>

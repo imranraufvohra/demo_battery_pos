@@ -1,9 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed } from "next/font/google";
+import { Barlow, Barlow_Condensed, Noto_Sans_Arabic } from "next/font/google";
 import { BRAND } from "@/lib/brand";
 import { SITE_URL } from "@/lib/seo";
 import RegisterSW from "@/components/RegisterSW";
 import SyncProvider from "@/components/SyncProvider";
+import { I18nProvider } from "@/lib/i18n/client";
+import { dirOf } from "@/lib/i18n/config";
+import { getLang } from "@/lib/i18n/server";
 import "./globals.css";
 
 const barlow = Barlow({
@@ -17,6 +20,14 @@ const barlowCondensed = Barlow_Condensed({
   subsets: ["latin"],
   weight: ["600", "700"],
   variable: "--font-barlow-condensed",
+  display: "swap",
+});
+
+// Arabic script font, used instead of Barlow when the UI language is Arabic (see globals.css).
+const notoArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-arabic",
   display: "swap",
 });
 
@@ -45,17 +56,24 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const lang = await getLang();
   return (
-    <html lang="en" className={`${barlow.variable} ${barlowCondensed.variable}`}>
+    <html
+      lang={lang}
+      dir={dirOf(lang)}
+      className={`${barlow.variable} ${barlowCondensed.variable} ${notoArabic.variable}`}
+    >
       <body className="font-sans text-casing antialiased">
-        {children}
-        <RegisterSW />
-        <SyncProvider />
+        <I18nProvider lang={lang}>
+          {children}
+          <RegisterSW />
+          <SyncProvider />
+        </I18nProvider>
       </body>
     </html>
   );

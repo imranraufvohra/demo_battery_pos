@@ -254,14 +254,14 @@ export default function InventoryClient({
               <label htmlFor="search" className="sr-only">
                 Search stock
               </label>
-              <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+              <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 id="search"
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search brand, model or type"
-                className="input pl-11"
+                className="input ps-11"
               />
             </div>
             <button
@@ -366,14 +366,14 @@ export default function InventoryClient({
           <>
             {/* Tablet and desktop: table */}
             <div className="card anim-rise hidden overflow-hidden md:block" style={delay(2)}>
-              <table className="w-full text-left text-[15px]">
+              <table className="w-full text-start text-[15px]">
                 <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                   <tr>
                     <th scope="col" className="px-5 py-3.5 font-medium">Item</th>
                     {seeCost && (
-<th scope="col" className="px-4 py-3.5 text-right font-medium">Cost</th>
+<th scope="col" className="px-4 py-3.5 text-end font-medium">Cost</th>
 )}
-                    <th scope="col" className="px-4 py-3.5 text-right font-medium">Price</th>
+                    <th scope="col" className="px-4 py-3.5 text-end font-medium">Price</th>
                     <th scope="col" className="px-4 py-3.5 font-medium">In stock</th>
                     <th scope="col" className="px-4 py-3.5"><span className="sr-only">Actions</span></th>
                   </tr>
@@ -396,9 +396,9 @@ export default function InventoryClient({
                         </div>
                       </td>
                       {seeCost && (
-<td className="px-4 py-3.5 text-right tabular-nums text-lead">{formatRs(item.cost_price)}</td>
+<td className="px-4 py-3.5 text-end tabular-nums text-lead">{formatRs(item.cost_price)}</td>
 )}
-                      <td className="px-4 py-3.5 text-right font-semibold tabular-nums">{formatRs(item.sale_price)}</td>
+                      <td className="px-4 py-3.5 text-end font-semibold tabular-nums">{formatRs(item.sale_price)}</td>
                       <td className="px-4 py-3.5">
                         <StockCell item={item} />
                       </td>

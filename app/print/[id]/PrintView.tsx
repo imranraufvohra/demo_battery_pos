@@ -145,7 +145,7 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
               {[seller.phone ? formatPhone(seller.phone) : null, seller.ntn ? `NTN ${seller.ntn}` : null].filter(Boolean).join("   ")}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-3xl font-bold leading-none">{isFbr ? "Sales Tax Invoice" : "Sale Invoice"}</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{inv.invoice_number}</p>
             <p className="tabular-nums text-lead">{formatDay(inv.invoice_date)}</p>
@@ -174,17 +174,17 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
 
         {fbrCalc ? (
           <div className="mt-5 overflow-x-auto print:overflow-visible">
-            <table className="w-full text-left text-[12px]">
+            <table className="w-full text-start text-[12px]">
               <thead>
                 <tr className="bg-plate">
                   <th className="w-6 px-1.5 py-2 font-bold">#</th>
                   <th className="px-1.5 py-2 font-bold">Item</th>
-                  <th className="px-1.5 py-2 text-right font-bold">Qty</th>
-                  <th className="px-1.5 py-2 text-right font-bold">Rate</th>
-                  <th className="px-1.5 py-2 text-right font-bold">Value excl. tax</th>
-                  <th className="px-1.5 py-2 text-right font-bold">GST %</th>
-                  <th className="px-1.5 py-2 text-right font-bold">GST</th>
-                  <th className="px-1.5 py-2 text-right font-bold">Amount</th>
+                  <th className="px-1.5 py-2 text-end font-bold">Qty</th>
+                  <th className="px-1.5 py-2 text-end font-bold">Rate</th>
+                  <th className="px-1.5 py-2 text-end font-bold">Value excl. tax</th>
+                  <th className="px-1.5 py-2 text-end font-bold">GST %</th>
+                  <th className="px-1.5 py-2 text-end font-bold">GST</th>
+                  <th className="px-1.5 py-2 text-end font-bold">Amount</th>
                 </tr>
               </thead>
               <tbody>
@@ -197,15 +197,15 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
                         {it.description}
                         {it.hs_code && <span className="block text-[11px] text-lead">HS code {it.hs_code}</span>}
                       </td>
-                      <td className="px-1.5 py-2 text-right align-top tabular-nums">{it.quantity}</td>
-                      <td className="px-1.5 py-2 text-right align-top tabular-nums">{formatRs(it.rate)}</td>
-                      <td className="px-1.5 py-2 text-right align-top tabular-nums">{r.known ? formatRs(r.valueExclTax) : "-"}</td>
-                      <td className="px-1.5 py-2 text-right align-top tabular-nums">{r.known ? r.rateDesc || "-" : "-"}</td>
-                      <td className="px-1.5 py-2 text-right align-top tabular-nums">
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{it.quantity}</td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{formatRs(it.rate)}</td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{r.known ? formatRs(r.valueExclTax) : "-"}</td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{r.known ? r.rateDesc || "-" : "-"}</td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums">
                         {r.known ? formatRs(r.taxAmount) : "-"}
                         {r.known && r.taxInside && r.taxAmount > 0 && <span aria-label="included in price"> *</span>}
                       </td>
-                      <td className="px-1.5 py-2 text-right align-top font-bold tabular-nums">{formatRs(r.payable)}</td>
+                      <td className="px-1.5 py-2 text-end align-top font-bold tabular-nums">{formatRs(r.payable)}</td>
                     </tr>
                   );
                 })}
@@ -213,14 +213,14 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
             </table>
           </div>
         ) : (
-  <table className="mt-5 w-full text-left">
+  <table className="mt-5 w-full text-start">
             <thead>
               <tr className="bg-plate text-[12px]">
                 <th className="w-8 px-2 py-2 font-bold">#</th>
                 <th className="px-2 py-2 font-bold">Item</th>
-                <th className="px-2 py-2 text-right font-bold">Qty</th>
-                <th className="px-2 py-2 text-right font-bold">Rate</th>
-                <th className="px-2 py-2 text-right font-bold">Amount</th>
+                <th className="px-2 py-2 text-end font-bold">Qty</th>
+                <th className="px-2 py-2 text-end font-bold">Rate</th>
+                <th className="px-2 py-2 text-end font-bold">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -231,9 +231,9 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
                     {it.description}
                     {it.hs_code && <span className="block text-[11px] text-lead">HS code {it.hs_code}</span>}
                   </td>
-                  <td className="px-2 py-2 text-right align-top tabular-nums">{it.quantity}</td>
-                  <td className="px-2 py-2 text-right align-top tabular-nums">{formatRs(it.rate)}</td>
-                  <td className="px-2 py-2 text-right align-top font-bold tabular-nums">{formatRs(it.total)}</td>
+                  <td className="px-2 py-2 text-end align-top tabular-nums">{it.quantity}</td>
+                  <td className="px-2 py-2 text-end align-top tabular-nums">{formatRs(it.rate)}</td>
+                  <td className="px-2 py-2 text-end align-top font-bold tabular-nums">{formatRs(it.total)}</td>
                 </tr>
               ))}
             </tbody>
@@ -274,7 +274,7 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
         </div>
 
         {fbrCalc && fbrCalc.taxIncluded > 0 && (
-          <p className="mt-2 text-right text-[11px] text-lead">
+          <p className="mt-2 text-end text-[11px] text-lead">
             * Sales tax of {formatRs(fbrCalc.taxIncluded)} is already included in the price of the marked items.
           </p>
         )}

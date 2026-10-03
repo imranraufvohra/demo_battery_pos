@@ -79,7 +79,7 @@ function MemberCard({ m, isMe, index }: { m: TeamMember; isMe: boolean; index: n
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold" title={m.email ?? ""}>
             {m.email ?? "(no email)"}
-            {isMe && <span className="ml-2 rounded-full bg-plate px-2 py-0.5 text-xs font-medium text-lead">You</span>}
+            {isMe && <span className="ms-2 rounded-full bg-plate px-2 py-0.5 text-xs font-medium text-lead">You</span>}
           </p>
           <p className="text-sm text-lead">{lastSeen(m.last_sign_in_at)}</p>
           {!m.has_role && (
@@ -145,7 +145,7 @@ export default function TeamClient({ members, myId }: { members: TeamMember[]; m
     <div className="mt-6">
       <section className="card anim-rise p-5" style={{ "--i": 0 } as React.CSSProperties}>
         <h2 className="font-display text-2xl font-semibold">Adding a new person</h2>
-        <ol className="mt-2 list-decimal space-y-1 pl-5 text-[15px] text-lead">
+        <ol className="mt-2 list-decimal space-y-1 ps-5 text-[15px] text-lead">
           <li>
             Open Supabase, then <b className="text-casing">Authentication &rarr; Users &rarr; Add user</b>.
           </li>

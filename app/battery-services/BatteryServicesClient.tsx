@@ -320,14 +320,14 @@ export default function BatteryServicesClient({
             <label htmlFor="bs-search" className="sr-only">
               Search
             </label>
-            <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+            <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
               id="bs-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search slip, customer or battery"
-              className="input pl-11"
+              className="input ps-11"
             />
           </div>
         </div>
@@ -399,7 +399,7 @@ export default function BatteryServicesClient({
                         </p>
                         {job.handover_note && <p className="mt-1 text-sm text-lead">Note: {job.handover_note}</p>}
                       </div>
-                      <div className="text-right">
+                      <div className="text-end">
                         <p className="font-display text-2xl font-semibold tabular-nums leading-none">
                           {formatRs(job.price)}
                         </p>
@@ -499,7 +499,7 @@ export default function BatteryServicesClient({
                         {dist ? ` · ${dist}` : ""}
                       </p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-end">
                       {claim.claim_amount != null && (
                         <p className="font-display text-2xl font-semibold tabular-nums leading-none">
                           {formatRs(claim.claim_amount)}

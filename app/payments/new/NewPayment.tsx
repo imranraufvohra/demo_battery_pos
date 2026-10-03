@@ -167,7 +167,7 @@ export default function NewPayment({
                   const cls = tone === "owe" ? "text-terminal-deep" : tone === "advance" ? "text-cell-deep" : "text-lead";
                   return (
                     <li key={s.id}>
-                      <button type="button" onClick={() => pickSupplier(s)} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-plate">
+                      <button type="button" onClick={() => pickSupplier(s)} className="flex w-full items-center justify-between px-4 py-3 text-start hover:bg-plate">
                         <span>
                           <span className="block font-medium">{s.name}</span>
                           {s.phone && <span className="block text-sm text-lead">{s.phone}</span>}

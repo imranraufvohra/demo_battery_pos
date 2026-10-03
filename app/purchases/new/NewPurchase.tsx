@@ -281,7 +281,7 @@ export default function NewPurchase({
               <ul className="absolute z-20 mt-1.5 max-h-72 w-full overflow-y-auto rounded-2xl border border-line bg-white shadow-lift">
                 {supplierMatchesQuery.map((s) => (
                   <li key={s.id}>
-                    <button type="button" onClick={() => pickSupplier(s)} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-plate">
+                    <button type="button" onClick={() => pickSupplier(s)} className="flex w-full items-center justify-between px-4 py-3 text-start hover:bg-plate">
                       <span>
                         <span className="block font-medium">{s.name}</span>
                         {s.phone && <span className="block text-sm text-lead">{s.phone}</span>}
@@ -299,7 +299,7 @@ export default function NewPurchase({
                     <button
                       type="button"
                       onClick={() => setSupplierListOpen(false)}
-                      className="flex w-full items-center gap-2 px-4 py-3 text-left font-medium text-focus hover:bg-plate"
+                      className="flex w-full items-center gap-2 px-4 py-3 text-start font-medium text-focus hover:bg-plate"
                     >
                       <Icon name="plus" className="h-4 w-4" /> Add "{supplierQuery.trim()}" as a new supplier
                     </button>
@@ -463,7 +463,7 @@ export default function NewPurchase({
                     </label>
                   )}
 
-                  <p className="mt-2.5 text-right text-sm font-semibold tabular-nums text-lead">{formatRs(lineAmount(qty, cost))}</p>
+                  <p className="mt-2.5 text-end text-sm font-semibold tabular-nums text-lead">{formatRs(lineAmount(qty, cost))}</p>
                 </li>
               );
             })}
@@ -477,7 +477,7 @@ export default function NewPurchase({
             <label htmlFor="product-query" className="sr-only">
               Add a product
             </label>
-            <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+            <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
               id="product-query"
               type="search"
@@ -489,7 +489,7 @@ export default function NewPurchase({
               onFocus={() => setProductListOpen(true)}
               placeholder="Search stock to add a product"
               disabled={lines.length >= MAX_PURCHASE_LINES}
-              className="input pl-11"
+              className="input ps-11"
             />
             {productListOpen && productQuery.trim() && (
               <ul className="absolute z-20 mt-1.5 max-h-72 w-full overflow-y-auto rounded-2xl border border-line bg-white shadow-lift">
@@ -498,7 +498,7 @@ export default function NewPurchase({
                 ) : (
                   productMatches.map((item) => (
                     <li key={item.id}>
-                      <button type="button" onClick={() => addLine(item)} className="flex w-full items-center justify-between px-4 py-3 text-left hover:bg-plate">
+                      <button type="button" onClick={() => addLine(item)} className="flex w-full items-center justify-between px-4 py-3 text-start hover:bg-plate">
                         <span>
                           <span className="block font-medium">
                             {item.brand} {item.model}

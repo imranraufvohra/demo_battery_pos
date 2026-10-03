@@ -42,7 +42,7 @@ export default function PurchaseSlipView({ doc }: { doc: PurchaseDocument }) {
               {[seller.phone, seller.ntn ? `NTN ${seller.ntn}` : null].filter(Boolean).join("   ")}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-3xl font-bold leading-none">Purchase Bill</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{p.purchase_number}</p>
             <p className="tabular-nums text-lead">{formatDay(p.invoice_date)}</p>
@@ -60,14 +60,14 @@ export default function PurchaseSlipView({ doc }: { doc: PurchaseDocument }) {
           {p.note && <p className="mt-1">Note: {p.note}</p>}
         </section>
 
-        <table className="mt-5 w-full text-left">
+        <table className="mt-5 w-full text-start">
           <thead>
             <tr className="bg-plate text-[12px]">
               <th className="w-8 px-2 py-2 font-bold">#</th>
               <th className="px-2 py-2 font-bold">Product</th>
-              <th className="px-2 py-2 text-right font-bold">Qty</th>
-              <th className="px-2 py-2 text-right font-bold">Cost</th>
-              <th className="px-2 py-2 text-right font-bold">Amount</th>
+              <th className="px-2 py-2 text-end font-bold">Qty</th>
+              <th className="px-2 py-2 text-end font-bold">Cost</th>
+              <th className="px-2 py-2 text-end font-bold">Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -75,9 +75,9 @@ export default function PurchaseSlipView({ doc }: { doc: PurchaseDocument }) {
               <tr key={it.id} className="break-inside-avoid border-b border-line/80">
                 <td className="px-2 py-2 align-top tabular-nums">{i + 1}</td>
                 <td className="px-2 py-2 align-top">{it.description}</td>
-                <td className="px-2 py-2 text-right align-top tabular-nums">{it.quantity}</td>
-                <td className="px-2 py-2 text-right align-top tabular-nums">{formatRs(it.unit_cost)}</td>
-                <td className="px-2 py-2 text-right align-top font-bold tabular-nums">{formatRs(it.line_total)}</td>
+                <td className="px-2 py-2 text-end align-top tabular-nums">{it.quantity}</td>
+                <td className="px-2 py-2 text-end align-top tabular-nums">{formatRs(it.unit_cost)}</td>
+                <td className="px-2 py-2 text-end align-top font-bold tabular-nums">{formatRs(it.line_total)}</td>
               </tr>
             ))}
           </tbody>

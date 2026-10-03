@@ -39,7 +39,7 @@ export default function ScrapSaleSlipView({ doc }: { doc: ScrapSaleSlipDocument 
             {seller.address && <p className="mt-1.5">{seller.address}</p>}
             {seller.phone && <p className="mt-0.5 text-lead">{formatPhone(seller.phone)}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-2xl font-bold leading-none">Scrap Sale Slip</p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-terminal-deep">Not a tax invoice</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{sale.sale_number}</p>
@@ -53,12 +53,12 @@ export default function ScrapSaleSlipView({ doc }: { doc: ScrapSaleSlipDocument 
           {sale.buyer_phone && <p>{formatPhone(sale.buyer_phone)}</p>}
         </section>
 
-        <table className="mt-5 w-full text-left">
+        <table className="mt-5 w-full text-start">
           <thead>
             <tr className="border-b-2 border-casing text-[11px] font-bold uppercase tracking-widest text-lead">
-              <th className="py-1.5 pr-2">Intake #</th>
-              <th className="py-1.5 pr-2">Battery</th>
-              <th className="py-1.5 pr-2 text-right">Qty</th>
+              <th className="py-1.5 pe-2">Intake #</th>
+              <th className="py-1.5 pe-2">Battery</th>
+              <th className="py-1.5 pe-2 text-end">Qty</th>
             </tr>
           </thead>
           <tbody>
@@ -71,12 +71,12 @@ export default function ScrapSaleSlipView({ doc }: { doc: ScrapSaleSlipDocument 
             ) : (
               batteries.map((b) => (
                 <tr key={b.id} className="border-b border-line/80">
-                  <td className="py-1.5 pr-2 tabular-nums">{b.intake_number}</td>
-                  <td className="py-1.5 pr-2">
+                  <td className="py-1.5 pe-2 tabular-nums">{b.intake_number}</td>
+                  <td className="py-1.5 pe-2">
                     {b.brand} {b.model}
                     {b.battery_number ? ` · ${b.battery_number}` : ""}
                   </td>
-                  <td className="py-1.5 pr-2 text-right tabular-nums">{b.quantity}</td>
+                  <td className="py-1.5 pe-2 text-end tabular-nums">{b.quantity}</td>
                 </tr>
               ))
             )}
@@ -84,10 +84,10 @@ export default function ScrapSaleSlipView({ doc }: { doc: ScrapSaleSlipDocument 
           {batteries.length > 0 && (
             <tfoot>
               <tr className="border-t-2 border-casing font-semibold">
-                <td className="py-1.5 pr-2" colSpan={2}>
+                <td className="py-1.5 pe-2" colSpan={2}>
                   Total batteries
                 </td>
-                <td className="py-1.5 pr-2 text-right tabular-nums">{totalQty}</td>
+                <td className="py-1.5 pe-2 text-end tabular-nums">{totalQty}</td>
               </tr>
             </tfoot>
           )}

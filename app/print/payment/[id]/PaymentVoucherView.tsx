@@ -42,7 +42,7 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
               {[seller.phone, seller.ntn ? `NTN ${seller.ntn}` : null].filter(Boolean).join("   ")}
             </p>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-3xl font-bold leading-none">Payment Voucher</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{p.payment_number}</p>
             <p className="tabular-nums text-lead">

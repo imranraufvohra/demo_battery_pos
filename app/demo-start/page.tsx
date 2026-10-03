@@ -64,7 +64,7 @@ export default async function DemoStart({ searchParams }: { searchParams: Promis
           <input type="hidden" name="region" value={sp.region ?? ""} />
           {/* Looks like a normal login, but nothing is typed: the server signs the shared demo user in.
               The real password is never sent to the browser. */}
-          <div className="space-y-2 text-left text-sm">
+          <div className="space-y-2 text-start text-sm">
             <label className="block text-white/60">
               Email
               <input readOnly tabIndex={-1} value={demoEmail} className="mt-1 w-full rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-white" />
@@ -84,11 +84,11 @@ export default async function DemoStart({ searchParams }: { searchParams: Promis
         </DemoStartForm>
 
         {/* Crawlable text for search engines and a quick "what is this" for visitors. */}
-        <section aria-labelledby="demo-features" className="w-full text-left text-sm text-white/60">
+        <section aria-labelledby="demo-features" className="w-full text-start text-sm text-white/60">
           <h2 id="demo-features" className="mb-2 font-display text-lg font-semibold text-white/80">
             What you can try in this demo
           </h2>
-          <ul className="list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-1 ps-5">
             {DEMO_FEATURES.map((f) => (
               <li key={f}>{f}</li>
             ))}

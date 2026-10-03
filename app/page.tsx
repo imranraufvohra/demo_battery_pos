@@ -211,7 +211,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="no-scrollbar relative -mx-5 mt-5 flex snap-x scroll-pl-5 gap-3 overflow-x-auto px-5 sm:mx-0 sm:grid sm:scroll-pl-0 sm:grid-cols-4 sm:overflow-visible sm:px-0">
+          <div className="no-scrollbar relative -mx-5 mt-5 flex snap-x scroll-ps-5 gap-3 overflow-x-auto px-5 sm:mx-0 sm:grid sm:scroll-ps-0 sm:grid-cols-4 sm:overflow-visible sm:px-0">
             {stats.map((s) => (
               <div
                 key={s.label}
@@ -278,7 +278,7 @@ export default async function HomePage() {
                   {lowItems.length} {lowItems.length === 1 ? "item is" : "items are"} running low in stock
                 </span>
                 <span className="flex items-center gap-1 text-sm font-semibold">
-                  View <Icon name="chevron" className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  View <Icon name="chevron" className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                 </span>
               </Link>
             ) : (
@@ -301,7 +301,7 @@ export default async function HomePage() {
               <Link
                 key={t.href}
                 href={t.href}
-                className="card card-hover flex flex-col items-center gap-2 p-3 text-center lg:flex-row lg:gap-3 lg:p-4 lg:text-left"
+                className="card card-hover flex flex-col items-center gap-2 p-3 text-center lg:flex-row lg:gap-3 lg:p-4 lg:text-start"
               >
                 <span
                   className={`inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-linear-to-br text-white shadow-md ${t.tone}`}
@@ -370,7 +370,7 @@ export default async function HomePage() {
                         </span>
                         <span className="block truncate text-sm text-lead">{itemSpecs(item) || "No details"}</span>
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums text-terminal-deep">
                           {item.quantity}
                         </span>
@@ -378,7 +378,7 @@ export default async function HomePage() {
                           {isOut(item) ? "Out of stock" : `reorder at ${item.reorder_level}`}
                         </span>
                       </span>
-                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5" />
+                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                     </Link>
                   </li>
                 ))}
@@ -427,7 +427,7 @@ export default async function HomePage() {
                           {c.phone ? formatPhone(c.phone) : "No phone saved"}
                         </span>
                       </span>
-                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5" />
+                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                     </Link>
                   </li>
                 ))}
@@ -471,13 +471,13 @@ export default async function HomePage() {
                       <span className="hidden sm:block">
                         <PayBadge status={b.payment_status} bill={b.status} />
                       </span>
-                      <span className="text-right">
+                      <span className="text-end">
                         <span className="block font-semibold tabular-nums">{formatRs(b.total_value)}</span>
                         {b.status !== "Cancelled" && b.due_total > 0 && (
                           <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(b.due_total)} due</span>
                         )}
                       </span>
-                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5" />
+                      <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                     </Link>
                   </li>
                 ))}

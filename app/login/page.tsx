@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import { BRAND } from "@/lib/brand";
 import LogoMark from "@/components/LogoMark";
+import LangSwitcher from "@/components/LangSwitcher";
+import { getT } from "@/lib/i18n/server";
 import LoginForm from "./LoginForm";
 
-export const metadata: Metadata = { title: "Sign in" };
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("login.title") };
+}
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const t = await getT();
   return (
     <div className="grid min-h-dvh md:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <section className="login-art relative flex flex-col justify-between gap-12 overflow-hidden p-6 text-white md:p-12">
@@ -27,7 +32,7 @@ export default function LoginPage() {
               />
             ))}
           </div>
-          <div className="h-10 w-2 rounded-r bg-white/30" />
+          <div className="h-10 w-2 rounded-e bg-white/30" />
         </div>
 
         <p className="max-w-xs font-display text-3xl font-semibold leading-[1.05] md:text-5xl">
@@ -35,10 +40,11 @@ export default function LoginPage() {
         </p>
       </section>
 
-      <main className="flex items-center justify-center p-5 md:p-12">
+      <main className="relative flex items-center justify-center p-5 md:p-12">
+        <LangSwitcher className="absolute end-4 top-4" />
         <div className="card anim-rise w-full max-w-sm p-6 shadow-lift sm:p-8">
-          <h1 className="font-display text-4xl font-bold">Sign in</h1>
-          <p className="mt-2 text-lead">Use the email and password set up for you by the shop owner.</p>
+          <h1 className="font-display text-4xl font-bold">{t("login.title")}</h1>
+          <p className="mt-2 text-lead">{t("login.subtitle")}</p>
           <LoginForm />
         </div>
       </main>

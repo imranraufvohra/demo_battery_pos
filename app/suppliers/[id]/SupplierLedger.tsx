@@ -52,7 +52,7 @@ function LedgerLine({ row }: { row: LedgerRow }) {
           {row.reference ? ` · ${row.reference}` : ""}
         </span>
       </span>
-      <span className="text-right">
+      <span className="text-end">
         <span className={`block font-semibold tabular-nums ${row.amount >= 0 ? "text-terminal-deep" : "text-cell-deep"}`}>
           {row.amount >= 0 ? "+" : "-"}
           {formatRs(Math.abs(row.amount))}
@@ -110,7 +110,7 @@ export default function SupplierLedger({
               <span>Supplier since {formatDate(supplier.created_at)}</span>
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="text-sm text-white/70">Balance</p>
             <p className={`font-display text-3xl font-bold sm:text-4xl ${balanceCls}`}>{balanceText}</p>
           </div>
@@ -234,13 +234,13 @@ export default function SupplierLedger({
                       {p.status === "Cancelled" ? " · Cancelled" : ""}
                     </span>
                   </span>
-                  <span className="text-right">
+                  <span className="text-end">
                     <span className="block font-semibold tabular-nums">{formatRs(p.total_value)}</span>
                     {p.status !== "Cancelled" && p.due_total > 0 && (
                       <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>
                     )}
                   </span>
-                  <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5" />
+                  <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                 </Link>
               </li>
             ))}

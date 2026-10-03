@@ -36,6 +36,26 @@
       radial-gradient(44rem 26rem at -8% 6%, rgb(29 95 208 / 0.07), transparent 60%),
       #eef0ec;
   }
+  /* ---------- Arabic / RTL ---------- */
+  /* Arabic font replaces Barlow. Specificity beats the font-sans / font-display utilities. */
+  html[dir="rtl"] body,
+  html[dir="rtl"] .font-display,
+  html[dir="rtl"] button,
+  html[dir="rtl"] input,
+  html[dir="rtl"] select,
+  html[dir="rtl"] textarea {
+    font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
+  }
+  /* Letter-spacing breaks the joined letters of Arabic script. */
+  html[dir="rtl"] * {
+    letter-spacing: normal !important;
+  }
+  /* Values that are always left-to-right: phone numbers, emails, invoice and FBR numbers. */
+  .ltr-value {
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
   :focus-visible {
     outline: 2px solid var(--color-focus);
     outline-offset: 2px;
@@ -131,6 +151,9 @@
     .sheet-panel {
       animation-name: sheet-right;
     }
+    html[dir="rtl"] .sheet-panel {
+      animation-name: sheet-left;
+    }
   }
   .gauge-seg {
     transform-origin: bottom;
@@ -186,6 +209,14 @@
 @keyframes sheet-up {
   from {
     transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes sheet-left {
+  from {
+    transform: translate3d(-100%, 0, 0);
   }
   to {
     transform: none;

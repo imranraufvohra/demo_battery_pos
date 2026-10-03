@@ -258,13 +258,13 @@ export default function CustomerProfile({
                       <span className="block text-sm text-lead">{formatDay(b.invoice_date)}</span>
                     </span>
                     <PayBadge status={b.payment_status} bill={b.status} />
-                    <span className="text-right">
+                    <span className="text-end">
                       <span className="block font-semibold tabular-nums">{formatRs(b.total_value)}</span>
                       {b.status !== "Cancelled" && b.due_total > 0 && (
                         <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(b.due_total)} due</span>
                       )}
                     </span>
-                    <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5" />
+                    <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                   </Link>
                 </li>
               ))}

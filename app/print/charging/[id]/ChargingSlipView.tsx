@@ -39,7 +39,7 @@ export default function ChargingSlipView({ doc }: { doc: ChargingSlipDocument })
             {seller.address && <p className="mt-1.5">{seller.address}</p>}
             {seller.phone && <p className="mt-0.5 text-lead">{formatPhone(seller.phone)}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-2xl font-bold leading-none">Battery Charging Slip</p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-terminal-deep">Not a tax invoice</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{job.slip_number}</p>
@@ -53,35 +53,35 @@ export default function ChargingSlipView({ doc }: { doc: ChargingSlipDocument })
           {job.customer_phone && <p>{formatPhone(job.customer_phone)}</p>}
         </section>
 
-        <table className="mt-5 w-full text-left">
+        <table className="mt-5 w-full text-start">
           <tbody>
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Battery</td>
+              <td className="py-2 pe-3 font-bold">Battery</td>
               <td className="py-2">
                 {job.battery_brand} {job.battery_model}
               </td>
             </tr>
             {job.battery_number && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Battery number</td>
+                <td className="py-2 pe-3 font-bold">Battery number</td>
                 <td className="py-2 tabular-nums">{job.battery_number}</td>
               </tr>
             )}
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Received</td>
+              <td className="py-2 pe-3 font-bold">Received</td>
               <td className="py-2 tabular-nums">{formatDay(job.received_date)}</td>
             </tr>
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Collect by</td>
+              <td className="py-2 pe-3 font-bold">Collect by</td>
               <td className="py-2 tabular-nums">{formatDay(job.due_date)}</td>
             </tr>
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Status</td>
+              <td className="py-2 pe-3 font-bold">Status</td>
               <td className="py-2">{chargingStatusLabel(job.status)}</td>
             </tr>
             {job.note && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Note</td>
+                <td className="py-2 pe-3 font-bold">Note</td>
                 <td className="py-2">{job.note}</td>
               </tr>
             )}

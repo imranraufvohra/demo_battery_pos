@@ -39,7 +39,7 @@ export default function ClaimSlipView({ doc }: { doc: ClaimSlipDocument }) {
             {seller.address && <p className="mt-1.5">{seller.address}</p>}
             {seller.phone && <p className="mt-0.5 text-lead">{formatPhone(seller.phone)}</p>}
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="font-display text-2xl font-bold leading-none">Battery Claim Slip</p>
             <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-terminal-deep">Not a tax invoice</p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{claim.claim_number}</p>
@@ -53,45 +53,45 @@ export default function ClaimSlipView({ doc }: { doc: ClaimSlipDocument }) {
           {claim.customer_phone && <p>{formatPhone(claim.customer_phone)}</p>}
         </section>
 
-        <table className="mt-5 w-full text-left">
+        <table className="mt-5 w-full text-start">
           <tbody>
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Battery</td>
+              <td className="py-2 pe-3 font-bold">Battery</td>
               <td className="py-2">
                 {claim.battery_brand} {claim.battery_model}
               </td>
             </tr>
             {claim.battery_number && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Battery number</td>
+                <td className="py-2 pe-3 font-bold">Battery number</td>
                 <td className="py-2 tabular-nums">{claim.battery_number}</td>
               </tr>
             )}
             {originalInvoice && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Original bill</td>
+                <td className="py-2 pe-3 font-bold">Original bill</td>
                 <td className="py-2 tabular-nums">
                   {originalInvoice.invoice_number} · {formatDay(originalInvoice.invoice_date)}
                 </td>
               </tr>
             )}
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Received</td>
+              <td className="py-2 pe-3 font-bold">Received</td>
               <td className="py-2 tabular-nums">{formatDay(claim.received_date)}</td>
             </tr>
             {distributor && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Distributor</td>
+                <td className="py-2 pe-3 font-bold">Distributor</td>
                 <td className="py-2">{distributor.name}</td>
               </tr>
             )}
             <tr className="border-b border-line/80">
-              <td className="py-2 pr-3 font-bold">Status</td>
+              <td className="py-2 pe-3 font-bold">Status</td>
               <td className="py-2">{claimStatusLabel(claim.status)}</td>
             </tr>
             {claim.note && (
               <tr className="border-b border-line/80">
-                <td className="py-2 pr-3 font-bold">Note</td>
+                <td className="py-2 pe-3 font-bold">Note</td>
                 <td className="py-2">{claim.note}</td>
               </tr>
             )}

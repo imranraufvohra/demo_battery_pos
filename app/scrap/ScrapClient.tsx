@@ -169,14 +169,14 @@ export default function ScrapClient({
             <label htmlFor="scrap-search" className="sr-only">
               Search
             </label>
-            <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+            <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
               id="scrap-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={tab === "stock" ? "Search brand, model or bill" : "Search buyer or sale number"}
-              className="input pl-11"
+              className="input ps-11"
             />
           </div>
         </div>

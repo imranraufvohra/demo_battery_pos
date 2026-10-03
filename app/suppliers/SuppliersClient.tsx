@@ -131,14 +131,14 @@ export default function SuppliersClient({ suppliers: serverSuppliers }: { suppli
             <label htmlFor="supplier-search" className="sr-only">
               Search suppliers
             </label>
-            <Icon name="search" className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
+            <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
               id="supplier-search"
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search name, phone or NTN/CNIC"
-              className="input pl-11"
+              className="input ps-11"
             />
           </div>
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
@@ -201,13 +201,13 @@ export default function SuppliersClient({ suppliers: serverSuppliers }: { suppli
           <>
             {/* Tablet and desktop: table */}
             <div className="card anim-rise hidden overflow-hidden md:block" style={delay(2)}>
-              <table className="w-full text-left text-[15px]">
+              <table className="w-full text-start text-[15px]">
                 <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                   <tr>
                     <th scope="col" className="px-5 py-3.5 font-medium">Supplier</th>
-                    <th scope="col" className="px-4 py-3.5 text-right font-medium">Bought</th>
-                    <th scope="col" className="px-4 py-3.5 text-right font-medium">Paid</th>
-                    <th scope="col" className="px-4 py-3.5 text-right font-medium">Balance</th>
+                    <th scope="col" className="px-4 py-3.5 text-end font-medium">Bought</th>
+                    <th scope="col" className="px-4 py-3.5 text-end font-medium">Paid</th>
+                    <th scope="col" className="px-4 py-3.5 text-end font-medium">Balance</th>
                     <th scope="col" className="px-4 py-3.5"><span className="sr-only">Edit</span></th>
                   </tr>
                 </thead>
@@ -218,15 +218,15 @@ export default function SuppliersClient({ suppliers: serverSuppliers }: { suppli
                         <Link href={`/suppliers/${s.id}`} className="font-semibold hover:underline">
                           {s.name}
                         </Link>
-                        {!s.is_active && <span className="ml-2 text-xs font-medium text-lead">Inactive</span>}
+                        {!s.is_active && <span className="ms-2 text-xs font-medium text-lead">Inactive</span>}
                         {s.phone && <div className="text-sm tabular-nums text-lead">{s.phone}</div>}
                       </td>
-                      <td className="px-4 py-3.5 text-right tabular-nums text-lead">{formatRs(s.total_bought)}</td>
-                      <td className="px-4 py-3.5 text-right tabular-nums text-lead">{formatRs(s.total_paid)}</td>
-                      <td className="px-4 py-3.5 text-right">
+                      <td className="px-4 py-3.5 text-end tabular-nums text-lead">{formatRs(s.total_bought)}</td>
+                      <td className="px-4 py-3.5 text-end tabular-nums text-lead">{formatRs(s.total_paid)}</td>
+                      <td className="px-4 py-3.5 text-end">
                         <Balance balance={s.balance} />
                       </td>
-                      <td className="px-4 py-3.5 text-right">
+                      <td className="px-4 py-3.5 text-end">
                         {canManageSuppliers && (
 <button
                           type="button"
@@ -252,7 +252,7 @@ export default function SuppliersClient({ suppliers: serverSuppliers }: { suppli
                   <Link href={`/suppliers/${s.id}`} className="min-w-0 flex-1">
                     <span className="block truncate font-semibold">
                       {s.name}
-                      {!s.is_active && <span className="ml-2 text-xs font-medium text-lead">Inactive</span>}
+                      {!s.is_active && <span className="ms-2 text-xs font-medium text-lead">Inactive</span>}
                     </span>
                     <span className="mt-0.5 block text-sm text-lead">
                       {s.phone ?? "No phone saved"}

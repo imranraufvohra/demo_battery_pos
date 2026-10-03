@@ -79,7 +79,7 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
               {p.status === "Cancelled" && <span className="text-sm text-white/70">This bill is cancelled.</span>}
             </div>
           </div>
-          <div className="text-right">
+          <div className="text-end">
             <p className="text-sm text-white/70">Total</p>
             <p className="font-display text-4xl font-bold tabular-nums sm:text-5xl">{formatRs(p.total_value)}</p>
             {p.status !== "Cancelled" && p.due_total > 0 ? (
@@ -99,22 +99,22 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
           <section className="card anim-rise overflow-hidden" style={{ "--i": 1 } as React.CSSProperties}>
             <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold">Items</h2>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[30rem] text-left">
+              <table className="w-full min-w-[30rem] text-start">
                 <thead className="bg-plate/70 text-sm text-lead">
                   <tr>
                     <th className="px-5 py-2.5 font-medium">Product</th>
-                    <th className="px-3 py-2.5 text-right font-medium">Qty</th>
-                    <th className="px-3 py-2.5 text-right font-medium">Cost</th>
-                    <th className="px-5 py-2.5 text-right font-medium">Amount</th>
+                    <th className="px-3 py-2.5 text-end font-medium">Qty</th>
+                    <th className="px-3 py-2.5 text-end font-medium">Cost</th>
+                    <th className="px-5 py-2.5 text-end font-medium">Amount</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
                   {items.map((it) => (
                     <tr key={it.id}>
                       <td className="px-5 py-3 font-semibold">{it.description}</td>
-                      <td className="px-3 py-3 text-right tabular-nums">{it.quantity}</td>
-                      <td className="px-3 py-3 text-right tabular-nums">{formatRs(it.unit_cost)}</td>
-                      <td className="px-5 py-3 text-right font-semibold tabular-nums">{formatRs(it.line_total)}</td>
+                      <td className="px-3 py-3 text-end tabular-nums">{it.quantity}</td>
+                      <td className="px-3 py-3 text-end tabular-nums">{formatRs(it.unit_cost)}</td>
+                      <td className="px-5 py-3 text-end font-semibold tabular-nums">{formatRs(it.line_total)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -213,7 +213,7 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
                     <span>
                       <span className="block font-semibold">
                         {supplierMethodLabel(pay.method)}
-                        {pay.status === "Cancelled" && <span className="ml-2 font-normal text-lead">Cancelled</span>}
+                        {pay.status === "Cancelled" && <span className="ms-2 font-normal text-lead">Cancelled</span>}
                       </span>
                       <span className="block text-sm text-lead">
                         {formatDay(pay.paid_at)}, {formatTime(pay.created_at)}

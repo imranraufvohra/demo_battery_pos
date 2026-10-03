@@ -94,14 +94,14 @@ export default function CustomerLedger({
         <p className="px-5 pb-6 text-lead">Nothing yet. Bills and payments will appear here.</p>
       ) : (
         <div className="overflow-x-auto px-2 pb-4">
-          <table className="w-full min-w-[34rem] text-left text-[15px]">
+          <table className="w-full min-w-[34rem] text-start text-[15px]">
             <thead>
               <tr className="border-b border-line text-sm text-lead">
                 <th className="px-3 py-2 font-medium">Date</th>
                 <th className="px-3 py-2 font-medium">Details</th>
-                <th className="px-3 py-2 text-right font-medium">Bill</th>
-                <th className="px-3 py-2 text-right font-medium">Paid</th>
-                <th className="px-3 py-2 text-right font-medium">Balance</th>
+                <th className="px-3 py-2 text-end font-medium">Bill</th>
+                <th className="px-3 py-2 text-end font-medium">Paid</th>
+                <th className="px-3 py-2 text-end font-medium">Balance</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line/60">
@@ -114,11 +114,11 @@ export default function CustomerLedger({
                       <span className="block font-medium">{r.text}</span>
                       {r.sub && <span className="block text-sm text-lead">{r.sub}</span>}
                     </td>
-                    <td className="px-3 py-2.5 text-right align-top tabular-nums">{r.debit > 0 ? formatRs(r.debit) : ""}</td>
-                    <td className="px-3 py-2.5 text-right align-top tabular-nums text-cell-deep">
+                    <td className="px-3 py-2.5 text-end align-top tabular-nums">{r.debit > 0 ? formatRs(r.debit) : ""}</td>
+                    <td className="px-3 py-2.5 text-end align-top tabular-nums text-cell-deep">
                       {r.credit > 0 ? formatRs(r.credit) : ""}
                     </td>
-                    <td className="px-3 py-2.5 text-right align-top font-semibold tabular-nums">{formatRs(running)}</td>
+                    <td className="px-3 py-2.5 text-end align-top font-semibold tabular-nums">{formatRs(running)}</td>
                   </tr>
                 );
               })}
@@ -128,9 +128,9 @@ export default function CustomerLedger({
                 <td className="px-3 py-3" colSpan={2}>
                   Total
                 </td>
-                <td className="px-3 py-3 text-right tabular-nums">{formatRs(totalDebit)}</td>
-                <td className="px-3 py-3 text-right tabular-nums text-cell-deep">{formatRs(totalCredit)}</td>
-                <td className={`px-3 py-3 text-right tabular-nums ${balance > 0 ? "text-terminal-deep" : ""}`}>
+                <td className="px-3 py-3 text-end tabular-nums">{formatRs(totalDebit)}</td>
+                <td className="px-3 py-3 text-end tabular-nums text-cell-deep">{formatRs(totalCredit)}</td>
+                <td className={`px-3 py-3 text-end tabular-nums ${balance > 0 ? "text-terminal-deep" : ""}`}>
                   {balance > 0 ? `${formatRs(balance)} due` : "Nothing due"}
                 </td>
               </tr>

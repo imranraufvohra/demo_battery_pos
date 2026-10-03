@@ -158,7 +158,7 @@ export default function CashBookCard({
         <Row label="Cash sales" value={formatRs(cashBook.cash_sales)} />
         <Row label="Other cash income" value={formatRs(cashBook.other_cash_income)} />
         {hasOtherIncome && (
-          <p className="py-1 pl-1 text-sm text-lead">
+          <p className="py-1 ps-1 text-sm text-lead">
             Scrap {formatRs(breakdown.scrap)} · Charging {formatRs(breakdown.charging)} · Claims {formatRs(breakdown.claims)}
           </p>
         )}
