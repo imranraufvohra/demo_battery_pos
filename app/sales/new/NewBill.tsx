@@ -95,8 +95,8 @@ export type BillDraft = {
 
 const PAY_MODES: { value: PayMode; label: string; hint: string }[] = [
   { value: "full", label: "Paid in full", hint: "Customer pays everything now" },
-  { value: "part", label: "Part payment", hint: "Some now, the rest is udhaar" },
-  { value: "credit", label: "Udhaar", hint: "Nothing paid now" },
+  { value: "part", label: "Part payment", hint: "Some now, the rest is credit" },
+  { value: "credit", label: "Credit", hint: "Nothing paid now" },
 ];
 
 function specText(item: BillItem) {
@@ -332,11 +332,11 @@ export default function NewBill({
       if (partValue >= total) return "That is the full amount. Choose Paid in full, or enter a smaller amount.";
     }
     if (due > 0 && !customer) {
-      // Udhaar for someone who is not saved yet: the customer is created automatically when the bill is saved.
-      if (!walkinName.trim()) return "Enter the customer's name. For udhaar, the customer is saved automatically with this bill.";
+      // Credit for someone who is not saved yet: the customer is created automatically when the bill is saved.
+      if (!walkinName.trim()) return "Enter the customer's name. For credit, the customer is saved automatically with this bill.";
       const udhaarPhone = normalizePhone(walkinPhone);
       if (!udhaarPhone || !isValidPhone(udhaarPhone)) {
-        return "Enter the customer's phone number (10 to 15 digits) so you can follow up the udhaar.";
+        return "Enter the customer's phone number (10 to 15 digits) so you can follow up the credit.";
       }
     }
     if (!invoiceDate) return "Choose the bill date.";
@@ -489,7 +489,7 @@ export default function NewBill({
     try {
       const online = await checkRealConnectivity();
       if (!online && due > 0 && !customer) {
-        setError("You are offline. To save an udhaar bill offline, choose a saved customer. A new customer can only be saved when you are online.");
+        setError("You are offline. To save a credit bill offline, choose a saved customer. A new customer can only be saved when you are online.");
         savingRef.current = false;
         setSaving(false);
         return;
@@ -508,7 +508,7 @@ export default function NewBill({
 
       const supabase = await getBrowserClient();
 
-      // Udhaar for a new customer: find (by phone) or create the customer first, then bill them.
+      // Credit for a new customer: find (by phone) or create the customer first, then bill them.
       // If the bill fails after this, a retry finds the same customer by phone, so no duplicate is made.
       let billCustomerId: string | null = customerId;
       if (due > 0 && !customerId) {
@@ -722,7 +722,7 @@ export default function NewBill({
                 ) : (
                   <div>
                     <label htmlFor="walkin" className="text-sm font-medium text-lead">
-                      Walk-in customer. Name on bill{due > 0 ? " (needed for udhaar)" : " (optional)"}
+                      Walk-in customer. Name on bill{due > 0 ? " (needed for credit)" : " (optional)"}
                     </label>
                     <input
                       id="walkin"
@@ -736,7 +736,7 @@ export default function NewBill({
 
                     <div className="mt-3">
                       <label htmlFor="walkin-phone" className="mb-1 block text-sm font-medium text-lead">
-                        Phone{due > 0 ? " (needed for udhaar)" : " (optional)"}
+                        Phone{due > 0 ? " (needed for credit)" : " (optional)"}
                       </label>
                       <input
                         id="walkin-phone"
@@ -1318,7 +1318,7 @@ export default function NewBill({
               <dd className="font-semibold tabular-nums">{formatRs(paidNow)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-lead">Due (udhaar)</dt>
+              <dt className="text-lead">Due (credit)</dt>
               <dd className={`font-display text-2xl font-semibold tabular-nums ${due > 0 ? "text-terminal-deep" : "text-cell-deep"}`}>
                 {formatRs(due)}
               </dd>
