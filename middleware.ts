@@ -1,12 +1,65 @@
-import type { NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-export async function middleware(request: NextRequest) {
-  return updateSession(request);
+/** Demo only: the demo runs inside an iframe on another site, so its login cookie must be SameSite=None. */
+const demoCookie = (o: object | undefined) =>
+  process.env.NEXT_PUBLIC_DEMO_MODE === "true" ? { ...(o ?? {}), sameSite: "none" as const, secure: true } : o;
+
+export async function updateSession(request: NextRequest) {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    return new NextResponse(
+      "Setup needed: the Supabase settings are missing.\n\n" +
+        "In Vercel open your project, go to Settings > Environment Variables, and add:\n" +
+        "  NEXT_PUBLIC_SUPABASE_URL\n" +
+        "  NEXT_PUBLIC_SUPABASE_ANON_KEY\n" +
+        "Then go to Deployments and redeploy.",
+      { status: 500, headers: { "content-type": "text/plain; charset=utf-8" } }
+    );
+  }
+
+  let response = NextResponse.next({ request });
+
+  const supabase = createServerClient(url, key, {
+    cookies: {
+      getAll() {
+        return request.cookies.getAll();
+      },
+      setAll(cookiesToSet) {
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
+        response = NextResponse.next({ request });
+        cookiesToSet.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, demoCookie(options))
+        );
+      },
+    },
+  });
+
+  // Do not put any code between createServerClient and getClaims.
+  // getClaims() checks the login token locally (no network trip to Supabase) when the project uses
+  // asymmetric JWT signing keys, and refreshes the session when it has expired. This is much faster
+  // than getUser(), which always calls Supabase.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const user = claimsData?.claims ?? null;
+
+  const path = request.nextUrl.pathname;
+  const demo = process.env.NEXT_PUBLIC_DEMO_MODE === "true";
+  const onLoginPage = path.startsWith(demo ? "/demo-start" : "/login") || (demo && path.startsWith("/api/demo-login"));
+
+  const redirectTo = (target: string) => {
+    const dest = request.nextUrl.clone();
+    dest.pathname = target;
+    dest.search = "";
+    const redirect = NextResponse.redirect(dest);
+    response.cookies.getAll().forEach((c) => redirect.cookies.set(c));
+    return redirect;
+  };
+
+  if (!user && !onLoginPage) return redirectTo(demo ? "/demo-start" : "/login");
+  if (user && path.startsWith("/demo-start")) return redirectTo("/");
+  if (user && !demo && onLoginPage) return redirectTo("/");
+
+  return response;
 }
-
-export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|icon.svg|manifest.webmanifest|robots.txt|sitemap.xml|opengraph-image|twitter-image|sw.js|offline.html|icons/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};
