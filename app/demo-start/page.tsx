@@ -5,6 +5,9 @@ import { DEMO_DESCRIPTION, DEMO_FEATURES, DEMO_KEYWORDS, DEMO_TITLE, INDEXABLE, 
 import DemoStartForm from "./DemoStartForm";
 
 const PAGE_URL = `${SITE_URL}/demo-start`;
+// The full marketing page for this demo lives on the main site. Pointing the canonical there makes
+// Google rank that page instead of this login screen, so the two don't compete for the same keywords.
+const MAIN_PAGE_URL = `${BRAND.websiteUrl}/pos-system/battery-solar-shop`;
 
 export const metadata: Metadata = {
   title: { absolute: `${DEMO_TITLE} | ${BRAND.poweredBy}` },
@@ -12,7 +15,7 @@ export const metadata: Metadata = {
   keywords: DEMO_KEYWORDS,
   applicationName: BRAND.shortName,
   authors: [{ name: BRAND.poweredBy, url: BRAND.websiteUrl }],
-  alternates: { canonical: PAGE_URL },
+  alternates: { canonical: MAIN_PAGE_URL },
   // The rest of the app is behind the demo login, so this start page is the one page worth indexing.
   robots: INDEXABLE
     ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } }
