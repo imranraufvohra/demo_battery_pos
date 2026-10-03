@@ -284,7 +284,7 @@ export default function CustomerProfile({
       {deleting && (
         <ConfirmDialog
           title={`Delete ${customer.name}?`}
-          body="This deletes the customer AND all their bills, payments and udhaar. Items on those bills go back into stock. It cannot be undone. A customer who has a bill reported to FBR cannot be deleted."
+          body="This deletes the customer AND all their bills, payments and credit. Items on those bills go back into stock. It cannot be undone. A customer who has a bill reported to FBR cannot be deleted."
           confirmLabel="Delete customer"
           cancelLabel="Keep customer"
           busy={busy}
