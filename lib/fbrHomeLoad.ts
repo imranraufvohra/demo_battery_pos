@@ -17,10 +17,10 @@ export async function loadFbrHomeWarnings(): Promise<FbrHomeWarnings | null> {
   try {
     const supabase = await createClient();
 
-    const profile = await supabase.from("business_profile").select("fbr_enabled").maybeSingle();
-    if (profile.error || !profile.data?.fbr_enabled) return null;
-
-    const [heartbeat, failed, unknown] = await Promise.all([
+    // All five requests start together (was: profile first, then the other three).
+    // If FBR turns out to be off, the extra results are simply thrown away.
+    const [profile, heartbeat, failed, unknown] = await Promise.all([
+      supabase.from("business_profile").select("fbr_enabled").maybeSingle(),
       supabase.from("fbr_heartbeat").select("last_seen,environment").maybeSingle(),
       supabase
         .from("fbr_invoices")
@@ -35,6 +35,7 @@ export async function loadFbrHomeWarnings(): Promise<FbrHomeWarnings | null> {
         .order("updated_at", { ascending: false })
         .limit(SAMPLE),
     ]);
+    if (profile.error || !profile.data?.fbr_enabled) return null;
 
     const flatten = (res: typeof failed) =>
       toRows(
