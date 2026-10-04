@@ -6,6 +6,8 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import { parseFbrList, type FbrKind } from "@/lib/fbr";
 import { clearFbrRefCache } from "@/lib/fbrRef";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Settings = {
   businessName: string;
   ntn: string | null;
@@ -26,6 +28,7 @@ export default function FbrListsClient({
   settings: Settings;
   senderLastSeen: string | null;
 }) {
+  const t = useT();
   const router = useRouter();
   const [open, setOpen] = useState<FbrKind | null>(null);
   const [text, setText] = useState("");
@@ -69,30 +72,29 @@ export default function FbrListsClient({
   return (
     <div className="space-y-4">
       <section className="card p-4 sm:p-5">
-        <h2 className="font-display text-2xl font-semibold">Shop and FBR settings</h2>
+        <h2 className="font-display text-2xl font-semibold"><T>Shop and FBR settings</T></h2>
         <dl className="mt-3 space-y-1.5 text-[15px]">
-          <div className="flex justify-between gap-4"><dt className="text-lead">Seller name</dt><dd>{settings.businessName}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-lead">Seller NTN</dt><dd>{settings.ntn ?? "Missing"}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-lead">Province</dt><dd>{settings.province ?? "Missing"}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-lead">FBR bills</dt><dd>{settings.enabled ? "ON" : "OFF"}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-lead">Mode</dt><dd>{settings.environment === "production" ? "Production (real FBR)" : "Sandbox (test)"}</dd></div>
-          <div className="flex justify-between gap-4"><dt className="text-lead">GST</dt><dd>{settings.pricesIncludeTax ? "Included in price" : "Added on top of price"}</dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>Seller name</T></dt><dd>{settings.businessName}</dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>Seller NTN</T></dt><dd><T>{settings.ntn ?? "Missing"}</T></dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>Province</T></dt><dd><T>{settings.province ?? "Missing"}</T></dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>FBR bills</T></dt><dd><T>{settings.enabled ? "ON" : "OFF"}</T></dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>Mode</T></dt><dd><T>{settings.environment === "production" ? "Production (real FBR)" : "Sandbox (test)"}</T></dd></div>
+          <div className="flex justify-between gap-4"><dt className="text-lead"><T>GST</T></dt><dd>{settings.pricesIncludeTax ? "Included in price" : "Added on top of price"}</dd></div>
           <div className="flex justify-between gap-4">
-            <dt className="text-lead">FBR sender (shop PC)</dt>
-            <dd>{seenAgo == null ? "Not running yet (phase D4)" : seenAgo <= 3 ? "Online" : `Last seen ${seenAgo} min ago`}</dd>
+            <dt className="text-lead"><T>FBR sender (shop PC)</T></dt>
+            <dd><T>{seenAgo == null ? "Not running yet (phase D4)" : seenAgo <= 3 ? "Online" : `Last seen ${seenAgo} min ago`}</T></dd>
           </div>
         </dl>
       </section>
 
       <section className="card p-4 sm:p-5">
-        <h2 className="font-display text-2xl font-semibold">FBR lists</h2>
+        <h2 className="font-display text-2xl font-semibold"><T>FBR lists</T></h2>
         <p className="mt-1 text-sm text-lead">
-          Until the sender program is running (phase D4), load each list by hand: open it in the PRAL portal or Postman with your sandbox token, copy the
-          whole JSON, paste it here. Loading replaces the old list.
+          <T>{"Until the sender program is running (phase D4), load each list by hand: open it in the PRAL portal or Postman with your sandbox token, copy the whole JSON, paste it here. Loading replaces the old list."}</T>
         </p>
         {msg && (
           <p role="alert" className={`mt-3 rounded-xl px-3 py-2 text-sm ${msg.ok ? "bg-cell/10 text-cell-deep" : "bg-terminal/10 text-terminal-deep"}`}>
-            {msg.text}
+            <T>{msg.text}</T>
           </p>
         )}
         <ul className="mt-3 divide-y divide-line">
@@ -100,9 +102,9 @@ export default function FbrListsClient({
             <li key={k.kind} className="py-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-semibold">{k.label}</p>
+                  <p className="font-semibold"><T>{k.label}</T></p>
                   <p className="text-sm text-lead">
-                    {loaded[k.kind] > 0 ? `${loaded[k.kind]} loaded` : "Not loaded"} · {k.hint}
+                    <T>{loaded[k.kind] > 0 ? `${loaded[k.kind]} loaded` : "Not loaded"}</T> · <T>{k.hint}</T>
                   </p>
                 </div>
                 <button
@@ -114,7 +116,7 @@ export default function FbrListsClient({
                     setMsg(null);
                   }}
                 >
-                  {open === k.kind ? "Close" : loaded[k.kind] > 0 ? "Reload" : "Load"}
+                  <T>{open === k.kind ? "Close" : loaded[k.kind] > 0 ? "Reload" : "Load"}</T>
                 </button>
               </div>
               {open === k.kind && (
@@ -122,7 +124,7 @@ export default function FbrListsClient({
                   <textarea
                     rows={6}
                     className="input font-mono text-xs"
-                    placeholder="Paste the JSON list here"
+                    placeholder={t("Paste the JSON list here")}
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                   />
@@ -135,7 +137,7 @@ export default function FbrListsClient({
           ))}
         </ul>
         <p className="mt-3 text-sm text-lead">
-          Units allowed for each HS code are fetched by the sender program in phase D4. Until then all loaded units are offered.
+          <T>Units allowed for each HS code are fetched by the sender program in phase D4. Until then all loaded units are offered.</T>
         </p>
       </section>
     </div>

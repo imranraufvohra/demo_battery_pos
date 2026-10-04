@@ -13,6 +13,8 @@ import { checkRealConnectivity } from "@/lib/offline/net";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { PurchaseInvoice, SupplierBalance, SupplierPaymentMethod } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function NewPayment({
   suppliers,
   duePurchases,
@@ -24,6 +26,7 @@ export default function NewPayment({
   initialSupplierId: string | null;
   initialPurchaseId: string | null;
 }) {
+  const t = useT();
   const router = useRouter();
   const clientId = useRef(crypto.randomUUID());
 
@@ -139,15 +142,15 @@ export default function NewPayment({
 
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader title="Make payment" subtitle="Pay a supplier against one bill, or on account" />
+      <PageHeader title={t("Make payment")} subtitle={t("Pay a supplier against one bill, or on account")} />
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-6">
         {/* Supplier */}
         <section className="card p-5">
-          <h2 className="font-display text-xl font-semibold">Supplier</h2>
+          <h2 className="font-display text-xl font-semibold"><T>Supplier</T></h2>
           <div className="relative mt-3">
             <label htmlFor="supplier-query" className="sr-only">
-              Supplier
+              <T>Supplier</T>
             </label>
             <input
               id="supplier-query"
@@ -156,7 +159,7 @@ export default function NewPayment({
               value={supplierQuery}
               onChange={(e) => changeSupplierQuery(e.target.value)}
               onFocus={() => setSupplierListOpen(true)}
-              placeholder="Search a supplier"
+              placeholder={t("Search a supplier")}
               aria-invalid={errors.supplier ? true : undefined}
               className="input"
             />
@@ -172,7 +175,7 @@ export default function NewPayment({
                           <span className="block font-medium">{s.name}</span>
                           {s.phone && <span className="block text-sm text-lead">{s.phone}</span>}
                         </span>
-                        <span className={`text-sm font-semibold tabular-nums ${cls}`}>{text}</span>
+                        <span className={`text-sm font-semibold tabular-nums ${cls}`}><T>{text}</T></span>
                       </button>
                     </li>
                   );
@@ -180,17 +183,16 @@ export default function NewPayment({
               </ul>
             )}
           </div>
-          {errors.supplier && <p className="mt-1.5 text-sm text-terminal-deep">{errors.supplier}</p>}
+          {errors.supplier && <p className="mt-1.5 text-sm text-terminal-deep"><T>{errors.supplier}</T></p>}
         </section>
 
         {/* Against a bill, or on account */}
         {selectedSupplier && (
           <section className="card space-y-3 p-5">
-            <h2 className="font-display text-xl font-semibold">What is this for</h2>
+            <h2 className="font-display text-xl font-semibold"><T>What is this for</T></h2>
             {supplierDueBills.length === 0 ? (
               <p className="text-[15px] text-lead">
-                No unpaid bills for {selectedSupplier.name}. This will be recorded on account
-                {selectedSupplier.balance > 0 ? `, against the ${formatRs(selectedSupplier.balance)} owed overall` : ""}.
+                <T p={{ name: selectedSupplier.name, amount: formatRs(selectedSupplier.balance) }}>{selectedSupplier.balance > 0 ? "No unpaid bills for {name}. This will be recorded on account, against the {amount} owed overall." : "No unpaid bills for {name}. This will be recorded on account."}</T>
               </p>
             ) : (
               <>
@@ -203,7 +205,7 @@ export default function NewPayment({
                       !purchaseId ? "border-casing bg-casing text-white" : "border-line bg-white text-lead hover:border-lead/40"
                     }`}
                   >
-                    On account
+                    <T>On account</T>
                   </button>
                   {supplierDueBills.map((p) => (
                     <button
@@ -214,15 +216,13 @@ export default function NewPayment({
                       className={`rounded-full border px-4 py-2 text-[15px] font-medium tabular-nums transition-colors ${
                         purchaseId === p.id ? "border-casing bg-casing text-white" : "border-line bg-white text-lead hover:border-lead/40"
                       }`}
-                    >
-                      {p.purchase_number} · {formatRs(p.due_total)} due
-                    </button>
+                    ><T p={{ purchase_number: p.purchase_number, formatRs: formatRs(p.due_total) }}>{"{purchase_number} · {formatRs} due"}</T></button>
                   ))}
                 </div>
                 <p className="text-sm text-lead">
-                  {selectedPurchase
+                  <T>{selectedPurchase
                     ? `Against ${selectedPurchase.purchase_number}, dated ${formatDay(selectedPurchase.invoice_date)}. Up to ${formatRs(selectedPurchase.due_total)} due.`
-                    : "A general payment to this supplier, not tied to one bill."}
+                    : "A general payment to this supplier, not tied to one bill."}</T>
                 </p>
               </>
             )}
@@ -231,11 +231,11 @@ export default function NewPayment({
 
         {/* Amount, date */}
         <section className="card space-y-4 p-5">
-          <h2 className="font-display text-xl font-semibold">Amount</h2>
+          <h2 className="font-display text-xl font-semibold"><T>Amount</T></h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="amount" className="mb-1.5 block text-sm font-medium">
-                Amount paid (Rs)
+                <T>Amount paid (Rs)</T>
               </label>
               <input
                 id="amount"
@@ -248,24 +248,24 @@ export default function NewPayment({
               />
               {selectedPurchase && (
                 <button type="button" onClick={() => setAmountText(String(selectedPurchase.due_total))} className="mt-1.5 text-sm font-semibold text-focus hover:underline">
-                  Pay everything due
+                  <T>Pay everything due</T>
                 </button>
               )}
               {errors.amount && <p className="mt-1 text-sm text-terminal-deep">{errors.amount}</p>}
             </div>
             <div>
               <label htmlFor="paid-at" className="mb-1.5 block text-sm font-medium">
-                Date
+                <T>Date</T>
               </label>
               <input id="paid-at" type="date" value={paidAt} onChange={(e) => setPaidAt(e.target.value)} max={todayKarachi()} aria-invalid={errors.paid_at ? true : undefined} className="input" />
-              {errors.paid_at && <p className="mt-1 text-sm text-terminal-deep">{errors.paid_at}</p>}
+              {errors.paid_at && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.paid_at}</T></p>}
             </div>
           </div>
         </section>
 
         {/* Method */}
         <section className="card space-y-4 p-5">
-          <h2 className="font-display text-xl font-semibold">Method</h2>
+          <h2 className="font-display text-xl font-semibold"><T>Method</T></h2>
           <div className="flex flex-wrap gap-2">
             {SUPPLIER_PAYMENT_METHODS.map((m) => (
               <button
@@ -277,7 +277,7 @@ export default function NewPayment({
                   method === m.value ? "border-casing bg-casing text-white" : "border-line bg-white text-lead hover:border-lead/40"
                 }`}
               >
-                {m.label}
+                <T>{m.label}</T>
               </button>
             ))}
           </div>
@@ -286,20 +286,20 @@ export default function NewPayment({
             <div className="grid grid-cols-1 gap-3 rounded-2xl bg-plate/60 p-3.5 sm:grid-cols-3">
               <div>
                 <label htmlFor="cheque-number" className="mb-1.5 block text-sm font-medium">
-                  Cheque number
+                  <T>Cheque number</T>
                 </label>
                 <input id="cheque-number" value={chequeNumber} onChange={(e) => setChequeNumber(e.target.value)} aria-invalid={errors.cheque_number ? true : undefined} className="input" />
                 {errors.cheque_number && <p className="mt-1 text-xs text-terminal-deep">{errors.cheque_number}</p>}
               </div>
               <div>
                 <label htmlFor="cheque-date" className="mb-1.5 block text-sm font-medium">
-                  Cheque date
+                  <T>Cheque date</T>
                 </label>
                 <input id="cheque-date" type="date" value={chequeDate} onChange={(e) => setChequeDate(e.target.value)} className="input" />
               </div>
               <div>
                 <label htmlFor="bank-name" className="mb-1.5 block text-sm font-medium">
-                  Bank
+                  <T>Bank</T>
                 </label>
                 <input id="bank-name" value={bankName} onChange={(e) => setBankName(e.target.value)} className="input" />
               </div>
@@ -308,24 +308,24 @@ export default function NewPayment({
 
           <div>
             <label htmlFor="reference" className="mb-1.5 block text-sm font-medium">
-              Reference (optional)
+              <T>Reference (optional)</T>
             </label>
-            <input id="reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Transaction ID, receipt no., etc." className="input" />
+            <input id="reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder={t("Transaction ID, receipt no., etc.")} className="input" />
           </div>
         </section>
 
         {saveError && (
           <p role="alert" className="rounded-xl bg-terminal/10 px-3.5 py-3 text-sm text-terminal-deep">
-            {saveError}
+            <T>{saveError}</T>
           </p>
         )}
 
         <div className="flex justify-end gap-3 pb-6">
           <button type="button" onClick={() => router.back()} disabled={saving} className="btn btn-quiet">
-            Cancel
+            <T>Cancel</T>
           </button>
           <button type="submit" disabled={saving} className="btn btn-primary min-w-40">
-            {saving ? "Saving" : "Save payment"}
+            <T>{saving ? "Saving" : "Save payment"}</T>
           </button>
         </div>
       </form>

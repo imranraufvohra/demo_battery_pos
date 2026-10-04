@@ -1,5 +1,6 @@
 import type { PurchaseStatus } from "@/lib/types";
 
+import { T } from "@/components/T";
 const TONE: Record<"Paid" | "Part paid" | "Unpaid", string> = {
   Paid: "bg-cell/10 text-cell-deep",
   "Part paid": "bg-sun/25 text-amber-900",
@@ -14,7 +15,7 @@ export default function PurchasePayBadge({
   status?: PurchaseStatus;
 }) {
   if (status === "Cancelled") {
-    return <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">Cancelled</span>;
+    return <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead"><T>Cancelled</T></span>;
   }
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${TONE[tag]}`}>{tag}</span>;
+  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${TONE[tag]}`}><T>{tag}</T></span>;
 }

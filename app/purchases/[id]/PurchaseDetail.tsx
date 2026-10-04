@@ -15,7 +15,10 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import PurchasePayBadge from "../PayBadge";
 import PurchaseActions from "./PurchaseActions";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function PurchaseDetail({ purchase: p, items, payments, supplier }: PurchaseDocument) {
+  const tt = useT();
   const roleInfo = useRoleInfo();
   const router = useRouter();
   const [cancelling, setCancelling] = useState(false);
@@ -63,29 +66,28 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
   return (
     <div>
       <Link href="/purchases" className="anim-rise inline-flex items-center gap-1 text-[15px] font-medium text-lead hover:text-casing">
-        <Icon name="back" className="h-4 w-4" /> Purchases
+        <Icon name="back" className="h-4 w-4" /> <T>Purchases</T>
       </Link>
 
       <section className="hero-card anim-slide relative mt-3 overflow-hidden rounded-3xl p-5 text-white shadow-lift sm:p-7">
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-sm text-white/70">
-              Purchase bill · {formatDay(p.invoice_date)}
-              {p.supplier_invoice_number ? ` · Their inv ${p.supplier_invoice_number}` : ""}
+              <T p={{ date: formatDay(p.invoice_date) }}>{"Purchase bill · {date}"}</T>{p.supplier_invoice_number ? <>{" · "}<T p={{ n: p.supplier_invoice_number }}>{"Their inv {n}"}</T></> : null}
             </p>
             <h1 className="mt-1 font-display text-4xl font-bold leading-none sm:text-5xl">{p.purchase_number}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <PurchasePayBadge tag={p.payment_tag} status={p.status} />
-              {p.status === "Cancelled" && <span className="text-sm text-white/70">This bill is cancelled.</span>}
+              {p.status === "Cancelled" && <span className="text-sm text-white/70"><T>This bill is cancelled.</T></span>}
             </div>
           </div>
           <div className="text-end">
-            <p className="text-sm text-white/70">Total</p>
+            <p className="text-sm text-white/70"><T>Total</T></p>
             <p className="font-display text-4xl font-bold tabular-nums sm:text-5xl">{formatRs(p.total_value)}</p>
             {p.status !== "Cancelled" && p.due_total > 0 ? (
-              <p className="mt-1 font-semibold tabular-nums text-red-200">{formatRs(p.due_total)} still owed</p>
+              <p className="mt-1 font-semibold tabular-nums text-red-200"><T p={{ formatRs: formatRs(p.due_total) }}>{"{formatRs} still owed"}</T></p>
             ) : (
-              <p className="mt-1 text-sm text-emerald-200">Paid in full</p>
+              <p className="mt-1 text-sm text-emerald-200"><T>Paid in full</T></p>
             )}
           </div>
         </div>
@@ -97,21 +99,21 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="space-y-4">
           <section className="card anim-rise overflow-hidden" style={{ "--i": 1 } as React.CSSProperties}>
-            <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold">Items</h2>
+            <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold"><T>Items</T></h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[30rem] text-start">
                 <thead className="bg-plate/70 text-sm text-lead">
                   <tr>
-                    <th className="px-5 py-2.5 font-medium">Product</th>
-                    <th className="px-3 py-2.5 text-end font-medium">Qty</th>
-                    <th className="px-3 py-2.5 text-end font-medium">Cost</th>
-                    <th className="px-5 py-2.5 text-end font-medium">Amount</th>
+                    <th className="px-5 py-2.5 font-medium"><T>Product</T></th>
+                    <th className="px-3 py-2.5 text-end font-medium"><T>Qty</T></th>
+                    <th className="px-3 py-2.5 text-end font-medium"><T>Cost</T></th>
+                    <th className="px-5 py-2.5 text-end font-medium"><T>Amount</T></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
                   {items.map((it) => (
                     <tr key={it.id}>
-                      <td className="px-5 py-3 font-semibold">{it.description}</td>
+                      <td className="px-5 py-3 font-semibold"><T>{it.description}</T></td>
                       <td className="px-3 py-3 text-end tabular-nums">{it.quantity}</td>
                       <td className="px-3 py-3 text-end tabular-nums">{formatRs(it.unit_cost)}</td>
                       <td className="px-5 py-3 text-end font-semibold tabular-nums">{formatRs(it.line_total)}</td>
@@ -122,52 +124,51 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
             </div>
             <dl className="space-y-1.5 border-t border-line px-5 py-4">
               <div className="flex justify-between">
-                <dt className="text-lead">Subtotal</dt>
+                <dt className="text-lead"><T>Subtotal</T></dt>
                 <dd className="tabular-nums">{formatRs(p.subtotal)}</dd>
               </div>
               {p.discount > 0 && (
                 <div className="flex justify-between">
-                  <dt className="text-lead">Discount</dt>
+                  <dt className="text-lead"><T>Discount</T></dt>
                   <dd className="tabular-nums">-{formatRs(p.discount)}</dd>
                 </div>
               )}
               {p.freight > 0 && (
                 <div className="flex justify-between">
-                  <dt className="text-lead">Freight</dt>
+                  <dt className="text-lead"><T>Freight</T></dt>
                   <dd className="tabular-nums">+{formatRs(p.freight)}</dd>
                 </div>
               )}
               <div className="flex justify-between">
-                <dt className="text-lead">Total</dt>
+                <dt className="text-lead"><T>Total</T></dt>
                 <dd className="font-display text-2xl font-bold tabular-nums">{formatRs(p.total_value)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-lead">Paid</dt>
+                <dt className="text-lead"><T>Paid</T></dt>
                 <dd className="font-semibold tabular-nums">{formatRs(p.paid_total)}</dd>
               </div>
               {p.status !== "Cancelled" && p.due_total > 0 && (
                 <div className="flex justify-between">
-                  <dt className="font-semibold text-terminal-deep">Still owed</dt>
+                  <dt className="font-semibold text-terminal-deep"><T>Still owed</T></dt>
                   <dd className="font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)}</dd>
                 </div>
               )}
             </dl>
             {p.status === "Cancelled" && p.cancel_reason && (
               <p className="border-t border-line bg-plate/50 px-5 py-3 text-sm text-lead">
-                Cancelled{p.cancelled_at ? ` on ${formatDay(p.cancelled_at)}` : ""}: {p.cancel_reason}
+                <T p={{ date: p.cancelled_at ? formatDay(p.cancelled_at) : "", reason: p.cancel_reason }}>{p.cancelled_at ? "Cancelled on {date}: {reason}" : "Cancelled: {reason}"}</T>
               </p>
             )}
           </section>
 
           {p.status !== "Cancelled" && can(roleInfo, "purchases.manage") && (
             <section className="card anim-rise p-5" style={{ "--i": 4 } as React.CSSProperties}>
-              <h2 className="font-display text-2xl font-semibold">Cancel this bill</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Cancel this bill</T></h2>
               <p className="mt-2 text-[15px] text-lead">
-                Reverses the stock this bill added. Refused if any of it has already been sold. Any payment already
-                made stays recorded, as an advance.
+                <T>{"Reverses the stock this bill added. Refused if any of it has already been sold. Any payment already made stays recorded, as an advance."}</T>
               </p>
               <button type="button" onClick={openCancel} className="btn btn-danger mt-3">
-                <Icon name="x" className="h-5 w-5" /> Cancel bill
+                <Icon name="x" className="h-5 w-5" /> <T>Cancel bill</T>
               </button>
             </section>
           )}
@@ -175,7 +176,7 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
 
         <div className="space-y-4">
           <section className="card anim-rise p-5" style={{ "--i": 2 } as React.CSSProperties}>
-            <h2 className="font-display text-lg font-semibold text-lead">Supplier</h2>
+            <h2 className="font-display text-lg font-semibold text-lead"><T>Supplier</T></h2>
             <p className="mt-1 font-display text-2xl font-bold">
               <Link href={`/suppliers/${supplier.id}`} className="text-focus hover:underline">
                 {supplier.name}
@@ -187,36 +188,34 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
             </dl>
             {p.note && (
               <p className="mt-3 rounded-xl bg-plate/70 px-3 py-2 text-[15px]">
-                <span className="text-lead">Note: </span>
-                {p.note}
+                <span className="text-lead"><T>Note:</T> </span>
+                <T>{p.note}</T>
               </p>
             )}
           </section>
 
           <section className="card anim-rise p-5" style={{ "--i": 3 } as React.CSSProperties}>
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-display text-2xl font-semibold">Payments</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Payments</T></h2>
               {p.status !== "Cancelled" && p.due_total > 0 && (
                 <Link href={`/payments/new?purchase=${p.id}`} className="btn btn-primary btn-sm">
-                  <Icon name="banknote" className="h-4 w-4" /> Record payment
+                  <Icon name="banknote" className="h-4 w-4" /> <T>Record payment</T>
                 </Link>
               )}
             </div>
             {payments.length === 0 ? (
-              <p className="mt-2 text-lead">
-                Nothing paid yet. The full {formatRs(p.total_value)} is owed to {supplier.name}.
-              </p>
+              <p className="mt-2 text-lead"><T p={{ formatRs: formatRs(p.total_value), name: supplier.name }}>{"Nothing paid yet. The full {formatRs} is owed to {name}."}</T></p>
             ) : (
               <ul className="mt-2 divide-y divide-line/60">
                 {payments.map((pay) => (
                   <li key={pay.id} className="flex items-center justify-between gap-3 py-2.5">
                     <span>
                       <span className="block font-semibold">
-                        {supplierMethodLabel(pay.method)}
-                        {pay.status === "Cancelled" && <span className="ms-2 font-normal text-lead">Cancelled</span>}
+                        <T>{supplierMethodLabel(pay.method)}</T>
+                        {pay.status === "Cancelled" && <span className="ms-2 font-normal text-lead"><T>Cancelled</T></span>}
                       </span>
                       <span className="block text-sm text-lead">
-                        {formatDay(pay.paid_at)}, {formatTime(pay.created_at)}
+                        <T>{formatDay(pay.paid_at)}</T>, <T>{formatTime(pay.created_at)}</T>
                       </span>
                     </span>
                     <span className={`font-semibold tabular-nums ${pay.status === "Cancelled" ? "text-lead line-through" : ""}`}>
@@ -233,14 +232,12 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
       {cancelling && (
         <div className="anim-fade fixed inset-0 z-50 flex items-center justify-center bg-casing/60 p-4">
           <div role="alertdialog" aria-modal="true" aria-labelledby="cancel-title" className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <h2 id="cancel-title" className="font-display text-2xl font-bold">
-              Cancel {p.purchase_number}?
-            </h2>
+            <h2 id="cancel-title" className="font-display text-2xl font-bold"><T p={{ purchase_number: p.purchase_number }}>{"Cancel {purchase_number}?"}</T></h2>
             <p className="mt-2 text-lead">
-              This permanently marks the bill cancelled and reverses its stock. It cannot be undone.
+              <T>This permanently marks the bill cancelled and reverses its stock. It cannot be undone.</T>
             </p>
             <label htmlFor="cancel-reason" className="mt-4 block text-sm font-medium">
-              Reason
+              <T>Reason</T>
             </label>
             <input
               id="cancel-reason"
@@ -248,20 +245,20 @@ export default function PurchaseDetail({ purchase: p, items, payments, supplier 
               autoFocus
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Entered by mistake, wrong supplier"
+              placeholder={tt("e.g. Entered by mistake, wrong supplier")}
               className="input mt-1.5"
             />
             {error && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {error}
+                <T>{error}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setCancelling(false)} disabled={busy} className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmCancel} disabled={busy} className="btn btn-danger">
-                {busy ? "Cancelling" : "Cancel bill"}
+                <T>{busy ? "Cancelling" : "Cancel bill"}</T>
               </button>
             </div>
           </div>

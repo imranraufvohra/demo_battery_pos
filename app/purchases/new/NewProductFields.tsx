@@ -8,6 +8,8 @@ import { focusFirstError } from "@/lib/formFocus";
 import type { Category } from "@/lib/types";
 import type { NewPurchaseItemDraft } from "@/lib/purchases";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Errors = Partial<Record<keyof NewPurchaseItemDraft, string>>;
 const NUM = /^\d+(\.\d{1,2})?$/;
 
@@ -49,6 +51,7 @@ export default function NewProductFields({
   onClose: () => void;
   onAdd: (draft: NewPurchaseItemDraft, displayName: string) => void;
 }) {
+  const tt = useT();
   const [form, setForm] = useState<NewPurchaseItemDraft>(empty());
   const [errors, setErrors] = useState<Errors>({});
   const [otherType, setOtherType] = useState(false);
@@ -96,28 +99,27 @@ export default function NewProductFields({
       <form onSubmit={submit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="new-product-title" className="font-display text-2xl font-bold">
-            New product
+            <T>New product</T>
           </h2>
-          <button type="button" onClick={onClose} aria-label="Close" className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate">
+          <button type="button" onClick={onClose} aria-label={tt("Close")} className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate">
             <Icon name="x" className="h-5 w-5" />
           </button>
         </div>
 
         <div className="flex-1 space-y-5 overflow-y-auto px-5 py-6">
           <p className="text-sm text-lead">
-            Not in your inventory yet -- fill in the basics now. It's created for real once you save this
-            purchase, with this quantity and cost.
+            <T>{"Not in your inventory yet -- fill in the basics now. It's created for real once you save this purchase, with this quantity and cost."}</T>
           </p>
 
           <div>
             <label htmlFor="np-category" className="mb-1.5 block text-sm font-medium">
-              Category
+              <T>Category</T>
             </label>
             <select id="np-category" value={form.category} onChange={(e) => changeCategory(e.target.value as Category)} className="input">
               {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
+                <Opt key={c.value} value={c.value}>
+                  <T>{c.label}</T>
+                </Opt>
               ))}
             </select>
           </div>
@@ -125,16 +127,16 @@ export default function NewProductFields({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="np-brand" className="mb-1.5 block text-sm font-medium">
-                Brand
+                <T>Brand</T>
               </label>
-              <input id="np-brand" autoFocus value={form.brand} onChange={(e) => set("brand", e.target.value)} placeholder="Osaka" aria-invalid={!!errors.brand} className="input" />
+              <input id="np-brand" autoFocus value={form.brand} onChange={(e) => set("brand", e.target.value)} placeholder={tt("Osaka")} aria-invalid={!!errors.brand} className="input" />
               {errors.brand && <p className="mt-1 text-sm text-terminal-deep">{errors.brand}</p>}
             </div>
             <div>
               <label htmlFor="np-model" className="mb-1.5 block text-sm font-medium">
-                Model
+                <T>Model</T>
               </label>
-              <input id="np-model" value={form.model} onChange={(e) => set("model", e.target.value)} placeholder="200Ah Tubular" aria-invalid={!!errors.model} className="input" />
+              <input id="np-model" value={form.model} onChange={(e) => set("model", e.target.value)} placeholder={tt("200Ah Tubular")} aria-invalid={!!errors.model} className="input" />
               {errors.model && <p className="mt-1 text-sm text-terminal-deep">{errors.model}</p>}
             </div>
           </div>
@@ -143,33 +145,33 @@ export default function NewProductFields({
             <>
               <div>
                 <label htmlFor="np-type" className="mb-1.5 block text-sm font-medium">
-                  Battery type
+                  <T>Battery type</T>
                 </label>
                 <select id="np-type" value={form.type} onChange={(e) => set("type", e.target.value)} className="input">
-                  <option value="">Choose a type</option>
+                  <Opt value="">Choose a type</Opt>
                   {BATTERY_TYPES.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
+                    <Opt key={t} value={t}>
+                      <T>{t}</T>
+                    </Opt>
                   ))}
                 </select>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label htmlFor="np-voltage" className="mb-1.5 block text-sm font-medium">
-                    Voltage (V)
+                    <T>Voltage (V)</T>
                   </label>
                   <input id="np-voltage" inputMode="decimal" value={form.voltage} onChange={(e) => set("voltage", e.target.value)} className="input" />
                 </div>
                 <div>
                   <label htmlFor="np-plates" className="mb-1.5 block text-sm font-medium">
-                    Plates
+                    <T>Plates</T>
                   </label>
                   <input id="np-plates" inputMode="numeric" value={form.plates} onChange={(e) => set("plates", e.target.value)} className="input" />
                 </div>
                 <div>
                   <label htmlFor="np-ah" className="mb-1.5 block text-sm font-medium">
-                    Ah rating
+                    <T>Ah rating</T>
                   </label>
                   <input id="np-ah" inputMode="decimal" value={form.ah_rating} onChange={(e) => set("ah_rating", e.target.value)} className="input" />
                 </div>
@@ -179,16 +181,16 @@ export default function NewProductFields({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="np-type2" className="mb-1.5 block text-sm font-medium">
-                  {form.category === "panel" ? "Panel type" : "Kind of accessory"}
+                  <T>{form.category === "panel" ? "Panel type" : "Kind of accessory"}</T>
                 </label>
                 <select id="np-type2" value={otherType ? OTHER_TYPE : form.type} onChange={(e) => changeType(e.target.value)} className="input">
-                  <option value="">Choose a type</option>
+                  <Opt value="">Choose a type</Opt>
                   {typeOptions.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
+                    <Opt key={t} value={t}>
+                      <T>{t}</T>
+                    </Opt>
                   ))}
-                  <option value={OTHER_TYPE}>Other (type your own)</option>
+                  <Opt value={OTHER_TYPE}>Other (type your own)</Opt>
                 </select>
                 {otherType && (
                   <input
@@ -198,7 +200,7 @@ export default function NewProductFields({
                     autoComplete="off"
                     value={form.type}
                     onChange={(e) => set("type", e.target.value)}
-                    placeholder="Type it in"
+                    placeholder={tt("Type it in")}
                     className="input mt-2"
                   />
                 )}
@@ -206,7 +208,7 @@ export default function NewProductFields({
               {form.category === "panel" && (
                 <div>
                   <label htmlFor="np-wattage" className="mb-1.5 block text-sm font-medium">
-                    Wattage (W)
+                    <T>Wattage (W)</T>
                   </label>
                   <input id="np-wattage" inputMode="numeric" value={form.wattage} onChange={(e) => set("wattage", e.target.value)} className="input" />
                 </div>
@@ -217,41 +219,41 @@ export default function NewProductFields({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="np-warranty" className="mb-1.5 block text-sm font-medium">
-                Warranty (months)
+                <T>Warranty (months)</T>
               </label>
               <input id="np-warranty" inputMode="numeric" value={form.warranty_months} onChange={(e) => set("warranty_months", e.target.value)} className="input" />
             </div>
             <div>
               <label htmlFor="np-reorder" className="mb-1.5 block text-sm font-medium">
-                Reorder level
+                <T>Reorder level</T>
               </label>
-              <input id="np-reorder" inputMode="numeric" value={form.reorder_level} onChange={(e) => set("reorder_level", e.target.value)} placeholder="Optional" aria-invalid={!!errors.reorder_level} className="input" />
-              {errors.reorder_level && <p className="mt-1 text-sm text-terminal-deep">{errors.reorder_level}</p>}
+              <input id="np-reorder" inputMode="numeric" value={form.reorder_level} onChange={(e) => set("reorder_level", e.target.value)} placeholder={tt("Optional")} aria-invalid={!!errors.reorder_level} className="input" />
+              {errors.reorder_level && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.reorder_level}</T></p>}
             </div>
           </div>
 
           <div>
             <label htmlFor="np-sale-price" className="mb-1.5 block text-sm font-medium">
-              Sale price (Rs)
+              <T>Sale price (Rs)</T>
             </label>
-            <input id="np-sale-price" inputMode="decimal" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder="What you'll charge customers -- optional for now" aria-invalid={!!errors.sale_price} className="input tabular-nums" />
+            <input id="np-sale-price" inputMode="decimal" value={form.sale_price} onChange={(e) => set("sale_price", e.target.value)} placeholder={tt("What you'll charge customers -- optional for now")} aria-invalid={!!errors.sale_price} className="input tabular-nums" />
             {errors.sale_price && <p className="mt-1 text-sm text-terminal-deep">{errors.sale_price}</p>}
           </div>
 
           <details className="rounded-2xl bg-plate/60 p-3.5">
-            <summary className="cursor-pointer text-sm font-semibold text-lead">More (HS code, unit)</summary>
+            <summary className="cursor-pointer text-sm font-semibold text-lead"><T>More (HS code, unit)</T></summary>
             <div className="mt-3 grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="np-hs" className="mb-1.5 block text-sm font-medium">
-                  HS code
+                  <T>HS code</T>
                 </label>
                 <input id="np-hs" value={form.hs_code} onChange={(e) => set("hs_code", e.target.value)} className="input" />
               </div>
               <div>
                 <label htmlFor="np-uom" className="mb-1.5 block text-sm font-medium">
-                  Unit
+                  <T>Unit</T>
                 </label>
-                <input id="np-uom" value={form.uom} onChange={(e) => set("uom", e.target.value)} placeholder={DEFAULT_UOM} className="input" />
+                <input id="np-uom" value={form.uom} onChange={(e) => set("uom", e.target.value)} placeholder={tt(DEFAULT_UOM)} className="input" />
               </div>
             </div>
           </details>
@@ -260,10 +262,10 @@ export default function NewProductFields({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" className="btn btn-primary">
-              Add to bill
+              <T>Add to bill</T>
             </button>
           </div>
         </div>

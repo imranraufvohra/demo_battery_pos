@@ -13,6 +13,8 @@ import type { ScrapBatteryInventory, ScrapBatterySale } from "@/lib/types";
 import SellScrapForm from "./SellScrapForm";
 import AddScrapForm from "./AddScrapForm";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Tab = "stock" | "sales";
 
 const delay = (i: number) => ({ "--i": Math.min(i, 8) }) as React.CSSProperties;
@@ -28,6 +30,7 @@ export default function ScrapClient({
   soldBatteries: ScrapBatteryInventory[];
   setupIncomplete: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>("stock");
   const [query, setQuery] = useState("");
@@ -94,53 +97,49 @@ export default function ScrapClient({
   return (
     <div>
       <PageHeader
-        title="Scrap"
-        subtitle="Old batteries taken in exchange, held until sold in bulk by weight."
+        title={t("Scrap")}
+        subtitle={t("Old batteries taken in exchange, held until sold in bulk by weight.")}
         action={
           <div className="flex flex-wrap gap-2">
             {selectedRows.length > 0 && (
               <button type="button" onClick={() => setSellFormOpen(true)} className="btn btn-primary">
-                <Icon name="box" className="h-5 w-5" /> Sell {selectedRows.length} selected
-              </button>
+                <Icon name="box" className="h-5 w-5" /> <T p={{ length: selectedRows.length }}>{"Sell {length} selected"}</T></button>
             )}
             <button type="button" onClick={() => setAddFormOpen(true)} className="btn btn-quiet">
-              <Icon name="plus" className="h-5 w-5" /> Add scrap battery
+              <Icon name="plus" className="h-5 w-5" /> <T>Add scrap battery</T>
             </button>
           </div>
         }
       />
 
       {setupIncomplete && (
-        <p className="anim-rise mt-4 rounded-xl bg-sun/20 px-4 py-3 text-sm" style={delay(1)}>
-          Some scrap battery data could not be loaded. Make sure{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">07_scrap_battery.sql</code> has been run in
-          Supabase.
+        <p className="anim-rise mt-4 rounded-xl bg-sun/20 px-4 py-3 text-sm" style={delay(1)}><T p={{ p: " " }}>{"Some scrap battery data could not be loaded. Make sure{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">07_scrap_battery.sql</code> <T>{"has been run in Supabase."}</T>
         </p>
       )}
 
       <div className="anim-rise mt-6 grid gap-3 sm:grid-cols-3" style={delay(1)}>
         <div className="card p-4">
-          <p className="text-sm text-lead">Batches in stock</p>
+          <p className="text-sm text-lead"><T>Batches in stock</T></p>
           <p className="mt-1 font-display text-3xl font-semibold tabular-nums">{summary.batches}</p>
         </div>
         <div className="card p-4">
-          <p className="text-sm text-lead">Batteries in stock</p>
+          <p className="text-sm text-lead"><T>Batteries in stock</T></p>
           <p className="mt-1 font-display text-3xl font-semibold tabular-nums">{summary.batteries}</p>
         </div>
         <div className="card p-4">
-          <p className="text-sm text-lead">Estimated weight</p>
+          <p className="text-sm text-lead"><T>Estimated weight</T></p>
           <p className="mt-1 font-display text-3xl font-semibold tabular-nums">
             {summary.weightKg != null ? `${summary.weightKg.toLocaleString("en-US", { maximumFractionDigits: 1 })} kg` : "-"}
           </p>
           <p className="mt-1 text-sm text-lead">
-            {summary.weightKg != null ? "Only counts batches with a weight on file." : "Batteries are usually weighed together at sale time."}
+            <T>{summary.weightKg != null ? "Only counts batches with a weight on file." : "Batteries are usually weighed together at sale time."}</T>
           </p>
         </div>
       </div>
 
       <div className="anim-rise mt-4 space-y-3" style={delay(2)}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div role="tablist" aria-label="Scrap" className="inline-flex rounded-2xl bg-plate p-1.5">
+          <div role="tablist" aria-label={t("Scrap")} className="inline-flex rounded-2xl bg-plate p-1.5">
             <button
               type="button"
               role="tab"
@@ -150,7 +149,7 @@ export default function ScrapClient({
                 tab === "stock" ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
               }`}
             >
-              In stock <span className="tabular-nums">({stock.length})</span>
+              <T>In stock</T> <span className="tabular-nums">({stock.length})</span>
             </button>
             <button
               type="button"
@@ -161,13 +160,13 @@ export default function ScrapClient({
                 tab === "sales" ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
               }`}
             >
-              Sold <span className="tabular-nums">({sales.length})</span>
+              <T>Sold</T> <span className="tabular-nums">({sales.length})</span>
             </button>
           </div>
 
           <div className="relative sm:max-w-xs sm:flex-1">
             <label htmlFor="scrap-search" className="sr-only">
-              Search
+              <T>Search</T>
             </label>
             <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
@@ -184,11 +183,10 @@ export default function ScrapClient({
         {tab === "stock" && selectedRows.length > 0 && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-focus/20 bg-focus/10 px-4 py-3 text-focus">
             <span className="text-[15px] font-medium">
-              {selectedRows.length} {selectedRows.length === 1 ? "batch" : "batches"} selected · {selectedQty}{" "}
-              {selectedQty === 1 ? "battery" : "batteries"}
+              <T p={{ n: selectedRows.length, qty: selectedQty }}>{(selectedRows.length === 1 ? "{n} batch selected" : "{n} batches selected") + " · " + (selectedQty === 1 ? "{qty} battery" : "{qty} batteries")}</T>
             </span>
             <button type="button" onClick={() => setSelected(new Set())} className="text-sm font-semibold hover:underline">
-              Clear
+              <T>Clear</T>
             </button>
           </div>
         )}
@@ -198,7 +196,7 @@ export default function ScrapClient({
         {tab === "stock" ? (
           visibleStock.length === 0 ? (
             <EmptyState
-              title={stock.length === 0 ? "No scrap batteries yet" : "Nothing matches"}
+              title={t(stock.length === 0 ? "No scrap batteries yet" : "Nothing matches")}
               hint={
                 stock.length === 0
                   ? "Old batteries taken in exchange on the New bill screen show up here."
@@ -225,12 +223,10 @@ export default function ScrapClient({
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-display text-lg font-semibold tabular-nums">{row.intake_number}</span>
-                        <span className="rounded-full bg-plate px-2.5 py-0.5 text-sm font-medium text-lead">
-                          Qty {row.quantity}
-                        </span>
+                        <span className="rounded-full bg-plate px-2.5 py-0.5 text-sm font-medium text-lead"><T p={{ quantity: row.quantity }}>{"Qty {quantity}"}</T></span>
                         {row.battery_type && (
                           <span className="rounded-full bg-plate px-2.5 py-0.5 text-sm font-medium text-lead">
-                            {row.battery_type}
+                            <T>{row.battery_type}</T>
                           </span>
                         )}
                       </div>
@@ -238,9 +234,9 @@ export default function ScrapClient({
                         {row.brand} {row.model}
                         {row.battery_number ? ` · ${row.battery_number}` : ""}
                       </p>
-                      {row.customer_name && <p className="text-sm text-lead">From {row.customer_name}</p>}
-                      <p className="mt-1 text-sm text-lead">Received {formatDay(row.received_date)}</p>
-                      {row.note && <p className="mt-1 text-sm text-lead">Note: {row.note}</p>}
+                      {row.customer_name && <p className="text-sm text-lead"><T p={{ customer_name: row.customer_name }}>{"From {customer_name}"}</T></p>}
+                      <p className="mt-1 text-sm text-lead"><T p={{ formatDay: formatDay(row.received_date) }}>{"Received {formatDay}"}</T></p>
+                      {row.note && <p className="mt-1 text-sm text-lead"><T p={{ note: row.note }}>{"Note: {note}"}</T></p>}
                     </div>
                   </li>
                 );
@@ -249,7 +245,7 @@ export default function ScrapClient({
           )
         ) : visibleSales.length === 0 ? (
           <EmptyState
-            title={sales.length === 0 ? "No scrap sales yet" : "Nothing matches"}
+            title={t(sales.length === 0 ? "No scrap sales yet" : "Nothing matches")}
             hint={
               sales.length === 0
                 ? "Select in-stock batteries and sell them together as one weighed lot."
@@ -268,12 +264,8 @@ export default function ScrapClient({
                       <span className="font-display text-lg font-semibold tabular-nums">{sale.sale_number}</span>
                       <p className="mt-1 font-semibold">{sale.buyer_name}</p>
                       {sale.buyer_phone && <p className="text-sm text-lead">{sale.buyer_phone}</p>}
-                      <p className="mt-1 text-sm text-lead">
-                        {formatDay(sale.sale_date)} · {sale.total_weight_kg.toLocaleString("en-US", { maximumFractionDigits: 2 })} kg
-                        {" @ "}
-                        {formatRs(sale.rate_per_kg)}/kg
-                      </p>
-                      {sale.note && <p className="mt-1 text-sm text-lead">Note: {sale.note}</p>}
+                      <p className="mt-1 text-sm text-lead"><T p={{ formatDay: formatDay(sale.sale_date), toLocaleString: sale.total_weight_kg.toLocaleString("en-US", { maximumFractionDigits: 2 }), p: " @ ", formatRs: formatRs(sale.rate_per_kg) }}>{"{formatDay} · {toLocaleString} kg{p}{formatRs}/kg"}</T></p>
+                      {sale.note && <p className="mt-1 text-sm text-lead"><T p={{ note: sale.note }}>{"Note: {note}"}</T></p>}
                     </div>
                     <p className="font-display text-2xl font-semibold tabular-nums leading-none">
                       {formatRs(sale.total_amount)}
@@ -287,15 +279,15 @@ export default function ScrapClient({
                       className="inline-flex items-center gap-1 text-sm font-semibold text-focus hover:underline"
                     >
                       <Icon name="chevron" className={`h-4 w-4 transition-transform ${expanded ? "rotate-90" : ""}`} />
-                      {lot.length > 0
+                      <T>{lot.length > 0
                         ? `${lot.length} ${lot.length === 1 ? "battery record" : "battery records"} in this lot`
-                        : "No battery records linked"}
+                        : "No battery records linked"}</T>
                     </button>
                     <Link
                       href={`/print/scrap/${sale.id}?auto=1`}
                       className="inline-flex items-center gap-1.5 text-sm font-semibold text-lead hover:text-casing"
                     >
-                      <Icon name="printer" className="h-4 w-4" /> Print slip
+                      <Icon name="printer" className="h-4 w-4" /> <T>Print slip</T>
                     </Link>
                   </div>
 
@@ -307,7 +299,7 @@ export default function ScrapClient({
                             <span className="tabular-nums text-lead">{b.intake_number}</span> · {b.brand} {b.model}
                             {b.battery_number ? ` · ${b.battery_number}` : ""}
                           </span>
-                          <span className="shrink-0 text-lead">Qty {b.quantity}</span>
+                          <span className="shrink-0 text-lead"><T p={{ quantity: b.quantity }}>{"Qty {quantity}"}</T></span>
                         </li>
                       ))}
                     </ul>
@@ -334,8 +326,8 @@ function EmptyState({ title, hint }: { title: string; hint: string }) {
       <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-plate text-lead">
         <Icon name="box" className="h-8 w-8" />
       </span>
-      <p className="mt-4 font-display text-3xl font-semibold">{title}</p>
-      <p className="mx-auto mt-2 max-w-sm text-lead">{hint}</p>
+      <p className="mt-4 font-display text-3xl font-semibold"><T>{title}</T></p>
+      <p className="mx-auto mt-2 max-w-sm text-lead"><T>{hint}</T></p>
     </div>
   );
 }

@@ -14,6 +14,8 @@ import { checkRealConnectivity } from "@/lib/offline/net";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { ExpenseCategory, ExpenseDetails } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Period = "month" | "all";
 
 function monthOf(ymd: string): string {
@@ -27,6 +29,7 @@ export default function ExpensesClient({
   expenses: ExpenseDetails[];
   categories: ExpenseCategory[];
 }) {
+  const tt = useT();
   const router = useRouter();
   const wantsAdd = useSearchParams().get("add") === "1";
 
@@ -141,18 +144,18 @@ export default function ExpensesClient({
   return (
     <div>
       <PageHeader
-        title="Expenses"
+        title={tt("Expenses")}
         subtitle={expenses.length === 0 ? "Rent, salaries, fuel, and every other business cost will appear here." : `${expenses.length} expenses recorded`}
         action={
           <button type="button" onClick={openAdd} className="btn btn-primary">
-            <Icon name="minus" className="h-5 w-5" /> Add expense
+            <Icon name="minus" className="h-5 w-5" /> <T>Add expense</T>
           </button>
         }
       />
 
       <div className="anim-rise mt-6 space-y-3">
         <div className="flex flex-wrap items-center gap-3">
-          <div role="radiogroup" aria-label="Time period" className="inline-flex rounded-full bg-plate p-1">
+          <div role="radiogroup" aria-label={tt("Time period")} className="inline-flex rounded-full bg-plate p-1">
             {(
               [
                 { value: "month", label: "This month" },
@@ -169,13 +172,13 @@ export default function ExpensesClient({
                   period === p.value ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                 }`}
               >
-                {p.label}
+                <T>{p.label}</T>
               </button>
             ))}
           </div>
           <div className="relative flex-1 sm:max-w-xs">
             <label htmlFor="expenses-search" className="sr-only">
-              Search
+              <T>Search</T>
             </label>
             <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
@@ -183,7 +186,7 @@ export default function ExpensesClient({
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search category, paid to, reference"
+              placeholder={tt("Search category, paid to, reference")}
               className="input ps-11"
             />
           </div>
@@ -198,16 +201,14 @@ export default function ExpensesClient({
               className={`shrink-0 rounded-full border px-4 py-2 text-[15px] font-medium transition-colors ${
                 categoryId === "all" ? "border-casing bg-casing text-white shadow-sm" : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
               }`}
-            >
-              All · {formatRs(validInPeriod.reduce((s, e) => s + e.amount, 0))}
-            </button>
+            ><T p={{ formatRs: formatRs(validInPeriod.reduce((s, e) => s + e.amount, 0)) }}>{"All · {formatRs}"}</T></button>
             {breakdown.map((c) => (
               <button
                 key={c.category_id}
                 type="button"
                 onClick={() => setCategoryId(c.category_id)}
                 aria-pressed={categoryId === c.category_id}
-                title={categorySummaryLabel(c)}
+                title={tt(categorySummaryLabel(c))}
                 className={`shrink-0 rounded-full border px-4 py-2 text-[15px] font-medium tabular-nums transition-colors ${
                   categoryId === c.category_id
                     ? "border-casing bg-casing text-white shadow-sm"
@@ -226,24 +227,24 @@ export default function ExpensesClient({
           <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-terminal/10 text-terminal-deep">
             <Icon name="minus" className="h-7 w-7" />
           </span>
-          <h2 className="mt-4 font-display text-3xl font-semibold">No expenses yet</h2>
+          <h2 className="mt-4 font-display text-3xl font-semibold"><T>No expenses yet</T></h2>
           <p className="mx-auto mt-2 max-w-md text-lead">
-            Rent, electricity, salaries, fuel -- log any business cost here, by category, so it's on record.
+            <T>Rent, electricity, salaries, fuel -- log any business cost here, by category, so it's on record.</T>
           </p>
           <button type="button" onClick={openAdd} className="btn btn-primary mt-6">
-            Add first expense
+            <T>Add first expense</T>
           </button>
         </section>
       ) : shown.length === 0 ? (
         <div className="card mt-4 px-6 py-12 text-center">
-          <p className="font-display text-2xl font-semibold">Nothing matches</p>
-          <p className="mt-2 text-lead">Try a different search, category or time period.</p>
+          <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+          <p className="mt-2 text-lead"><T>Try a different search, category or time period.</T></p>
         </div>
       ) : (
         <>
           <dl className="anim-rise mt-4 grid grid-cols-1 gap-3 sm:max-w-xs">
             <div className="card p-3.5">
-              <dt className="text-xs text-lead sm:text-sm">Total shown</dt>
+              <dt className="text-xs text-lead sm:text-sm"><T>Total shown</T></dt>
               <dd className="font-display text-xl font-semibold tabular-nums text-terminal-deep sm:text-2xl">{formatRs(totalShown)}</dd>
             </div>
           </dl>
@@ -252,14 +253,14 @@ export default function ExpensesClient({
             <table className="w-full text-start text-[15px]">
               <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                 <tr>
-                  <th className="px-5 py-3 font-medium">Expense</th>
-                  <th className="px-3 py-3 font-medium">Date</th>
-                  <th className="px-3 py-3 font-medium">Category</th>
-                  <th className="px-3 py-3 font-medium">Paid to</th>
-                  <th className="px-3 py-3 font-medium">Method</th>
-                  <th className="px-3 py-3 text-end font-medium">Amount</th>
+                  <th className="px-5 py-3 font-medium"><T>Expense</T></th>
+                  <th className="px-3 py-3 font-medium"><T>Date</T></th>
+                  <th className="px-3 py-3 font-medium"><T>Category</T></th>
+                  <th className="px-3 py-3 font-medium"><T>Paid to</T></th>
+                  <th className="px-3 py-3 font-medium"><T>Method</T></th>
+                  <th className="px-3 py-3 text-end font-medium"><T>Amount</T></th>
                   <th className="px-3 py-3 text-end font-medium">
-                    <span className="sr-only">Actions</span>
+                    <span className="sr-only"><T>Actions</T></span>
                   </th>
                 </tr>
               </thead>
@@ -271,22 +272,22 @@ export default function ExpensesClient({
                         {e.expense_number}
                       </button>
                     </td>
-                    <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(e.expense_date)}</td>
+                    <td className="px-3 py-3.5 tabular-nums text-lead"><T>{formatDay(e.expense_date)}</T></td>
                     <td className="px-3 py-3.5 font-medium">{e.category_name}</td>
-                    <td className="max-w-[12rem] truncate px-3 py-3.5 text-lead">{e.paid_to || "-"}</td>
-                    <td className="px-3 py-3.5 text-lead">{supplierMethodLabel(e.method)}</td>
+                    <td className="max-w-[12rem] truncate px-3 py-3.5 text-lead"><T>{e.paid_to || "-"}</T></td>
+                    <td className="px-3 py-3.5 text-lead"><T>{supplierMethodLabel(e.method)}</T></td>
                     <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(e.amount)}</td>
                     <td className="px-3 py-3.5 text-end">
                       <div className="flex items-center justify-end gap-1">
                         {e.status === "Cancelled" ? (
-                          <span className="text-sm text-lead">Cancelled</span>
+                          <span className="text-sm text-lead"><T>Cancelled</T></span>
                         ) : (
                           <>
                             <button
                               type="button"
                               onClick={() => openEdit(e)}
                               aria-label={`Edit ${e.expense_number}`}
-                              title="Edit"
+                              title={tt("Edit")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate"
                             >
                               <Icon name="edit" className="h-5 w-5" />
@@ -295,7 +296,7 @@ export default function ExpensesClient({
                               type="button"
                               onClick={() => askCancel(e)}
                               aria-label={`Cancel ${e.expense_number}`}
-                              title="Cancel expense"
+                              title={tt("Cancel expense")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-terminal/10 hover:text-terminal-deep"
                             >
                               <Icon name="x" className="h-5 w-5" />
@@ -322,11 +323,11 @@ export default function ExpensesClient({
                   <span className="min-w-0 flex-1">
                     <span className="truncate font-semibold">{e.category_name}</span>
                     <span className="mt-0.5 block text-sm text-lead">
-                      {e.expense_number} · {formatDay(e.expense_date)}
+                      {e.expense_number} · <T>{formatDay(e.expense_date)}</T>
                     </span>
                     <span className="mt-0.5 block text-sm text-lead">
-                      {e.paid_to || supplierMethodLabel(e.method)}
-                      {e.status === "Cancelled" ? " · Cancelled" : ""}
+                      <T>{e.paid_to || supplierMethodLabel(e.method)}</T>
+                      <T>{e.status === "Cancelled" ? " · Cancelled" : ""}</T>
                     </span>
                   </span>
                   <span className="font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(e.amount)}</span>
@@ -344,7 +345,7 @@ export default function ExpensesClient({
               </li>
             ))}
           </ul>
-          {expenses.length >= 1000 && <p className="mt-3 text-sm text-lead">Showing the latest 1,000 expenses.</p>}
+          {expenses.length >= 1000 && <p className="mt-3 text-sm text-lead"><T>Showing the latest 1,000 expenses.</T></p>}
         </>
       )}
 
@@ -353,15 +354,10 @@ export default function ExpensesClient({
       {target && (
         <div className="anim-fade fixed inset-0 z-50 flex items-center justify-center bg-casing/60 p-4">
           <div role="alertdialog" aria-modal="true" aria-labelledby="cancel-expense-title" className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <h2 id="cancel-expense-title" className="font-display text-2xl font-bold">
-              Cancel {target.expense_number}?
-            </h2>
-            <p className="mt-2 text-lead">
-              This marks the {formatRs(target.amount)} {target.category_name.toLowerCase()} expense cancelled. It stops counting toward
-              any total. It cannot be undone.
-            </p>
+            <h2 id="cancel-expense-title" className="font-display text-2xl font-bold"><T p={{ expense_number: target.expense_number }}>{"Cancel {expense_number}?"}</T></h2>
+            <p className="mt-2 text-lead"><T p={{ formatRs: formatRs(target.amount), toLowerCase: target.category_name.toLowerCase() }}>{"This marks the {formatRs} {toLowerCase} expense cancelled. It stops counting toward any total. It cannot be undone."}</T></p>
             <label htmlFor="cancel-expense-reason" className="mt-4 block text-sm font-medium">
-              Reason
+              <T>Reason</T>
             </label>
             <input
               id="cancel-expense-reason"
@@ -369,20 +365,20 @@ export default function ExpensesClient({
               autoFocus
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Entered twice by mistake"
+              placeholder={tt("e.g. Entered twice by mistake")}
               className="input mt-1.5"
             />
             {cancelError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {cancelError}
+                <T>{cancelError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setTarget(null)} disabled={busy} className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmCancel} disabled={busy} className="btn btn-danger">
-                {busy ? "Cancelling" : "Cancel expense"}
+                <T>{busy ? "Cancelling" : "Cancel expense"}</T>
               </button>
             </div>
           </div>

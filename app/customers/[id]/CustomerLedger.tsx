@@ -5,6 +5,7 @@ import { formatDate, formatRs } from "@/lib/format";
 import { formatDay } from "@/lib/invoices";
 import type { CustomerBill } from "./CustomerProfile";
 
+import { T } from "@/components/T";
 export type CustomerPayment = {
   id: string;
   invoice_id: string;
@@ -84,24 +85,24 @@ export default function CustomerLedger({
   return (
     <section className="card anim-rise mt-4 overflow-hidden">
       <div className="px-5 pb-2 pt-5">
-        <h2 className="font-display text-2xl font-semibold">Ledger</h2>
-        <p className="text-sm text-lead">Every bill and every payment, oldest first.</p>
+        <h2 className="font-display text-2xl font-semibold"><T>Ledger</T></h2>
+        <p className="text-sm text-lead"><T>Every bill and every payment, oldest first.</T></p>
       </div>
 
       {!ready ? (
-        <p className="px-5 pb-6 text-lead">The ledger could not be loaded. Refresh the page to try again.</p>
+        <p className="px-5 pb-6 text-lead"><T>The ledger could not be loaded. Refresh the page to try again.</T></p>
       ) : rows.length === 0 ? (
-        <p className="px-5 pb-6 text-lead">Nothing yet. Bills and payments will appear here.</p>
+        <p className="px-5 pb-6 text-lead"><T>Nothing yet. Bills and payments will appear here.</T></p>
       ) : (
         <div className="overflow-x-auto px-2 pb-4">
           <table className="w-full min-w-[34rem] text-start text-[15px]">
             <thead>
               <tr className="border-b border-line text-sm text-lead">
-                <th className="px-3 py-2 font-medium">Date</th>
-                <th className="px-3 py-2 font-medium">Details</th>
-                <th className="px-3 py-2 text-end font-medium">Bill</th>
-                <th className="px-3 py-2 text-end font-medium">Paid</th>
-                <th className="px-3 py-2 text-end font-medium">Balance</th>
+                <th className="px-3 py-2 font-medium"><T>Date</T></th>
+                <th className="px-3 py-2 font-medium"><T>Details</T></th>
+                <th className="px-3 py-2 text-end font-medium"><T>Bill</T></th>
+                <th className="px-3 py-2 text-end font-medium"><T>Paid</T></th>
+                <th className="px-3 py-2 text-end font-medium"><T>Balance</T></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line/60">
@@ -109,14 +110,14 @@ export default function CustomerLedger({
                 running = Math.round((running + r.debit - r.credit) * 100) / 100;
                 return (
                   <tr key={r.key}>
-                    <td className="whitespace-nowrap px-3 py-2.5 align-top">{r.dateLabel}</td>
+                    <td className="whitespace-nowrap px-3 py-2.5 align-top"><T>{r.dateLabel}</T></td>
                     <td className="px-3 py-2.5 align-top">
-                      <span className="block font-medium">{r.text}</span>
-                      {r.sub && <span className="block text-sm text-lead">{r.sub}</span>}
+                      <span className="block font-medium"><T>{r.text}</T></span>
+                      {r.sub && <span className="block text-sm text-lead"><T>{r.sub}</T></span>}
                     </td>
-                    <td className="px-3 py-2.5 text-end align-top tabular-nums">{r.debit > 0 ? formatRs(r.debit) : ""}</td>
+                    <td className="px-3 py-2.5 text-end align-top tabular-nums"><T>{r.debit > 0 ? formatRs(r.debit) : ""}</T></td>
                     <td className="px-3 py-2.5 text-end align-top tabular-nums text-cell-deep">
-                      {r.credit > 0 ? formatRs(r.credit) : ""}
+                      <T>{r.credit > 0 ? formatRs(r.credit) : ""}</T>
                     </td>
                     <td className="px-3 py-2.5 text-end align-top font-semibold tabular-nums">{formatRs(running)}</td>
                   </tr>
@@ -126,12 +127,12 @@ export default function CustomerLedger({
             <tfoot>
               <tr className="border-t-2 border-line font-semibold">
                 <td className="px-3 py-3" colSpan={2}>
-                  Total
+                  <T>Total</T>
                 </td>
                 <td className="px-3 py-3 text-end tabular-nums">{formatRs(totalDebit)}</td>
                 <td className="px-3 py-3 text-end tabular-nums text-cell-deep">{formatRs(totalCredit)}</td>
                 <td className={`px-3 py-3 text-end tabular-nums ${balance > 0 ? "text-terminal-deep" : ""}`}>
-                  {balance > 0 ? `${formatRs(balance)} due` : "Nothing due"}
+                  <T>{balance > 0 ? `${formatRs(balance)} due` : "Nothing due"}</T>
                 </td>
               </tr>
             </tfoot>

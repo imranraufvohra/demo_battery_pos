@@ -1,6 +1,10 @@
+"use client";
+
 import { formatRs, formatRsCompact } from "@/lib/format";
 import { formatDay } from "@/lib/invoices";
+import { useT } from "@/lib/i18n/client";
 
+import { T } from "@/components/T";
 type Point = { day: string; sales: number; count: number };
 
 function shortLabel(day: string, bucket: "day" | "month") {
@@ -13,6 +17,7 @@ function shortLabel(day: string, bucket: "day" | "month") {
 
 /** Light bar chart drawn as plain SVG. No chart library, no client JavaScript. */
 export default function SalesChart({ data, bucket }: { data: Point[]; bucket: "day" | "month" }) {
+  const t = useT();
   const W = 700;
   const H = 220;
   const padL = 8;
@@ -25,7 +30,7 @@ export default function SalesChart({ data, bucket }: { data: Point[]; bucket: "d
   if (data.length === 0 || max <= 0) {
     return (
       <div className="flex h-40 items-center justify-center rounded-xl bg-plate/60 px-4 text-center text-lead">
-        No sales in this period yet.
+        <T>No sales in this period yet.</T>
       </div>
     );
   }
@@ -40,7 +45,7 @@ export default function SalesChart({ data, bucket }: { data: Point[]; bucket: "d
     <svg
       viewBox={`0 0 ${W} ${H}`}
       role="img"
-      aria-label={`Sales chart. Total ${formatRs(total)}. Best ${bucket === "month" ? "month" : "day"}: ${formatDay(peak.day)} with ${formatRs(peak.sales)}.`}
+      aria-label={t(bucket === "month" ? "Sales chart. Total {total}. Best month: {day} with {sales}." : "Sales chart. Total {total}. Best day: {day} with {sales}.", { total: formatRs(total), day: formatDay(peak.day), sales: formatRs(peak.sales) })}
       className="h-auto w-full"
     >
       <line x1={padL} x2={W - padR} y1={H - padB} y2={H - padB} stroke="#d3d8d2" />
@@ -51,7 +56,7 @@ export default function SalesChart({ data, bucket }: { data: Point[]; bucket: "d
         const isPeak = d === peak;
         return (
           <g key={d.day}>
-            <title>{`${formatDay(d.day)}: ${formatRs(d.sales)} (${d.count} ${d.count === 1 ? "bill" : "bills"})`}</title>
+            <title><T>{`${formatDay(d.day)}: ${formatRs(d.sales)} (${d.count} ${d.count === 1 ? "bill" : "bills"})`}</T></title>
             {h > 0 && <rect x={x} y={y} width={barW} height={h} rx={4} fill={isPeak ? "#f5b400" : "#2b4450"} />}
             {isPeak && (
               <text x={x + barW / 2} y={y - 6} textAnchor="middle" fontSize="16" fontWeight="600" fill="#1c2b33">
@@ -60,7 +65,7 @@ export default function SalesChart({ data, bucket }: { data: Point[]; bucket: "d
             )}
             {i % labelEvery === 0 && (
               <text x={x + barW / 2} y={H - 10} textAnchor="middle" fontSize="14" fill="#5a686e">
-                {shortLabel(d.day, bucket)}
+                <T>{shortLabel(d.day, bucket)}</T>
               </text>
             )}
           </g>

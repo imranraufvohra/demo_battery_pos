@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import { useT } from "@/lib/i18n/client";
 
+import { T } from "@/components/T";
 export default function LoginForm() {
   const router = useRouter();
   const t = useT();
@@ -79,12 +80,12 @@ export default function LoginForm() {
 
       {error && (
         <p role="alert" className="rounded-md bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-          {error}
+          <T>{error}</T>
         </p>
       )}
 
       <button type="submit" disabled={busy || !email || !password} className="btn btn-primary w-full">
-        {busy ? t("login.submitting") : t("login.submit")}
+        <T>{busy ? t("login.submitting") : t("login.submit")}</T>
       </button>
     </form>
   );

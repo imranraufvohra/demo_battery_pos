@@ -9,6 +9,8 @@ import { parseAmount, todayKarachi } from "@/lib/invoices";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { ScrapBatteryInventory } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function SellScrapForm({
   rows,
   onClose,
@@ -18,6 +20,7 @@ export default function SellScrapForm({
   onClose: () => void;
   onSold: (message: string) => void;
 }) {
+  const t = useT();
   const [buyerName, setBuyerName] = useState("");
   const [buyerPhone, setBuyerPhone] = useState("");
   const [weightText, setWeightText] = useState("");
@@ -82,13 +85,13 @@ export default function SellScrapForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="sell-scrap-title" className="font-display text-2xl font-bold">
-            Sell scrap
+            <T>Sell scrap</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -97,24 +100,22 @@ export default function SellScrapForm({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
           <fieldset className="space-y-2">
-            <legend className="mb-1 font-display text-xl font-semibold">This lot</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>This lot</T></legend>
             <p className="text-sm text-lead">
-              {rows.length} {rows.length === 1 ? "batch" : "batches"} · {totalQty} {totalQty === 1 ? "battery" : "batteries"}
+              {rows.length} <T>{rows.length === 1 ? "batch" : "batches"}</T> · {totalQty} <T>{totalQty === 1 ? "battery" : "batteries"}</T>
             </p>
             <ul className="max-h-32 space-y-1 overflow-y-auto rounded-xl border border-line px-3.5 py-2.5 text-sm text-lead">
               {rows.map((r) => (
-                <li key={r.id} className="truncate">
-                  {r.intake_number} · {r.brand} {r.model} · qty {r.quantity}
-                </li>
+                <li key={r.id} className="truncate"><T p={{ intake_number: r.intake_number, brand: r.brand, model: r.model, quantity: r.quantity }}>{"{intake_number} · {brand} {model} · qty {quantity}"}</T></li>
               ))}
             </ul>
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Buyer</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Buyer</T></legend>
             <div>
               <label htmlFor="ss-buyer" className="mb-1.5 block text-sm font-medium">
-                Name
+                <T>Name</T>
               </label>
               <input
                 id="ss-buyer"
@@ -122,13 +123,13 @@ export default function SellScrapForm({
                 autoFocus
                 value={buyerName}
                 onChange={(e) => setBuyerName(e.target.value)}
-                placeholder="Scrap buyer / kabari"
+                placeholder={t("Scrap buyer / kabari")}
                 className="input"
               />
             </div>
             <div>
               <label htmlFor="ss-phone" className="mb-1.5 block text-sm font-medium">
-                Phone (optional)
+                <T>Phone (optional)</T>
               </label>
               <input
                 id="ss-phone"
@@ -142,11 +143,11 @@ export default function SellScrapForm({
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Weight and rate</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Weight and rate</T></legend>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="ss-weight" className="mb-1.5 block text-sm font-medium">
-                  Total weight (kg)
+                  <T>Total weight (kg)</T>
                 </label>
                 <input
                   id="ss-weight"
@@ -160,7 +161,7 @@ export default function SellScrapForm({
               </div>
               <div>
                 <label htmlFor="ss-rate" className="mb-1.5 block text-sm font-medium">
-                  Rate per kg
+                  <T>Rate per kg</T>
                 </label>
                 <input
                   id="ss-rate"
@@ -175,13 +176,13 @@ export default function SellScrapForm({
             </div>
             {total != null && (
               <p className="rounded-xl bg-plate px-3.5 py-2.5 text-sm font-medium">
-                Total: <span className="font-display text-lg font-semibold tabular-nums">{formatRs(total)}</span>
+                <T>Total:</T> <span className="font-display text-lg font-semibold tabular-nums">{formatRs(total)}</span>
               </p>
             )}
 
             <div>
               <label htmlFor="ss-date" className="mb-1.5 block text-sm font-medium">
-                Sale date
+                <T>Sale date</T>
               </label>
               <input
                 id="ss-date"
@@ -195,7 +196,7 @@ export default function SellScrapForm({
 
             <div>
               <label htmlFor="ss-note" className="mb-1.5 block text-sm font-medium">
-                Note (optional)
+                <T>Note (optional)</T>
               </label>
               <textarea id="ss-note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} className="input resize-none" />
             </div>
@@ -205,15 +206,15 @@ export default function SellScrapForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {error && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : "Sell lot"}
+              <T>{saving ? "Saving" : "Sell lot"}</T>
             </button>
           </div>
         </div>

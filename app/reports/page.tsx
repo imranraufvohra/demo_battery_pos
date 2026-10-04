@@ -11,18 +11,23 @@ import type { InventoryItem } from "@/lib/types";
 import CashBookCard from "./CashBookCard";
 import SalesChart from "./SalesChart";
 
-export const metadata: Metadata = { title: "Reports" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Reports") };
+}
 
 function Row({ label, value, strong, tone }: { label: string; value: string; strong?: boolean; tone?: string }) {
   return (
     <div className="flex items-baseline justify-between gap-3 py-2">
-      <dt className={strong ? "font-semibold" : "text-lead"}>{label}</dt>
-      <dd className={`tabular-nums ${strong ? "font-display text-2xl font-semibold" : "font-semibold"} ${tone ?? ""}`}>{value}</dd>
+      <dt className={strong ? "font-semibold" : "text-lead"}><T>{label}</T></dt>
+      <dd className={`tabular-nums ${strong ? "font-display text-2xl font-semibold" : "font-semibold"} ${tone ?? ""}`}><T>{value}</T></dd>
     </div>
   );
 }
 
 export default async function ReportsPage({ searchParams }: { searchParams: Promise<{ range?: string }> }) {
+  const tt = await getT();
   const { range } = await searchParams;
   const today = todayKarachi();
   const period = periodFor(parseRange(range), today);
@@ -44,13 +49,10 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   if (summaryRes.error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Reports could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          The report functions are missing. In Supabase, open SQL Editor and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code> and then{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">05_reports.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Reports could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"The report functions are missing. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code> <T p={{ p: " " }}>{"and then{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">05_reports.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {summaryRes.error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: summaryRes.error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }
@@ -80,9 +82,9 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
   return (
     <div>
-      <PageHeader title="Reports" subtitle={period.label} />
+      <PageHeader title={tt("Reports")} subtitle={period.label} />
 
-      <nav aria-label="Report period" className="no-scrollbar anim-rise -mx-4 mt-5 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0" style={{ "--i": 1 } as React.CSSProperties}>
+      <nav aria-label={tt("Report period")} className="no-scrollbar anim-rise -mx-4 mt-5 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:px-0" style={{ "--i": 1 } as React.CSSProperties}>
         {RANGES.map((r) => (
           <Link
             key={r.key}
@@ -92,7 +94,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
               period.key === r.key ? "bg-casing text-white" : "border border-line bg-white text-casing hover:bg-plate"
             }`}
           >
-            {r.label}
+            <T>{r.label}</T>
           </Link>
         ))}
       </nav>
@@ -104,36 +106,36 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
               <span className={`mb-2.5 inline-flex h-9 w-9 items-center justify-center rounded-xl ${h.chip}`}>
                 <Icon name={h.icon} className="h-[18px] w-[18px]" />
               </span>
-              <p className="text-sm leading-tight text-white/70">{h.label}</p>
-              <p className="mt-1 whitespace-nowrap font-display text-[26px] font-semibold leading-none tabular-nums xl:text-3xl">{h.value}</p>
+              <p className="text-sm leading-tight text-white/70"><T>{h.label}</T></p>
+              <p className="mt-1 whitespace-nowrap font-display text-[26px] font-semibold leading-none tabular-nums xl:text-3xl"><T>{h.value}</T></p>
             </div>
           ))}
         </div>
         {s.invoice_count > 0 && (
-          <p className="relative mt-3 text-sm text-white/70">Average bill {formatRs(avgBill)}. Gross profit is sales minus what the items cost you.</p>
+          <p className="relative mt-3 text-sm text-white/70"><T p={{ formatRs: formatRs(avgBill) }}>{"Average bill {formatRs}. Gross profit is sales minus what the items cost you."}</T></p>
         )}
       </section>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         {/* Cash closing */}
         <section className="card anim-rise p-5" style={{ "--i": 2 } as React.CSSProperties}>
-          <h2 className="font-display text-2xl font-semibold">{period.singleDay ? "Daily cash closing" : "Cash and credit"}</h2>
-          <p className="text-sm text-lead">{period.singleDay ? "Count the drawer against these numbers." : "Money in, and what is still owed."}</p>
+          <h2 className="font-display text-2xl font-semibold"><T>{period.singleDay ? "Daily cash closing" : "Cash and credit"}</T></h2>
+          <p className="text-sm text-lead"><T>{period.singleDay ? "Count the drawer against these numbers." : "Money in, and what is still owed."}</T></p>
           <dl className="mt-2 divide-y divide-line/60">
-            <Row label="Billed" value={formatRs(s.sales_total)} />
-            <Row label="Received in cash" value={formatRs(s.by_method.cash)} />
-            <Row label="Received by bank transfer" value={formatRs(s.by_method.bank)} />
-            {s.by_method.other > 0 && <Row label="Received, other" value={formatRs(s.by_method.other)} />}
-            <Row label="Total money received" value={formatRs(s.cash_received)} strong />
-            <Row label="Of which from older bills (credit)" value={formatRs(s.received_on_older_bills)} />
+            <Row label={tt("Billed")} value={formatRs(s.sales_total)} />
+            <Row label={tt("Received in cash")} value={formatRs(s.by_method.cash)} />
+            <Row label={tt("Received by bank transfer")} value={formatRs(s.by_method.bank)} />
+            {s.by_method.other > 0 && <Row label={tt("Received, other")} value={formatRs(s.by_method.other)} />}
+            <Row label={tt("Total money received")} value={formatRs(s.cash_received)} strong />
+            <Row label={tt("Of which from older bills (credit)")} value={formatRs(s.received_on_older_bills)} />
             <Row
-              label="Still unpaid on these bills"
+              label={tt("Still unpaid on these bills")}
               value={formatRs(s.credit_given)}
               tone={s.credit_given > 0 ? "text-terminal-deep" : "text-cell-deep"}
             />
           </dl>
           <p className="mt-2 text-sm text-lead">
-            This is money received on bills, not cash in hand -- see the cash book below for that.
+            <T>This is money received on bills, not cash in hand -- see the cash book below for that.</T>
           </p>
         </section>
 
@@ -142,39 +144,34 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
         {/* Financials (F4) */}
         <section className="card anim-rise p-5" style={{ "--i": 4 } as React.CSSProperties}>
-          <h2 className="font-display text-2xl font-semibold">Expenses &amp; profit</h2>
-          <p className="text-sm text-lead">Every payment method, for this period.</p>
+          <h2 className="font-display text-2xl font-semibold"><T>{"Expenses & profit"}</T></h2>
+          <p className="text-sm text-lead"><T>Every payment method, for this period.</T></p>
           {finance ? (
             <dl className="mt-2 divide-y divide-line/60">
-              <Row label="Purchases (stock received)" value={formatRs(finance.purchases_total)} />
-              <Row label="Paid to suppliers" value={formatRs(finance.paid_to_suppliers_total)} />
-              <Row label="Expenses" value={formatRs(finance.expenses_total)} />
+              <Row label={tt("Purchases (stock received)")} value={formatRs(finance.purchases_total)} />
+              <Row label={tt("Paid to suppliers")} value={formatRs(finance.paid_to_suppliers_total)} />
+              <Row label={tt("Expenses")} value={formatRs(finance.expenses_total)} />
               {finance.expenses_excluded_total > 0 && (
-                <p className="py-1 ps-1 text-sm text-lead">
-                  Of which {formatRs(finance.expenses_excluded_total)} is owner withdrawal (left out of net profit).
-                </p>
+                <p className="py-1 ps-1 text-sm text-lead"><T p={{ formatRs: formatRs(finance.expenses_excluded_total) }}>{"Of which {formatRs} is owner withdrawal (left out of net profit)."}</T></p>
               )}
               <Row
-                label="Net profit"
+                label={tt("Net profit")}
                 value={formatRs(profit ?? 0)}
                 strong
                 tone={(profit ?? 0) < 0 ? "text-terminal-deep" : "text-cell-deep"}
               />
             </dl>
           ) : (
-            <p className="mt-2 text-lead">
-              This needs one more file. In Supabase, open SQL Editor and run{" "}
-              <code className="rounded bg-plate px-1.5 py-0.5 text-casing">14_expenses.sql</code> and then{" "}
-              <code className="rounded bg-plate px-1.5 py-0.5 text-casing">15_cash_book.sql</code>.
+            <p className="mt-2 text-lead"><T p={{ p: " " }}>{"This needs one more file. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">14_expenses.sql</code> <T p={{ p: " " }}>{"and then{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">15_cash_book.sql</code>.
             </p>
           )}
-          <p className="mt-2 text-sm text-lead">Net profit is gross profit minus expenses (owner withdrawal excluded).</p>
+          <p className="mt-2 text-sm text-lead"><T>Net profit is gross profit minus expenses (owner withdrawal excluded).</T></p>
         </section>
 
         {/* Chart */}
         <section className="card anim-rise p-5" style={{ "--i": 5 } as React.CSSProperties}>
           <h2 className="font-display text-2xl font-semibold">
-            {period.singleDay ? "Sales, last 14 days" : chartBucket === "month" ? "Sales by month" : "Sales by day"}
+            <T>{period.singleDay ? "Sales, last 14 days" : chartBucket === "month" ? "Sales by month" : "Sales by day"}</T>
           </h2>
           <div className="mt-3">
             <SalesChart data={chart} bucket={chartBucket} />
@@ -183,9 +180,9 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
         {/* Best sellers */}
         <section className="card anim-rise p-5" style={{ "--i": 6 } as React.CSSProperties}>
-          <h2 className="font-display text-2xl font-semibold">Best sellers</h2>
+          <h2 className="font-display text-2xl font-semibold"><T>Best sellers</T></h2>
           {s.top_items.length === 0 ? (
-            <p className="mt-2 text-lead">Items sold in this period will be ranked here.</p>
+            <p className="mt-2 text-lead"><T>Items sold in this period will be ranked here.</T></p>
           ) : (
             <ol className="mt-3 space-y-3.5">
               {s.top_items.map((t, i) => (
@@ -193,7 +190,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="min-w-0 truncate font-semibold">
                       <span className="me-2 text-lead tabular-nums">{i + 1}.</span>
-                      {t.description}
+                      <T>{t.description}</T>
                     </span>
                     <span className="shrink-0 font-semibold tabular-nums">{formatRs(t.revenue)}</span>
                   </div>
@@ -201,7 +198,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
                     <div className="h-2 flex-1 overflow-hidden rounded-full bg-plate" aria-hidden="true">
                       <div className="h-full rounded-full bg-sun" style={{ width: `${Math.max(4, (t.revenue / maxRevenue) * 100)}%` }} />
                     </div>
-                    <span className="w-16 text-end text-sm text-lead tabular-nums">{t.quantity} sold</span>
+                    <span className="w-16 text-end text-sm text-lead tabular-nums"><T p={{ quantity: t.quantity }}>{"{quantity} sold"}</T></span>
                   </div>
                 </li>
               ))}
@@ -211,16 +208,16 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
 
         {/* Shop snapshot */}
         <section className="card anim-rise p-5" style={{ "--i": 7 } as React.CSSProperties}>
-          <h2 className="font-display text-2xl font-semibold">Shop right now</h2>
+          <h2 className="font-display text-2xl font-semibold"><T>Shop right now</T></h2>
           <dl className="mt-2 divide-y divide-line/60">
-            <Row label="Stock value (at cost)" value={formatRs(stockCost)} />
-            <Row label="Stock worth (at sale price)" value={formatRs(stockSale)} />
+            <Row label={tt("Stock value (at cost)")} value={formatRs(stockCost)} />
+            <Row label={tt("Stock worth (at sale price)")} value={formatRs(stockSale)} />
             <Row
               label={`Credit to collect (${owedCount} ${owedCount === 1 ? "bill" : "bills"})`}
               value={formatRs(owedTotal)}
               tone={owedTotal > 0 ? "text-terminal-deep" : undefined}
             />
-            <Row label="Items running low" value={String(lowCount)} tone={lowCount > 0 ? "text-terminal-deep" : "text-cell-deep"} />
+            <Row label={tt("Items running low")} value={String(lowCount)} tone={lowCount > 0 ? "text-terminal-deep" : "text-cell-deep"} />
             {finance && (
               <Row
                 label={`We owe suppliers (${finance.we_owe_count} ${finance.we_owe_count === 1 ? "supplier" : "suppliers"})`}
@@ -231,14 +228,14 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
           </dl>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href="/sales?filter=due" className="btn btn-quiet btn-sm">
-              See credit bills
+              <T>See credit bills</T>
             </Link>
             <Link href="/inventory?filter=low" className="btn btn-quiet btn-sm">
-              See low stock
+              <T>See low stock</T>
             </Link>
             {finance && finance.we_owe_total > 0 && (
               <Link href="/suppliers" className="btn btn-quiet btn-sm">
-                See suppliers
+                <T>See suppliers</T>
               </Link>
             )}
           </div>

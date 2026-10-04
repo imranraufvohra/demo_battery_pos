@@ -46,6 +46,37 @@
   html[dir="rtl"] textarea {
     font-family: var(--font-arabic), ui-sans-serif, system-ui, sans-serif;
   }
+  /* Arabic script reads smaller than Latin at the same size, so scale the whole UI (everything is rem-based). */
+  html[dir="rtl"] {
+    font-size: 106.25%;
+  }
+  html[dir="rtl"] body {
+    line-height: 1.7;
+    font-weight: 450;
+  }
+  /* Tight line heights made for Latin capitals clip Arabic marks and ascenders. */
+  html[dir="rtl"] .leading-none,
+  html[dir="rtl"] .leading-tight,
+  html[dir="rtl"] .leading-snug {
+    line-height: 1.45;
+  }
+  html[dir="rtl"] .font-display {
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  /* Keep figures, codes and mixed Latin text readable inside right-to-left lines. */
+  html[dir="rtl"] .tabular-nums,
+  html[dir="rtl"] code,
+  html[dir="rtl"] kbd {
+    unicode-bidi: isolate;
+  }
+  html[dir="rtl"] input[type="tel"],
+  html[dir="rtl"] input[type="email"],
+  html[dir="rtl"] input[type="number"],
+  html[dir="rtl"] input[type="url"] {
+    direction: ltr;
+    text-align: end;
+  }
   /* Letter-spacing breaks the joined letters of Arabic script. */
   html[dir="rtl"] * {
     letter-spacing: normal !important;

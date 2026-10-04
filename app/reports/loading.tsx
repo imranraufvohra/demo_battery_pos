@@ -1,9 +1,10 @@
 import { Skeleton } from "@/components/Skeletons";
 
+import { T } from "@/components/T";
 export default function Loading() {
   return (
     <div role="status" aria-label="Loading">
-      <span className="sr-only">Loading</span>
+      <span className="sr-only"><T>Loading</T></span>
       <Skeleton className="h-11 w-48 md:h-12" />
       <div className="mt-6 flex gap-2">
         <Skeleton className="h-10 w-20 rounded-full" />

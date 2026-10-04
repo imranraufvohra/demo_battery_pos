@@ -7,6 +7,8 @@ import { formatRs } from "@/lib/format";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { ChargingJob, ChargingOutcome } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 const OUTCOMES: { value: ChargingOutcome; label: string }[] = [
   { value: "charged", label: "Charged fine" },
   { value: "faulty", label: "Turned out faulty" },
@@ -24,6 +26,7 @@ export default function ChargingHandoverForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const [outcome, setOutcome] = useState<ChargingOutcome | null>(null);
   const [amountText, setAmountText] = useState(String(job.price));
   const [note, setNote] = useState("");
@@ -73,7 +76,7 @@ export default function ChargingHandoverForm({
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -85,7 +88,7 @@ export default function ChargingHandoverForm({
             <p className="mb-1 text-sm text-lead">
               {job.battery_brand} {job.battery_model} · {job.customer_name}
             </p>
-            <p className="mb-3 font-display text-xl font-semibold">How did it come out?</p>
+            <p className="mb-3 font-display text-xl font-semibold"><T>How did it come out?</T></p>
             <div className="flex flex-wrap gap-2">
               {OUTCOMES.map((o) => (
                 <button
@@ -99,7 +102,7 @@ export default function ChargingHandoverForm({
                       : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
                   }`}
                 >
-                  {o.label}
+                  <T>{o.label}</T>
                 </button>
               ))}
             </div>
@@ -107,7 +110,7 @@ export default function ChargingHandoverForm({
 
           <div>
             <label htmlFor="ho-amount" className="mb-1.5 block text-sm font-medium">
-              Amount received
+              <T>Amount received</T>
             </label>
             <input
               id="ho-amount"
@@ -117,12 +120,12 @@ export default function ChargingHandoverForm({
               onChange={(e) => setAmountText(e.target.value)}
               className="input"
             />
-            <p className="mt-1 text-sm text-lead">Slip price was {formatRs(job.price)}.</p>
+            <p className="mt-1 text-sm text-lead"><T p={{ formatRs: formatRs(job.price) }}>{"Slip price was {formatRs}."}</T></p>
           </div>
 
           <div>
             <label htmlFor="ho-note" className="mb-1.5 block text-sm font-medium">
-              Note (optional)
+              <T>Note (optional)</T>
             </label>
             <textarea
               id="ho-note"
@@ -137,15 +140,15 @@ export default function ChargingHandoverForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {error && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving || !outcome} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : "Save"}
+              <T>{saving ? "Saving" : "Save"}</T>
             </button>
           </div>
         </div>

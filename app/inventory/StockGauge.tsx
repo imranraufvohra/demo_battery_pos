@@ -1,3 +1,7 @@
+"use client";
+
+import { useT } from "@/lib/i18n/client";
+
 const SEGMENTS = 6;
 
 /**
@@ -14,6 +18,7 @@ export default function StockGauge({
   reorderLevel: number;
   animate?: boolean;
 }) {
+  const t = useT();
   const wellStocked = Math.max(reorderLevel * 3, 3);
   const filled =
     quantity <= 0
@@ -24,7 +29,7 @@ export default function StockGauge({
   return (
     <span
       role="img"
-      aria-label={`${quantity} in stock, reorder at ${reorderLevel}`}
+      aria-label={t("{qty} in stock, reorder at {level}", { qty: quantity, level: reorderLevel })}
       className="inline-flex items-center"
     >
       <span className="flex gap-[2px] rounded-[4px] border-[1.5px] border-lead/60 p-[2px]">

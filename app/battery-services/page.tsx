@@ -9,7 +9,11 @@ import type {
 } from "@/lib/types";
 import BatteryServicesClient from "./BatteryServicesClient";
 
-export const metadata: Metadata = { title: "Battery services" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Battery services") };
+}
 
 export default async function BatteryServicesPage() {
   const supabase = await createClient();
@@ -24,15 +28,10 @@ export default async function BatteryServicesPage() {
   if (jobsRes.error && claimsRes.error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Battery services could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          The app is connected, but Supabase did not return charging jobs or battery claims. Open
-          Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">06_battery_services.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Battery services could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"The app is connected, but Supabase did not return charging jobs or battery claims. Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">06_battery_services.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">
-          Details: {jobsRes.error?.message ?? claimsRes.error?.message}
-        </p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: jobsRes.error?.message ?? claimsRes.error?.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }

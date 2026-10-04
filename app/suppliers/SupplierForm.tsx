@@ -16,6 +16,8 @@ import { checkRealConnectivity } from "@/lib/offline/net";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { Supplier, SupplierBalance } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function SupplierForm({
   supplier,
   others,
@@ -28,6 +30,7 @@ export default function SupplierForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const [form, setForm] = useState<SupplierFormValues>(() => supplierToForm(supplier));
   const [errors, setErrors] = useState<SupplierErrors>({});
   const [saving, setSaving] = useState(false);
@@ -122,13 +125,13 @@ export default function SupplierForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="supplier-form-title" className="font-display text-2xl font-bold">
-            {supplier ? "Edit supplier" : "Add supplier"}
+            <T>{supplier ? "Edit supplier" : "Add supplier"}</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -137,18 +140,18 @@ export default function SupplierForm({
 
         <div className="flex-1 space-y-7 overflow-y-auto px-5 py-6">
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Who they are</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Who they are</T></legend>
 
             <div>
               <label htmlFor="s-name" className="mb-1.5 block text-sm font-medium">
-                Name
+                <T>Name</T>
               </label>
               <input
                 id="s-name"
                 type="text"
                 autoFocus
                 autoComplete="off"
-                placeholder="Osaka Distributors"
+                placeholder={t("Osaka Distributors")}
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
                 aria-invalid={errors.name ? true : undefined}
@@ -164,7 +167,7 @@ export default function SupplierForm({
 
             <div>
               <label htmlFor="s-phone" className="mb-1.5 block text-sm font-medium">
-                Phone
+                <T>Phone</T>
               </label>
               <input
                 id="s-phone"
@@ -180,13 +183,13 @@ export default function SupplierForm({
 
             <div>
               <label htmlFor="s-address" className="mb-1.5 block text-sm font-medium">
-                Address
+                <T>Address</T>
               </label>
               <textarea
                 id="s-address"
                 rows={2}
                 autoComplete="off"
-                placeholder="Shop or warehouse address"
+                placeholder={t("Shop or warehouse address")}
                 value={form.address}
                 onChange={(e) => set("address", e.target.value)}
                 className="input resize-none"
@@ -195,14 +198,14 @@ export default function SupplierForm({
 
             <div>
               <label htmlFor="s-ntn" className="mb-1.5 block text-sm font-medium">
-                NTN or CNIC (optional)
+                <T>NTN or CNIC (optional)</T>
               </label>
               <input
                 id="s-ntn"
                 type="text"
                 inputMode="numeric"
                 autoComplete="off"
-                placeholder="42101-1234567-1 or 1234567"
+                placeholder={t("42101-1234567-1 or 1234567")}
                 value={form.ntn_or_cnic}
                 onChange={(e) => set("ntn_or_cnic", e.target.value)}
                 aria-invalid={errors.ntn_or_cnic ? true : undefined}
@@ -218,13 +221,13 @@ export default function SupplierForm({
 
             <div>
               <label htmlFor="s-note" className="mb-1.5 block text-sm font-medium">
-                Note
+                <T>Note</T>
               </label>
               <input
                 id="s-note"
                 type="text"
                 autoComplete="off"
-                placeholder="Optional"
+                placeholder={t("Optional")}
                 value={form.note}
                 onChange={(e) => set("note", e.target.value)}
                 className="input"
@@ -234,15 +237,13 @@ export default function SupplierForm({
 
           <fieldset className="space-y-4">
             <legend className="mb-3 font-display text-xl font-semibold">
-              {supplier ? "Opening balance" : "Opening balance (if any)"}
+              <T>{supplier ? "Opening balance" : "Opening balance (if any)"}</T>
             </legend>
             <p className="-mt-1 text-sm text-lead">
-              What this supplier was owed, or owed you, on the day you started using this app. Leave at 0 if
-              they're a brand-new supplier. This is a one-time starting figure -- decision D12: only the owner
-              can supply the real numbers.
+              <T>{"What this supplier was owed, or owed you, on the day you started using this app. Leave at 0 if they're a brand-new supplier. This is a one-time starting figure -- decision D12: only the owner can supply the real numbers."}</T>
             </p>
 
-            <div role="radiogroup" aria-label="Direction" className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
+            <div role="radiogroup" aria-label={t("Direction")} className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
               {(
                 [
                   { value: "we_owe", label: "We owe them" },
@@ -261,7 +262,7 @@ export default function SupplierForm({
                       on ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                     }`}
                   >
-                    {d.label}
+                    <T>{d.label}</T>
                   </button>
                 );
               })}
@@ -270,7 +271,7 @@ export default function SupplierForm({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="s-ob" className="mb-1.5 block text-sm font-medium">
-                  Amount (Rs)
+                  <T>Amount (Rs)</T>
                 </label>
                 <input
                   id="s-ob"
@@ -281,11 +282,11 @@ export default function SupplierForm({
                   aria-invalid={errors.opening_balance ? true : undefined}
                   className="input tabular-nums"
                 />
-                {errors.opening_balance && <p className="mt-1 text-sm text-terminal-deep">{errors.opening_balance}</p>}
+                {errors.opening_balance && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.opening_balance}</T></p>}
               </div>
               <div>
                 <label htmlFor="s-obd" className="mb-1.5 block text-sm font-medium">
-                  As of
+                  <T>As of</T>
                 </label>
                 <input
                   id="s-obd"
@@ -296,7 +297,7 @@ export default function SupplierForm({
                   className="input"
                 />
                 {errors.opening_balance_date && (
-                  <p className="mt-1 text-sm text-terminal-deep">{errors.opening_balance_date}</p>
+                  <p className="mt-1 text-sm text-terminal-deep"><T>{errors.opening_balance_date}</T></p>
                 )}
               </div>
             </div>
@@ -304,14 +305,14 @@ export default function SupplierForm({
 
           {supplier && (
             <fieldset className="space-y-2">
-              <legend className="mb-1 font-display text-xl font-semibold">Status</legend>
+              <legend className="mb-1 font-display text-xl font-semibold"><T>Status</T></legend>
               <p className="text-sm text-lead">
-                {active
+                <T>{active
                   ? "Active suppliers appear when choosing who to buy from on a new purchase bill."
-                  : "Inactive suppliers keep their full history but no longer appear when starting a new purchase bill."}
+                  : "Inactive suppliers keep their full history but no longer appear when starting a new purchase bill."}</T>
               </p>
               <button type="button" onClick={toggleActive} disabled={activeBusy} className={`btn ${active ? "btn-quiet" : "btn-primary"} btn-sm mt-1`}>
-                {activeBusy ? "Saving" : active ? "Mark inactive" : "Mark active"}
+                <T>{activeBusy ? "Saving" : active ? "Mark inactive" : "Mark active"}</T>
               </button>
             </fieldset>
           )}
@@ -320,15 +321,15 @@ export default function SupplierForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {saveError && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {saveError}
+              <T>{saveError}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : supplier ? "Save changes" : "Save supplier"}
+              <T>{saving ? "Saving" : supplier ? "Save changes" : "Save supplier"}</T>
             </button>
           </div>
         </div>

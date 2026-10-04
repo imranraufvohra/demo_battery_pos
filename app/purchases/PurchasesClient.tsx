@@ -16,6 +16,8 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { PurchaseInvoice } from "@/lib/types";
 import PurchasePayBadge from "./PayBadge";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Filter = "all" | "due" | "paid";
 
 const TABS: { value: Filter; label: string }[] = [
@@ -33,6 +35,7 @@ export default function PurchasesClient({
   supplierNames: Record<string, string>;
   initialFilter: Filter;
 }) {
+  const tt = useT();
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>(initialFilter);
@@ -111,12 +114,12 @@ export default function PurchasesClient({
   return (
     <div>
       <PageHeader
-        title="Purchases"
+        title={tt("Purchases")}
         subtitle={purchases.length === 0 ? "Stock you receive from suppliers will appear here." : `${purchases.length} purchase bills`}
         action={
           canManage && (
 <Link href="/purchases/new" className="btn btn-primary">
-            <Icon name="plus" className="h-5 w-5" /> Receive stock
+            <Icon name="plus" className="h-5 w-5" /> <T>Receive stock</T>
           </Link>
 )
         }
@@ -127,13 +130,13 @@ export default function PurchasesClient({
           <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-focus/10 text-focus">
             <Icon name="truck" className="h-7 w-7" />
           </span>
-          <h2 className="mt-4 font-display text-3xl font-semibold">No purchase bills yet</h2>
+          <h2 className="mt-4 font-display text-3xl font-semibold"><T>No purchase bills yet</T></h2>
           <p className="mx-auto mt-2 max-w-md text-lead">
-            Record stock as it comes in from a supplier -- quantities and cost update together, in one save.
+            <T>Record stock as it comes in from a supplier -- quantities and cost update together, in one save.</T>
           </p>
           {canManage && (
 <Link href="/purchases/new" className="btn btn-primary mt-6">
-            Receive first stock
+            <T>Receive first stock</T>
           </Link>
 )}
         </section>
@@ -142,7 +145,7 @@ export default function PurchasesClient({
           <div className="anim-rise mt-6 space-y-3">
             <div className="relative sm:max-w-md">
               <label htmlFor="purchase-search" className="sr-only">
-                Search purchase bills
+                <T>Search purchase bills</T>
               </label>
               <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
@@ -150,7 +153,7 @@ export default function PurchasesClient({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search bill no., supplier, or their invoice no."
+                placeholder={tt("Search bill no., supplier, or their invoice no.")}
                 className="input ps-11"
               />
             </div>
@@ -167,7 +170,7 @@ export default function PurchasesClient({
                       : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
                   }`}
                 >
-                  {t.label}
+                  <T>{t.label}</T>
                 </button>
               ))}
             </div>
@@ -175,18 +178,18 @@ export default function PurchasesClient({
 
           {shown.length === 0 ? (
             <div className="card mt-4 px-6 py-12 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing matches</p>
-              <p className="mt-2 text-lead">Try a different search, or a different tab.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+              <p className="mt-2 text-lead"><T>Try a different search, or a different tab.</T></p>
             </div>
           ) : (
             <>
               <dl className="anim-rise mt-4 grid grid-cols-2 gap-3 sm:max-w-md">
                 <div className="card p-3.5">
-                  <dt className="text-xs text-lead sm:text-sm">Total shown</dt>
+                  <dt className="text-xs text-lead sm:text-sm"><T>Total shown</T></dt>
                   <dd className="font-display text-xl font-semibold tabular-nums sm:text-2xl">{formatRs(totalShown)}</dd>
                 </div>
                 <div className={`card p-3.5 ${dueShown > 0 ? "border-terminal/30 bg-terminal/5" : ""}`}>
-                  <dt className="text-xs text-lead sm:text-sm">Still owed</dt>
+                  <dt className="text-xs text-lead sm:text-sm"><T>Still owed</T></dt>
                   <dd className={`font-display text-xl font-semibold tabular-nums sm:text-2xl ${dueShown > 0 ? "text-terminal-deep" : ""}`}>
                     {formatRs(dueShown)}
                   </dd>
@@ -198,14 +201,14 @@ export default function PurchasesClient({
                 <table className="w-full text-start text-[15px]">
                   <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                     <tr>
-                      <th className="px-5 py-3 font-medium">Bill</th>
-                      <th className="px-3 py-3 font-medium">Date</th>
-                      <th className="px-3 py-3 font-medium">Supplier</th>
-                      <th className="px-3 py-3 text-end font-medium">Total</th>
-                      <th className="px-3 py-3 text-end font-medium">Due</th>
-                      <th className="px-5 py-3 font-medium">Status</th>
+                      <th className="px-5 py-3 font-medium"><T>Bill</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Date</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Supplier</T></th>
+                      <th className="px-3 py-3 text-end font-medium"><T>Total</T></th>
+                      <th className="px-3 py-3 text-end font-medium"><T>Due</T></th>
+                      <th className="px-5 py-3 font-medium"><T>Status</T></th>
                       <th className="px-3 py-3 text-end font-medium">
-                        <span className="sr-only">Cancel</span>
+                        <span className="sr-only"><T>Cancel</T></span>
                       </th>
                     </tr>
                   </thead>
@@ -217,12 +220,12 @@ export default function PurchasesClient({
                             {p.purchase_number}
                           </Link>
                           {p.supplier_invoice_number && (
-                            <div className="text-sm text-lead">Inv {p.supplier_invoice_number}</div>
+                            <div className="text-sm text-lead"><T p={{ supplier_invoice_number: p.supplier_invoice_number }}>{"Inv {supplier_invoice_number}"}</T></div>
                           )}
                         </td>
-                        <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(p.invoice_date)}</td>
+                        <td className="px-3 py-3.5 tabular-nums text-lead"><T>{formatDay(p.invoice_date)}</T></td>
                         <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">
-                          {supplierNames[p.supplier_id] ?? "Unknown supplier"}
+                          <T>{supplierNames[p.supplier_id] ?? "Unknown supplier"}</T>
                         </td>
                         <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(p.total_value)}</td>
                         <td
@@ -230,7 +233,7 @@ export default function PurchasesClient({
                             p.status !== "Cancelled" && p.due_total > 0 ? "font-semibold text-terminal-deep" : "text-lead"
                           }`}
                         >
-                          {p.status !== "Cancelled" && p.due_total > 0 ? formatRs(p.due_total) : "-"}
+                          <T>{p.status !== "Cancelled" && p.due_total > 0 ? formatRs(p.due_total) : "-"}</T>
                         </td>
                         <td className="px-5 py-3.5">
                           <PurchasePayBadge tag={p.payment_tag} status={p.status} />
@@ -241,7 +244,7 @@ export default function PurchasesClient({
                               type="button"
                               onClick={() => askCancel(p)}
                               aria-label={`Cancel bill ${p.purchase_number}`}
-                              title="Cancel bill"
+                              title={tt("Cancel bill")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-terminal/10 hover:text-terminal-deep"
                             >
                               <Icon name="x" className="h-5 w-5" />
@@ -260,9 +263,9 @@ export default function PurchasesClient({
                   <li key={p.id} className="flex items-stretch gap-2">
                     <Link href={`/purchases/${p.id}`} className="card card-hover flex min-w-0 flex-1 items-center gap-3 p-4">
                       <span className="min-w-0 flex-1">
-                        <span className="truncate font-semibold">{supplierNames[p.supplier_id] ?? "Unknown supplier"}</span>
+                        <span className="truncate font-semibold"><T>{supplierNames[p.supplier_id] ?? "Unknown supplier"}</T></span>
                         <span className="mt-0.5 block text-sm text-lead">
-                          {p.purchase_number} · {formatDay(p.invoice_date)}
+                          {p.purchase_number} · <T>{formatDay(p.invoice_date)}</T>
                         </span>
                         <span className="mt-1.5 block">
                           <PurchasePayBadge tag={p.payment_tag} status={p.status} />
@@ -271,7 +274,7 @@ export default function PurchasesClient({
                       <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(p.total_value)}</span>
                         {p.status !== "Cancelled" && p.due_total > 0 && (
-                          <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>
+                          <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(p.due_total) }}>{"{formatRs} due"}</T></span>
                         )}
                       </span>
                       <Icon name="chevron" className="h-4 w-4 text-lead/60" />
@@ -289,7 +292,7 @@ export default function PurchasesClient({
                   </li>
                 ))}
               </ul>
-              {purchases.length >= 1000 && <p className="mt-3 text-sm text-lead">Showing the latest 1,000 bills.</p>}
+              {purchases.length >= 1000 && <p className="mt-3 text-sm text-lead"><T>Showing the latest 1,000 bills.</T></p>}
             </>
           )}
         </>
@@ -298,16 +301,10 @@ export default function PurchasesClient({
       {target && (
         <div className="anim-fade fixed inset-0 z-50 flex items-center justify-center bg-casing/60 p-4">
           <div role="alertdialog" aria-modal="true" aria-labelledby="cancel-title" className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <h2 id="cancel-title" className="font-display text-2xl font-bold">
-              Cancel {target.purchase_number}?
-            </h2>
-            <p className="mt-2 text-lead">
-              This reverses the stock this bill added ({formatRs(target.total_value)} from{" "}
-              {supplierNames[target.supplier_id] ?? "this supplier"}). It's refused if any of the stock has already
-              been sold. Any payment already made stays recorded, as an advance. This cannot be undone.
-            </p>
+            <h2 id="cancel-title" className="font-display text-2xl font-bold"><T p={{ purchase_number: target.purchase_number }}>{"Cancel {purchase_number}?"}</T></h2>
+            <p className="mt-2 text-lead"><T p={{ formatRs: formatRs(target.total_value), p: " ", supplier: supplierNames[target.supplier_id] ?? "this supplier" }}>{"This reverses the stock this bill added ({formatRs} from{p}{supplier}). It's refused if any of the stock has already been sold. Any payment already made stays recorded, as an advance. This cannot be undone."}</T></p>
             <label htmlFor="cancel-reason" className="mt-4 block text-sm font-medium">
-              Reason
+              <T>Reason</T>
             </label>
             <input
               id="cancel-reason"
@@ -315,20 +312,20 @@ export default function PurchasesClient({
               autoFocus
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Entered by mistake, wrong supplier"
+              placeholder={tt("e.g. Entered by mistake, wrong supplier")}
               className="input mt-1.5"
             />
             {cancelError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {cancelError}
+                <T>{cancelError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setTarget(null)} disabled={busy} className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmCancel} disabled={busy} className="btn btn-danger">
-                {busy ? "Cancelling" : "Cancel bill"}
+                <T>{busy ? "Cancelling" : "Cancel bill"}</T>
               </button>
             </div>
           </div>

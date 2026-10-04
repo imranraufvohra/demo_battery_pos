@@ -2,6 +2,7 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import { createClient } from "@/lib/supabase/server";
 
+import { T } from "@/components/T";
 type StockSummaryRow = { kind: "charging" | "claim"; status: string; count: number };
 type ByDistributorRow = { distributor_id: string; distributor_name: string; status: string; count: number };
 
@@ -34,12 +35,9 @@ export default async function BatteryStockCard() {
         <Icon name="plug" className="h-5 w-5" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-semibold">Batteries currently in the shop</span>
-        <span className="block text-sm text-lead">
-          {charging} in for charging · {claims} on warranty claim
-          {byDistributor.length > 0 &&
-            ` (${byDistributor.map((d) => `${d.count} with ${d.distributor_name}`).join(", ")})`}
-        </span>
+        <span className="block font-semibold"><T>Batteries currently in the shop</T></span>
+        <span className="block text-sm text-lead"><T p={{ charging: charging, claims: claims, p0: byDistributor.length > 0 &&
+            ` (${byDistributor.map((d) => `${d.count} with ${d.distributor_name}`).join(", ")})` }}>{"{charging} in for charging · {claims} on warranty claim{p0}"}</T></span>
       </span>
       <Icon name="chevron" className="h-4 w-4 text-lead/60" />
     </Link>

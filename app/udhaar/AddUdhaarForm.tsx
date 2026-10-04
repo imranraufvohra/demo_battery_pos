@@ -9,6 +9,8 @@ import { checkRealConnectivity } from "@/lib/offline/net";
 import { todayKarachi } from "@/lib/invoices";
 import { formatPhone, isValidPhone, normalizePhone } from "@/lib/customers";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type CustomerPick = { id: string; name: string; phone: string | null };
 
 /** Sheet to write down money a customer already owes. Saves a bill with no items (see 20_udhaar_entry.sql). */
@@ -21,6 +23,7 @@ export default function AddUdhaarForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const today = todayKarachi();
   const [customer, setCustomer] = useState<CustomerPick | null>(null);
   const [search, setSearch] = useState("");
@@ -123,13 +126,13 @@ export default function AddUdhaarForm({
       <form onSubmit={save} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between gap-3 px-5 pb-2 pt-4">
           <h2 id="udhaar-form-title" className="font-display text-2xl font-semibold">
-            Add credit
+            <T>Add credit</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full text-lead hover:bg-plate"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -138,18 +141,18 @@ export default function AddUdhaarForm({
 
         <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 pb-4">
           <p className="text-[15px] text-lead">
-            Money a customer already owes you. It is saved as a bill with no items, so you can take payment on it later.
+            <T>Money a customer already owes you. It is saved as a bill with no items, so you can take payment on it later.</T>
           </p>
 
           {/* Customer */}
           <div>
             <label htmlFor={isNew ? "ud-newname" : "ud-customer"} className="mb-1.5 block text-sm font-medium">
-              Customer
+              <T>Customer</T>
             </label>
             {isNew ? (
               <div className="space-y-3 rounded-xl border border-line bg-plate/40 p-3">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-semibold text-cell-deep">New customer</span>
+                  <span className="text-sm font-semibold text-cell-deep"><T>New customer</T></span>
                   {!createdId && (
                     <button
                       type="button"
@@ -159,7 +162,7 @@ export default function AddUdhaarForm({
                         setErrors((p) => ({ ...p, customer: undefined, phone: undefined }));
                       }}
                     >
-                      Choose from list
+                      <T>Choose from list</T>
                     </button>
                   )}
                 </div>
@@ -170,7 +173,7 @@ export default function AddUdhaarForm({
                     setNewName(e.target.value);
                     setErrors((p) => ({ ...p, customer: undefined }));
                   }}
-                  placeholder="Customer name"
+                  placeholder={t("Customer name")}
                   autoComplete="off"
                   disabled={!!createdId}
                   aria-invalid={errors.customer ? true : undefined}
@@ -185,7 +188,7 @@ export default function AddUdhaarForm({
                       setNewPhone(e.target.value);
                       setErrors((p) => ({ ...p, phone: undefined }));
                     }}
-                    placeholder="Phone (optional), e.g. +1 555 010 0123"
+                    placeholder={t("Phone (optional), e.g. +1 555 010 0123")}
                     autoComplete="off"
                     disabled={!!createdId}
                     aria-invalid={errors.phone ? true : undefined}
@@ -194,7 +197,7 @@ export default function AddUdhaarForm({
                   {errors.phone && <p className="mt-1 text-sm text-terminal-deep">{errors.phone}</p>}
                 </div>
                 {createdId && (
-                  <p className="text-sm text-lead">The customer is saved. Press Save credit again to finish.</p>
+                  <p className="text-sm text-lead"><T>The customer is saved. Press Save credit again to finish.</T></p>
                 )}
               </div>
             ) : customer ? (
@@ -204,7 +207,7 @@ export default function AddUdhaarForm({
                   {customer.phone && <span className="block text-sm text-lead">{formatPhone(customer.phone)}</span>}
                 </span>
                 <button type="button" className="text-sm font-semibold text-focus hover:underline" onClick={() => setCustomer(null)}>
-                  Change
+                  <T>Change</T>
                 </button>
               </div>
             ) : (
@@ -217,7 +220,7 @@ export default function AddUdhaarForm({
                     setSearch(e.target.value);
                     setErrors((p) => ({ ...p, customer: undefined }));
                   }}
-                  placeholder="Type a name or phone"
+                  placeholder={t("Type a name or phone")}
                   autoComplete="off"
                   aria-invalid={errors.customer ? true : undefined}
                   className="input"
@@ -249,19 +252,19 @@ export default function AddUdhaarForm({
                       className="flex w-full items-center gap-2 px-3.5 py-3 text-start font-semibold text-focus hover:bg-plate/70"
                     >
                       <Icon name="userplus" className="h-5 w-5" />
-                      {search.trim() ? `Add "${search.trim()}" as a new customer` : "Add a new customer"}
+                      <T>{search.trim() ? `Add "${search.trim()}" as a new customer` : "Add a new customer"}</T>
                     </button>
                   </li>
                 </ul>
               </>
             )}
-            {errors.customer && <p className="mt-1.5 text-sm text-terminal-deep">{errors.customer}</p>}
+            {errors.customer && <p className="mt-1.5 text-sm text-terminal-deep"><T>{errors.customer}</T></p>}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="ud-amount" className="mb-1.5 block text-sm font-medium">
-                Amount (Rs)
+                <T>Amount (Rs)</T>
               </label>
               <input
                 id="ud-amount"
@@ -279,7 +282,7 @@ export default function AddUdhaarForm({
             </div>
             <div>
               <label htmlFor="ud-date" className="mb-1.5 block text-sm font-medium">
-                Date
+                <T>Date</T>
               </label>
               <input
                 id="ud-date"
@@ -293,19 +296,19 @@ export default function AddUdhaarForm({
                 aria-invalid={errors.date ? true : undefined}
                 className="input"
               />
-              {errors.date && <p className="mt-1 text-sm text-terminal-deep">{errors.date}</p>}
+              {errors.date && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.date}</T></p>}
             </div>
           </div>
 
           <div>
             <label htmlFor="ud-number" className="mb-1.5 block text-sm font-medium">
-              Invoice number <span className="font-normal text-lead">(optional)</span>
+              <T>Invoice number</T> <span className="font-normal text-lead"><T>(optional)</T></span>
             </label>
             <input
               id="ud-number"
               value={number}
               onChange={(e) => setNumber(e.target.value)}
-              placeholder="Leave empty to get the next number"
+              placeholder={t("Leave empty to get the next number")}
               autoComplete="off"
               className="input"
             />
@@ -313,31 +316,31 @@ export default function AddUdhaarForm({
 
           <div>
             <label htmlFor="ud-note" className="mb-1.5 block text-sm font-medium">
-              Note <span className="font-normal text-lead">(optional)</span>
+              <T>Note</T> <span className="font-normal text-lead"><T>(optional)</T></span>
             </label>
             <textarea
               id="ud-note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={2}
-              placeholder="e.g. old battery bill from the paper book"
+              placeholder={t("e.g. old battery bill from the paper book")}
               className="input"
             />
           </div>
 
           {saveError && (
             <p role="alert" className="rounded-xl border border-terminal/30 bg-terminal/10 px-3.5 py-3 text-[15px] text-terminal-deep">
-              {saveError}
+              <T>{saveError}</T>
             </p>
           )}
         </div>
 
         <div className="flex gap-2.5 border-t border-line px-5 py-4 pb-safe">
           <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet flex-1">
-            Cancel
+            <T>Cancel</T>
           </button>
           <button type="submit" disabled={saving} className="btn btn-primary flex-1">
-            {saving ? "Saving..." : "Save credit"}
+            <T>{saving ? "Saving..." : "Save credit"}</T>
           </button>
         </div>
       </form>

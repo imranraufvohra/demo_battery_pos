@@ -4,7 +4,11 @@ import type { Invoice } from "@/lib/types";
 import { loadFbrStatuses } from "@/lib/fbrStatusLoad";
 import SalesClient, { type ChargingSaleRow, type ClaimSaleRow } from "./SalesClient";
 
-export const metadata: Metadata = { title: "Sales" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Sales") };
+}
 
 export default async function SalesPage({ searchParams }: { searchParams: Promise<{ filter?: string }> }) {
   const { filter } = await searchParams;
@@ -37,13 +41,10 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
   if (error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Sales could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          The app is connected, but Supabase did not return the bills. The most common reason is that the invoicing
-          tables have not been created yet. Open Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Sales could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"The app is connected, but Supabase did not return the bills. The most common reason is that the invoicing tables have not been created yet. Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }

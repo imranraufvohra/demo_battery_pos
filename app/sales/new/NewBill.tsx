@@ -38,6 +38,8 @@ import type { Customer, InventoryItem, InvoiceItem, PaymentMethod, PaymentStatus
 import CustomerForm from "@/app/customers/CustomerForm";
 import ManualItemForm from "./ManualItemForm";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type BillItem = Pick<
   InventoryItem,
   | "id"
@@ -114,6 +116,7 @@ export default function NewBill({
   initialCustomerId: string | null;
   initialDraft?: BillDraft | null;
 }) {
+  const tt = useT();
   const router = useRouter();
   const roleInfo = useRoleInfo();
   const canOverridePrice = can(roleInfo, "price.override");
@@ -671,8 +674,8 @@ export default function NewBill({
   return (
     <div className="pb-44 lg:pb-0">
       <PageHeader
-        title="New bill"
-        subtitle="Choose a customer, add items, then save."
+        title={tt("New bill")}
+        subtitle={tt("Choose a customer, add items, then save.")}
       />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-start">
@@ -680,10 +683,10 @@ export default function NewBill({
           {/* ---------- Customer ---------- */}
           <section className="card anim-rise p-4 sm:p-5" style={{ "--i": 1 } as React.CSSProperties}>
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-display text-2xl font-semibold">Customer</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Customer</T></h2>
               <div className="flex items-center gap-2">
                 <label htmlFor="invoice-date" className="text-sm font-medium text-lead">
-                  Bill date
+                  <T>Bill date</T>
                 </label>
                 <input
                   id="invoice-date"
@@ -699,7 +702,7 @@ export default function NewBill({
               </div>
               {!pickingCustomer && (
                 <button type="button" className="btn btn-quiet btn-sm" onClick={() => setPickingCustomer(true)}>
-                  {customer ? "Change" : "Choose customer"}
+                  <T>{customer ? "Change" : "Choose customer"}</T>
                 </button>
               )}
             </div>
@@ -713,30 +716,30 @@ export default function NewBill({
                       <p className="truncate font-semibold">{customer.name}</p>
                       <p className="truncate text-sm text-lead">
                         {customer.phone ? formatPhone(customer.phone) : "No phone saved"}
-                        {customer.registration_type === "Registered" && customer.cnic_or_ntn
+                        <T>{customer.registration_type === "Registered" && customer.cnic_or_ntn
                           ? ` · ${formatRegNo(customer.cnic_or_ntn)}`
-                          : ""}
+                          : ""}</T>
                       </p>
                     </div>
                   </div>
                 ) : (
                   <div>
                     <label htmlFor="walkin" className="text-sm font-medium text-lead">
-                      Walk-in customer. Name on bill{due > 0 ? " (needed for credit)" : " (optional)"}
+                      {due > 0 ? <T>Walk-in customer. Name on bill (needed for credit)</T> : <T>Walk-in customer. Name on bill (optional)</T>}
                     </label>
                     <input
                       id="walkin"
                       value={walkinName}
                       onChange={(e) => setWalkinName(e.target.value)}
                       maxLength={120}
-                      placeholder="Leave empty for Walk-in customer"
+                      placeholder={tt("Leave empty for Walk-in customer")}
                       className="input mt-1.5"
                       autoComplete="off"
                     />
 
                     <div className="mt-3">
                       <label htmlFor="walkin-phone" className="mb-1 block text-sm font-medium text-lead">
-                        Phone{due > 0 ? " (needed for credit)" : " (optional)"}
+                        {due > 0 ? <T>Phone (needed for credit)</T> : <T>Phone (optional)</T>}
                       </label>
                       <input
                         id="walkin-phone"
@@ -754,14 +757,14 @@ export default function NewBill({
                     </div>
                     <div className="mt-3">
                       <label htmlFor="walkin-address" className="mb-1 block text-sm font-medium text-lead">
-                        Address (optional)
+                        <T>Address (optional)</T>
                       </label>
                       <textarea
                         id="walkin-address"
                         rows={2}
                         value={walkinAddress}
                         onChange={(e) => setWalkinAddress(e.target.value)}
-                        placeholder="Shop or house number, area, city"
+                        placeholder={tt("Shop or house number, area, city")}
                         className="input resize-none"
                         autoComplete="off"
                       />
@@ -773,14 +776,14 @@ export default function NewBill({
                         className="btn btn-quiet btn-sm mt-2.5"
                         onClick={() => setWalkinDetailsOpen(true)}
                       >
-                        <Icon name="userplus" className="h-4 w-4" /> Add CNIC/NTN
+                        <Icon name="userplus" className="h-4 w-4" /> <T>Add CNIC/NTN</T>
                       </button>
                     ) : (
                       <div className="mt-3 space-y-3 rounded-xl border border-line p-3.5">
                         <p className="text-xs text-lead">
-                          This goes straight on this bill. It is not saved as a customer record.
+                          <T>This goes straight on this bill. It is not saved as a customer record.</T>
                         </p>
-                        <div role="radiogroup" aria-label="Registration type" className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
+                        <div role="radiogroup" aria-label={tt("Registration type")} className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
                           {REGISTRATION_TYPES.map((r) => {
                             const on = walkinRegType === r.value;
                             return (
@@ -797,14 +800,14 @@ export default function NewBill({
                                   on ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                                 }`}
                               >
-                                {r.label}
+                                <T>{r.label}</T>
                               </button>
                             );
                           })}
                         </div>
                         <div>
                           <label htmlFor="walkin-cnic" className="mb-1 block text-sm font-medium text-lead">
-                            CNIC or NTN {walkinRegType === "Registered" ? "" : "(optional)"}
+                            {walkinRegType === "Registered" ? <T>CNIC or NTN</T> : <T>CNIC or NTN (optional)</T>}
                           </label>
                           <input
                             id="walkin-cnic"
@@ -815,7 +818,7 @@ export default function NewBill({
                               setWalkinCnic(e.target.value);
                               setError(null);
                             }}
-                            placeholder="42101-1234567-1 or 1234567"
+                            placeholder={tt("42101-1234567-1 or 1234567")}
                             className="input tabular-nums"
                             autoComplete="off"
                           />
@@ -829,7 +832,7 @@ export default function NewBill({
                             setWalkinCnic("");
                           }}
                         >
-                          Remove CNIC/NTN
+                          <T>Remove CNIC/NTN</T>
                         </button>
                       </div>
                     )}
@@ -841,14 +844,14 @@ export default function NewBill({
             {pickingCustomer && (
               <div className="mt-3">
                 <label className="relative block">
-                  <span className="sr-only">Search customers</span>
+                  <span className="sr-only"><T>Search customers</T></span>
                   <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
                   <input
                     autoFocus
                     type="search"
                     value={customerQuery}
                     onChange={(e) => setCustomerQuery(e.target.value)}
-                    placeholder="Search name or phone"
+                    placeholder={tt("Search name or phone")}
                     className="input ps-11"
                     autoComplete="off"
                   />
@@ -867,7 +870,7 @@ export default function NewBill({
                       <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-casing/10 text-casing">
                         <Icon name="users" className="h-4 w-4" />
                       </span>
-                      <span className="font-semibold">Walk-in customer</span>
+                      <span className="font-semibold"><T>Walk-in customer</T></span>
                     </button>
                   </li>
                   {customerHits.map((c) => (
@@ -888,21 +891,21 @@ export default function NewBill({
                           <span className="block truncate text-sm text-lead">{c.phone ? formatPhone(c.phone) : "No phone saved"}</span>
                         </span>
                         {c.registration_type === "Registered" && (
-                          <span className="rounded-full bg-cell/10 px-2.5 py-1 text-xs font-semibold text-cell-deep">Registered</span>
+                          <span className="rounded-full bg-cell/10 px-2.5 py-1 text-xs font-semibold text-cell-deep"><T>Registered</T></span>
                         )}
                       </button>
                     </li>
                   ))}
                 </ul>
                 {customerQuery.trim() && customerHits.length === 0 && (
-                  <p className="mt-2 text-sm text-lead">No customer found. You can add them below.</p>
+                  <p className="mt-2 text-sm text-lead"><T>No customer found. You can add them below.</T></p>
                 )}
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button type="button" className="btn btn-quiet btn-sm" onClick={() => setAddingCustomer(true)}>
-                    <Icon name="userplus" className="h-4 w-4" /> Add new customer
+                    <Icon name="userplus" className="h-4 w-4" /> <T>Add new customer</T>
                   </button>
                   <button type="button" className="btn btn-quiet btn-sm" onClick={() => setPickingCustomer(false)}>
-                    Cancel
+                    <T>Cancel</T>
                   </button>
                 </div>
               </div>
@@ -910,14 +913,14 @@ export default function NewBill({
 
             <div className="mt-4">
               <label htmlFor="note" className="text-sm font-medium text-lead">
-                Vehicle or note (optional)
+                <T>Vehicle or note (optional)</T>
               </label>
               <input
                 id="note"
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 maxLength={200}
-                placeholder="For example: Suzuki Cultus, old battery taken"
+                placeholder={tt("For example: Suzuki Cultus, old battery taken")}
                 className="input mt-1.5"
                 autoComplete="off"
               />
@@ -927,17 +930,17 @@ export default function NewBill({
           {/* ---------- Items ---------- */}
           <section className="card anim-rise p-4 sm:p-5" style={{ "--i": 2 } as React.CSSProperties}>
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-display text-2xl font-semibold">Items</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Items</T></h2>
               {canAddManualItem && (
 <button type="button" className="btn btn-quiet btn-sm" onClick={() => setAddingItem(true)}>
-                <Icon name="plus" className="h-4 w-4" /> Item not in stock
+                <Icon name="plus" className="h-4 w-4" /> <T>Item not in stock</T>
               </button>
 )}
             </div>
 
             <div className="relative mt-3">
               <label htmlFor="item-search" className="sr-only">
-                Search stock to add
+                <T>Search stock to add</T>
               </label>
               <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
@@ -953,7 +956,7 @@ export default function NewBill({
                 aria-expanded={hits.length > 0}
                 aria-controls="item-hits"
                 aria-activedescendant={hits[activeHit] ? `hit-${hits[activeHit].id}` : undefined}
-                placeholder="Search stock: brand, model, 100Ah"
+                placeholder={tt("Search stock: brand, model, 100Ah")}
                 autoComplete="off"
                 spellCheck={false}
                 className="input ps-11"
@@ -961,8 +964,8 @@ export default function NewBill({
             </div>
 
             {itemQuery.trim() && (
-              <ul id="item-hits" role="listbox" aria-label="Matching stock" className="mt-2 divide-y divide-line/60 overflow-hidden rounded-xl border border-line">
-                {hits.length === 0 && <li className="px-3.5 py-3 text-lead">No stock matches. Check the spelling.</li>}
+              <ul id="item-hits" role="listbox" aria-label={tt("Matching stock")} className="mt-2 divide-y divide-line/60 overflow-hidden rounded-xl border border-line">
+                {hits.length === 0 && <li className="px-3.5 py-3 text-lead"><T>No stock matches. Check the spelling.</T></li>}
                 {hits.map((s, i) => (
                   <li key={s.id} role="option" id={`hit-${s.id}`} aria-selected={i === activeHit}>
                     <button
@@ -975,12 +978,12 @@ export default function NewBill({
                         <span className="block truncate font-semibold">
                           {s.brand} {s.model}
                         </span>
-                        <span className="block truncate text-sm text-lead">{specText(s)}</span>
+                        <span className="block truncate text-sm text-lead"><T>{specText(s)}</T></span>
                       </span>
                       <span className="text-end">
                         <span className="block font-semibold tabular-nums">{formatRs(s.sale_price)}</span>
                         <span className={`block text-xs ${s.quantity <= 0 ? "font-semibold text-terminal-deep" : "text-lead"}`}>
-                          {s.quantity <= 0 ? "Out of stock" : `${s.quantity} in stock`}
+                          <T>{s.quantity <= 0 ? "Out of stock" : `${s.quantity} in stock`}</T>
                         </span>
                       </span>
                     </button>
@@ -994,11 +997,11 @@ export default function NewBill({
                 <span className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-sun/25 text-amber-800">
                   <Icon name="battery" className="h-6 w-6" />
                 </span>
-                <p className="mt-2 font-semibold">No items yet</p>
+                <p className="mt-2 font-semibold"><T>No items yet</T></p>
                 <p className="mt-0.5 text-sm text-lead">
-                  {allStock.length === 0
+                  <T>{allStock.length === 0
                     ? "Add stock in Inventory, or use \"Item not in stock\" above."
-                    : "Search above and press Enter or tap an item to add it."}
+                    : "Search above and press Enter or tap an item to add it."}</T>
                 </p>
               </div>
             ) : (
@@ -1009,10 +1012,10 @@ export default function NewBill({
                 <table className="w-full min-w-[38rem] border-collapse text-[15px]">
                   <thead>
                     <tr className="bg-plate/70 text-start">
-                      <th className="border-b border-line px-3 py-2.5 font-display text-base font-semibold">Particulars</th>
-                      <th className="w-28 border-b border-line px-2 py-2.5 text-center font-display text-base font-semibold">Qty</th>
-                      <th className="w-28 border-b border-line px-2 py-2.5 text-end font-display text-base font-semibold">Rate</th>
-                      <th className="w-32 border-b border-line px-3 py-2.5 text-end font-display text-base font-semibold">Amount</th>
+                      <th className="border-b border-line px-3 py-2.5 font-display text-base font-semibold"><T>Particulars</T></th>
+                      <th className="w-28 border-b border-line px-2 py-2.5 text-center font-display text-base font-semibold"><T>Qty</T></th>
+                      <th className="w-28 border-b border-line px-2 py-2.5 text-end font-display text-base font-semibold"><T>Rate</T></th>
+                      <th className="w-32 border-b border-line px-3 py-2.5 text-end font-display text-base font-semibold"><T>Amount</T></th>
                       <th className="w-10 border-b border-line" aria-hidden="true" />
                     </tr>
                   </thead>
@@ -1024,21 +1027,19 @@ export default function NewBill({
                             <p className="break-words font-semibold leading-snug">
                               {c.item.brand} {c.item.model}
                             </p>
-                            <p className="text-sm text-lead">{specText(c.item)}</p>
+                            <p className="text-sm text-lead"><T>{specText(c.item)}</T></p>
                             {newItemIds.has(c.line.itemId) && (
                               <p className="mt-1 inline-flex items-center gap-1 rounded-full bg-cell/10 px-2 py-0.5 text-xs font-semibold text-cell-deep">
-                                <Icon name="check" className="h-3 w-3" strokeWidth={2.4} /> New item, added to inventory
+                                <Icon name="check" className="h-3 w-3" strokeWidth={2.4} /> <T>New item, added to inventory</T>
                               </p>
                             )}
                             {c.overStock && (
-                              <p role="alert" className="mt-1 text-sm font-semibold text-terminal-deep">
-                                Only {c.item.quantity} in stock. Lower the quantity to save.
-                              </p>
+                              <p role="alert" className="mt-1 text-sm font-semibold text-terminal-deep"><T p={{ quantity: c.item.quantity }}>{"Only {quantity} in stock. Lower the quantity to save."}</T></p>
                             )}
                             {!c.overStock && c.changed && (
-                              <p className="mt-1 text-sm text-amber-800">Price changed from {formatRs(c.item.sale_price)}</p>
+                              <p className="mt-1 text-sm text-amber-800"><T p={{ formatRs: formatRs(c.item.sale_price) }}>{"Price changed from {formatRs}"}</T></p>
                             )}
-                            {c.belowCost && <p className="mt-0.5 text-sm font-semibold text-terminal-deep">Below cost price</p>}
+                            {c.belowCost && <p className="mt-0.5 text-sm font-semibold text-terminal-deep"><T>Below cost price</T></p>}
                             {c.item.category === "battery" &&
                               (!replacements[c.line.itemId] ? (
                                 <button
@@ -1046,17 +1047,17 @@ export default function NewBill({
                                   className="btn btn-quiet btn-sm mt-2"
                                   onClick={() => addReplacement(c.line.itemId, c.item, c.line.qty)}
                                 >
-                                  <Icon name="swap" className="h-4 w-4" /> Old battery taken in exchange
+                                  <Icon name="swap" className="h-4 w-4" /> <T>Old battery taken in exchange</T>
                                 </button>
                               ) : (
                                 <p className="mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-casing">
-                                  <Icon name="swap" className="h-4 w-4" /> Old battery taken in exchange
+                                  <Icon name="swap" className="h-4 w-4" /> <T>Old battery taken in exchange</T>
                                   <button
                                     type="button"
                                     className="font-medium text-lead hover:text-terminal-deep hover:underline"
                                     onClick={() => removeReplacement(c.line.itemId)}
                                   >
-                                    Remove
+                                    <T>Remove</T>
                                   </button>
                                 </p>
                               ))}
@@ -1091,9 +1092,7 @@ export default function NewBill({
                             </div>
                           </td>
                           <td className="px-2 py-2.5 align-top">
-                            <label className="sr-only" htmlFor={`rate-${c.line.itemId}`}>
-                              Rate for {c.item.brand} {c.item.model}
-                            </label>
+                            <label className="sr-only" htmlFor={`rate-${c.line.itemId}`}><T p={{ brand: c.item.brand, model: c.item.model }}>{"Rate for {brand} {model}"}</T></label>
                             <input
                               id={`rate-${c.line.itemId}`}
                               value={c.line.rate}
@@ -1102,7 +1101,7 @@ export default function NewBill({
                               inputMode="decimal"
                               aria-invalid={c.rate == null}
                               readOnly={!canOverridePrice}
-                              title={canOverridePrice ? undefined : "Only the Owner can change prices"}
+                              title={tt(canOverridePrice ? undefined : "Only the Owner can change prices")}
                               className={`input h-9 w-full text-end tabular-nums ${canOverridePrice ? "" : "bg-plate text-lead"}`}
                             />
                           </td>
@@ -1123,11 +1122,11 @@ export default function NewBill({
                         {c.item.category === "battery" && replacements[c.line.itemId] && (
                           <tr>
                             <td colSpan={5} className="bg-plate/50 px-3 py-3">
-                              <p className="text-xs text-lead">Goes to the scrap pile, not back into sellable stock.</p>
+                              <p className="text-xs text-lead"><T>Goes to the scrap pile, not back into sellable stock.</T></p>
                               <div className="mt-2.5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
                                 <div className="col-span-1">
                                   <label htmlFor={`rep-brand-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Brand
+                                    <T>Brand</T>
                                   </label>
                                   <input
                                     id={`rep-brand-${c.line.itemId}`}
@@ -1139,7 +1138,7 @@ export default function NewBill({
                                 </div>
                                 <div className="col-span-1">
                                   <label htmlFor={`rep-model-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Model
+                                    <T>Model</T>
                                   </label>
                                   <input
                                     id={`rep-model-${c.line.itemId}`}
@@ -1151,20 +1150,20 @@ export default function NewBill({
                                 </div>
                                 <div className="col-span-1">
                                   <label htmlFor={`rep-type-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Type (optional)
+                                    <T>Type (optional)</T>
                                   </label>
                                   <input
                                     id={`rep-type-${c.line.itemId}`}
                                     list="rep-battery-types"
                                     value={replacements[c.line.itemId].batteryType}
                                     onChange={(e) => setReplacementField(c.line.itemId, { batteryType: e.target.value })}
-                                    placeholder="Unknown"
+                                    placeholder={tt("Unknown")}
                                     className="input h-10"
                                   />
                                 </div>
                                 <div className="col-span-1">
                                   <label htmlFor={`rep-qty-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Qty
+                                    <T>Qty</T>
                                   </label>
                                   <input
                                     id={`rep-qty-${c.line.itemId}`}
@@ -1181,7 +1180,7 @@ export default function NewBill({
                               <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                                 <div>
                                   <label htmlFor={`rep-number-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Serial / plate number (optional)
+                                    <T>Serial / plate number (optional)</T>
                                   </label>
                                   <input
                                     id={`rep-number-${c.line.itemId}`}
@@ -1192,7 +1191,7 @@ export default function NewBill({
                                 </div>
                                 <div>
                                   <label htmlFor={`rep-weight-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                    Weight in kg (optional)
+                                    <T>Weight in kg (optional)</T>
                                   </label>
                                   <input
                                     id={`rep-weight-${c.line.itemId}`}
@@ -1204,20 +1203,20 @@ export default function NewBill({
                                       (parseAmount(replacements[c.line.itemId].weight) == null ||
                                         (parseAmount(replacements[c.line.itemId].weight) ?? 0) <= 0)
                                     }
-                                    placeholder="Usually weighed together at sale time"
+                                    placeholder={tt("Usually weighed together at sale time")}
                                     className="input h-10 tabular-nums"
                                   />
                                 </div>
                               </div>
                               <div className="mt-2.5">
                                 <label htmlFor={`rep-note-${c.line.itemId}`} className="mb-1 block text-xs text-lead">
-                                  Note (optional)
+                                  <T>Note (optional)</T>
                                 </label>
                                 <input
                                   id={`rep-note-${c.line.itemId}`}
                                   value={replacements[c.line.itemId].note}
                                   onChange={(e) => setReplacementField(c.line.itemId, { note: e.target.value })}
-                                  placeholder="Condition, etc."
+                                  placeholder={tt("Condition, etc.")}
                                   className="input h-10"
                                 />
                               </div>
@@ -1240,26 +1239,26 @@ export default function NewBill({
 
         {/* ---------- Bill total and payment ---------- */}
         <aside className="card anim-rise p-4 sm:p-5 lg:sticky lg:top-20" style={{ "--i": 3 } as React.CSSProperties}>
-          <h2 className="font-display text-2xl font-semibold">Bill total</h2>
+          <h2 className="font-display text-2xl font-semibold"><T>Bill total</T></h2>
 
           <dl className="mt-3 space-y-1.5 text-[15px]">
             <div className="flex justify-between">
-              <dt className="text-lead">Items</dt>
+              <dt className="text-lead"><T>Items</T></dt>
               <dd className="tabular-nums">{itemCount}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-lead">Subtotal</dt>
+              <dt className="text-lead"><T>Subtotal</T></dt>
               <dd className="tabular-nums">{formatRs(subtotal)}</dd>
             </div>
           </dl>
 
           <div className="mt-3 flex items-baseline justify-between border-t border-line pt-3">
-            <span className="font-display text-xl font-semibold">Total</span>
+            <span className="font-display text-xl font-semibold"><T>Total</T></span>
             <span className="font-display text-4xl font-bold tabular-nums">{formatRs(total)}</span>
           </div>
 
           <fieldset className="mt-4">
-            <legend className="text-sm font-medium text-lead">How is the customer paying?</legend>
+            <legend className="text-sm font-medium text-lead"><T>How is the customer paying?</T></legend>
             <div className="mt-2 grid grid-cols-3 gap-2">
               {PAY_MODES.map((m) => (
                 <button
@@ -1274,17 +1273,17 @@ export default function NewBill({
                     mode === m.value ? "border-casing bg-casing text-white" : "border-line bg-white text-casing hover:bg-plate"
                   }`}
                 >
-                  {m.label}
+                  <T>{m.label}</T>
                 </button>
               ))}
             </div>
-            <p className="mt-1.5 text-sm text-lead">{PAY_MODES.find((m) => m.value === mode)?.hint}</p>
+            <p className="mt-1.5 text-sm text-lead"><T>{PAY_MODES.find((m) => m.value === mode)?.hint}</T></p>
           </fieldset>
 
           {mode === "part" && (
             <div className="mt-3">
               <label htmlFor="part" className="text-sm font-medium text-lead">
-                Paid now (Rs)
+                <T>Paid now (Rs)</T>
               </label>
               <input
                 id="part"
@@ -1300,13 +1299,13 @@ export default function NewBill({
           {paidNow > 0 && (
             <div className="mt-3">
               <label htmlFor="method" className="text-sm font-medium text-lead">
-                Payment method
+                <T>Payment method</T>
               </label>
               <select id="method" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} className="input mt-1.5">
                 {PAYMENT_METHODS.map((m) => (
-                  <option key={m.value} value={m.value}>
-                    {m.label}
-                  </option>
+                  <Opt key={m.value} value={m.value}>
+                    <T>{m.label}</T>
+                  </Opt>
                 ))}
               </select>
             </div>
@@ -1314,11 +1313,11 @@ export default function NewBill({
 
           <dl className="mt-4 space-y-1.5 rounded-xl bg-plate/70 p-3.5">
             <div className="flex justify-between">
-              <dt className="text-lead">Paid now</dt>
+              <dt className="text-lead"><T>Paid now</T></dt>
               <dd className="font-semibold tabular-nums">{formatRs(paidNow)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-lead">Due (credit)</dt>
+              <dt className="text-lead"><T>Due (credit)</T></dt>
               <dd className={`font-display text-2xl font-semibold tabular-nums ${due > 0 ? "text-terminal-deep" : "text-cell-deep"}`}>
                 {formatRs(due)}
               </dd>
@@ -1327,25 +1326,25 @@ export default function NewBill({
 
           {error && (
             <p role="alert" className="mt-3 rounded-xl bg-terminal/10 px-3 py-2.5 text-[15px] text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
 
           <div className="mt-4 hidden flex-col gap-2 lg:flex">
             <button type="button" onClick={() => save(false)} disabled={saving} className="btn btn-primary">
-              {saving ? "Saving" : "Save bill"}
+              <T>{saving ? "Saving" : "Save bill"}</T>
             </button>
             <button type="button" onClick={() => save(true)} disabled={saving} className="btn btn-quiet">
-              <Icon name="printer" className="h-5 w-5" /> Save and print
+              <Icon name="printer" className="h-5 w-5" /> <T>Save and print</T>
             </button>
             <p className="text-center text-xs text-lead">
-              Press <kbd className="rounded border border-line bg-plate px-1.5 py-0.5">Ctrl</kbd> +{" "}
-              <kbd className="rounded border border-line bg-plate px-1.5 py-0.5">S</kbd> to save
+              <T>Press</T> <kbd className="rounded border border-line bg-plate px-1.5 py-0.5"><T>Ctrl</T></kbd> +{" "}
+              <kbd className="rounded border border-line bg-plate px-1.5 py-0.5">S</kbd> <T>to save</T>
             </p>
           </div>
 
           <button type="button" onClick={() => save(true)} disabled={saving} className="btn btn-quiet mt-4 w-full lg:hidden">
-            <Icon name="printer" className="h-5 w-5" /> Save and print
+            <Icon name="printer" className="h-5 w-5" /> <T>Save and print</T>
           </button>
         </aside>
       </div>
@@ -1355,13 +1354,13 @@ export default function NewBill({
         <div className="mx-auto flex max-w-md items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xs text-lead">
-              {itemCount} {itemCount === 1 ? "item" : "items"}
-              {due > 0 ? ` · ${formatRs(due)} due` : ""}
+              {itemCount} <T>{itemCount === 1 ? "item" : "items"}</T>
+              <T>{due > 0 ? ` · ${formatRs(due)} due` : ""}</T>
             </p>
             <p className="font-display text-2xl font-bold leading-none tabular-nums">{formatRs(total)}</p>
           </div>
           <button type="button" onClick={() => save(false)} disabled={saving} className="btn btn-primary min-w-32">
-            {saving ? "Saving" : "Save bill"}
+            <T>{saving ? "Saving" : "Save bill"}</T>
           </button>
         </div>
       </div>
@@ -1386,23 +1385,21 @@ export default function NewBill({
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="border-b border-line px-5 py-4">
               <h2 id="scrap-failure-title" className="font-display text-2xl font-bold text-terminal-deep">
-                Bill saved — one thing to fix
+                <T>{"Bill saved — one thing to fix"}</T>
               </h2>
             </div>
             <div className="flex-1 space-y-3 overflow-y-auto px-5 py-6">
-              <p>The bill itself saved fine and the customer's receipt is ready.</p>
+              <p><T>The bill itself saved fine and the customer's receipt is ready.</T></p>
               <p>
-                But the old {scrapFailure.names.length === 1 ? "battery" : "batteries"} taken in exchange could not be
-                recorded to the scrap pile after two tries:
+                <T>{scrapFailure.names.length === 1 ? "But the old battery taken in exchange could not be recorded to the scrap pile after two tries:" : "But the old batteries taken in exchange could not be recorded to the scrap pile after two tries:"}</T>
               </p>
               <ul className="list-disc space-y-1 ps-5 text-sm">
                 {scrapFailure.names.map((n, i) => (
-                  <li key={i}>{n}</li>
+                  <li key={i}><T>{n}</T></li>
                 ))}
               </ul>
               <p className="text-sm text-lead">
-                Open the Scrap screen and add {scrapFailure.names.length === 1 ? "it" : "them"} by hand, or ask
-                whoever set up the app to check the connection.
+                <T>{scrapFailure.names.length === 1 ? "Open the Scrap screen and add it by hand, or ask whoever set up the app to check the connection." : "Open the Scrap screen and add them by hand, or ask whoever set up the app to check the connection."}</T>
               </p>
             </div>
             <div className="border-t border-line bg-white px-5 py-4">
@@ -1415,7 +1412,7 @@ export default function NewBill({
                 }}
                 className="btn btn-primary w-full"
               >
-                Continue to receipt
+                <T>Continue to receipt</T>
               </button>
             </div>
           </div>
@@ -1424,7 +1421,7 @@ export default function NewBill({
 
       {toast && (
         <p role="status" className="anim-pop fixed inset-x-4 bottom-40 z-[60] mx-auto w-fit max-w-sm rounded-full bg-casing px-4 py-2.5 text-center text-[15px] font-medium text-white shadow-lift lg:bottom-8">
-          {toast}
+          <T>{toast}</T>
         </p>
       )}
     </div>

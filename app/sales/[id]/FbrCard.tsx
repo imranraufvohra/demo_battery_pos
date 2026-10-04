@@ -6,6 +6,7 @@ import { effectiveRole } from "@/lib/roles";
 import { fbrMeaning, type FbrInfo } from "@/lib/fbrStatus";
 import FbrBadge from "../FbrBadge";
 
+import { T } from "@/components/T";
 const when = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
   month: "short",
@@ -46,55 +47,55 @@ export default function FbrCard({ info, invoiceNumber, cancelled }: { info: FbrI
   return (
     <section className="card anim-rise p-5" style={{ "--i": 2 } as React.CSSProperties}>
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-2xl font-semibold">FBR</h2>
+        <h2 className="font-display text-2xl font-semibold"><T>FBR</T></h2>
         <FbrBadge info={info} />
       </div>
 
-      <p className="mt-2 text-[15px] text-lead">{fbrMeaning(info, cancelled)}</p>
+      <p className="mt-2 text-[15px] text-lead"><T>{fbrMeaning(info, cancelled)}</T></p>
 
       {info.number && (
         <div className="mt-3 rounded-xl bg-plate/70 px-3 py-2.5">
-          <p className="text-sm text-lead">FBR invoice number</p>
+          <p className="text-sm text-lead"><T>FBR invoice number</T></p>
           <div className="flex items-center justify-between gap-3">
             <p className="break-all font-semibold tabular-nums">{info.number}</p>
             <button type="button" onClick={copyNumber} className="shrink-0 text-sm font-semibold text-focus hover:underline">
-              {copied ? "Copied" : "Copy"}
+              <T>{copied ? "Copied" : "Copy"}</T>
             </button>
           </div>
         </div>
       )}
 
       <dl className="mt-3 space-y-1 text-sm text-lead">
-        {sentAt && <div>Sent {sentAt}</div>}
-        {nextTry && <div>Next try: {nextTry}</div>}
+        {sentAt && <div><T p={{ sentAt: sentAt }}>{"Sent {sentAt}"}</T></div>}
+        {nextTry && <div><T p={{ nextTry: nextTry }}>{"Next try: {nextTry}"}</T></div>}
         {seesDetail && info.attempts > 0 && info.status !== "sent" && (
           <div>
-            {info.attempts} {info.attempts === 1 ? "try" : "tries"} so far
+            <T p={{ n: info.attempts }}>{info.attempts === 1 ? "{n} try so far" : "{n} tries so far"}</T>
           </div>
         )}
       </dl>
 
       {showProblem && (
         <div role="alert" className="mt-3 rounded-xl bg-terminal/10 px-3 py-2.5 text-[15px] text-terminal-deep">
-          <p className="font-semibold">What FBR said</p>
-          {info.errorCode && <p className="tabular-nums">Error code {info.errorCode}</p>}
+          <p className="font-semibold"><T>What FBR said</T></p>
+          {info.errorCode && <p className="tabular-nums"><T p={{ errorCode: info.errorCode }}>{"Error code {errorCode}"}</T></p>}
           {info.errorMessage && <p className="mt-0.5 whitespace-pre-line break-words">{info.errorMessage}</p>}
         </div>
       )}
 
       {!seesDetail && (info.status === "failed" || info.status === "unknown") && !cancelled && (
         <p className="mt-3 rounded-xl bg-terminal/10 px-3 py-2.5 text-[15px] text-terminal-deep">
-          There is a problem with this bill at FBR. Please tell the Owner.
+          <T>There is a problem with this bill at FBR. Please tell the Owner.</T>
         </p>
       )}
 
       {isOwner && (info.status === "failed" || info.status === "unknown") && !cancelled && (
         <div className="mt-3 rounded-xl bg-plate/70 px-3 py-2.5 text-[15px]">
-          <p className="font-semibold">To send it again</p>
+          <p className="font-semibold"><T>To send it again</T></p>
           <p className="mt-0.5 text-lead">
-            {info.status === "unknown"
+            <T>{info.status === "unknown"
               ? "First look for this bill on the FBR portal. Only if it is not there, run this on the shop PC in C:\\fbr-sender:"
-              : "Fix the cause first, then run this on the shop PC in C:\\fbr-sender:"}
+              : "Fix the cause first, then run this on the shop PC in C:\\fbr-sender:"}</T>
           </p>
           <code className="mt-1.5 block break-all rounded-lg bg-white px-2.5 py-2 text-sm text-casing">
             node src/cli.js retry {invoiceNumber}

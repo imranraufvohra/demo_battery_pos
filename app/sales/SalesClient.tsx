@@ -22,6 +22,8 @@ import PayBadge from "./PayBadge";
 import FbrBadge from "./FbrBadge";
 import { showFbrBadge, type FbrInfo } from "@/lib/fbrStatus";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Filter = "all" | "due" | "paid";
 
 const TABS: { value: Filter; label: string }[] = [
@@ -108,6 +110,7 @@ export default function SalesClient({
   fbrByInvoice?: Record<string, FbrInfo>;
   initialFilter: Filter;
 }) {
+  const tt = useT();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>(initialFilter);
   // Charging slips and battery-claim charges only show up under "All" -- "Credit due" and "Paid"
@@ -356,7 +359,7 @@ export default function SalesClient({
   return (
     <div>
       <PageHeader
-        title="Sales"
+        title={tt("Sales")}
         subtitle={
           visible.length === 0 && chargingJobs.length === 0 && batteryClaims.length === 0
             ? "Your bills will appear here."
@@ -365,7 +368,7 @@ export default function SalesClient({
         action={
           canCreateBill && (
 <Link href="/sales/new" className="btn btn-primary">
-            <Icon name="plus" className="h-5 w-5" /> New bill
+            <Icon name="plus" className="h-5 w-5" /> <T>New bill</T>
           </Link>
 )
         }
@@ -376,13 +379,13 @@ export default function SalesClient({
           <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sun/25 text-amber-800">
             <Icon name="receipt" className="h-7 w-7" />
           </span>
-          <h2 className="mt-3 font-display text-2xl font-semibold">No bills yet</h2>
+          <h2 className="mt-3 font-display text-2xl font-semibold"><T>No bills yet</T></h2>
           <p className="mx-auto mt-1 max-w-sm text-lead">
-            Make your first bill. Stock goes down and credit is tracked for you.
+            <T>Make your first bill. Stock goes down and credit is tracked for you.</T>
           </p>
           {canCreateBill && (
 <Link href="/sales/new" className="btn btn-primary mt-5">
-            Make first bill
+            <T>Make first bill</T>
           </Link>
 )}
         </section>
@@ -390,18 +393,18 @@ export default function SalesClient({
         <>
           <div className="anim-rise mt-5 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 1 } as React.CSSProperties}>
             <label className="relative block w-full sm:max-w-md">
-              <span className="sr-only">Search sale entries</span>
+              <span className="sr-only"><T>Search sale entries</T></span>
               <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search customer, bill/slip number or date"
+                placeholder={tt("Search customer, bill/slip number or date")}
                 className="input ps-11"
                 autoComplete="off"
               />
             </label>
-            <div role="group" aria-label="Filter sale entries" className="flex gap-2">
+            <div role="group" aria-label={tt("Filter sale entries")} className="flex gap-2">
               {TABS.map((t) => (
                 <button
                   key={t.value}
@@ -412,24 +415,24 @@ export default function SalesClient({
                     filter === t.value ? "bg-casing text-white" : "border border-line bg-white text-casing hover:bg-plate"
                   }`}
                 >
-                  {t.label}
+                  <T>{t.label}</T>
                 </button>
               ))}
             </div>
           </div>
 
           <p className="mt-3 text-sm text-lead" aria-live="polite">
-            {mergedCount} {mergedCount === 1 ? "entry" : "entries"} · {formatRs(mergedTotal)}
-            {dueShown > 0 && <span className="font-semibold text-terminal-deep"> · {formatRs(dueShown)} still due</span>}
+            {mergedCount} <T>{mergedCount === 1 ? "entry" : "entries"}</T> · {formatRs(mergedTotal)}
+            {dueShown > 0 && <span className="font-semibold text-terminal-deep"> <T p={{ formatRs: formatRs(dueShown) }}>{"· {formatRs} still due"}</T></span>}
             {includeOthers && otherRows.length > 0 && (
-              <span className="text-lead"> · includes {otherRows.length} charging/claim {otherRows.length === 1 ? "entry" : "entries"}</span>
+              <span className="text-lead"> · <T p={{ n: otherRows.length }}>{otherRows.length === 1 ? "includes {n} charging/claim entry" : "includes {n} charging/claim entries"}</T></span>
             )}
           </p>
 
           {mergedCount === 0 ? (
             <div className="card mt-4 px-6 py-10 text-center">
-              <p className="font-display text-2xl font-semibold">No sale entries match</p>
-              <p className="mt-1 text-lead">Check the spelling, or clear the search.</p>
+              <p className="font-display text-2xl font-semibold"><T>No sale entries match</T></p>
+              <p className="mt-1 text-lead"><T>Check the spelling, or clear the search.</T></p>
               <button
                 type="button"
                 className="btn btn-quiet mt-4"
@@ -438,7 +441,7 @@ export default function SalesClient({
                   setFilter("all");
                 }}
               >
-                Clear search
+                <T>Clear search</T>
               </button>
             </div>
           ) : (
@@ -448,15 +451,15 @@ export default function SalesClient({
                 <table className="w-full text-start">
                   <thead className="bg-plate/70 text-sm text-lead">
                     <tr>
-                      <th className="px-5 py-3 font-medium">Bill</th>
-                      <th className="px-3 py-3 font-medium">Type</th>
-                      <th className="px-3 py-3 font-medium">Date</th>
-                      <th className="px-3 py-3 font-medium">Customer</th>
-                      <th className="px-3 py-3 text-end font-medium">Total</th>
-                      <th className="px-3 py-3 text-end font-medium">Due</th>
-                      <th className="px-5 py-3 font-medium">Status</th>
+                      <th className="px-5 py-3 font-medium"><T>Bill</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Type</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Date</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Customer</T></th>
+                      <th className="px-3 py-3 text-end font-medium"><T>Total</T></th>
+                      <th className="px-3 py-3 text-end font-medium"><T>Due</T></th>
+                      <th className="px-5 py-3 font-medium"><T>Status</T></th>
                       <th className="px-3 py-3 text-end font-medium">
-                        <span className="sr-only">Delete</span>
+                        <span className="sr-only"><T>Delete</T></span>
                       </th>
                     </tr>
                   </thead>
@@ -474,7 +477,7 @@ export default function SalesClient({
                           <td className="px-5 py-3.5">
                             {inv.pending ? (
                               <span className="inline-flex items-center gap-1.5 font-semibold text-lead">
-                                Pending sync
+                                <T>Pending sync</T>
                                 <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                               </span>
                             ) : fading ? (
@@ -485,8 +488,8 @@ export default function SalesClient({
                               </Link>
                             )}
                           </td>
-                          <td className="px-3 py-3.5 text-lead">Invoice</td>
-                          <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(inv.invoice_date)}</td>
+                          <td className="px-3 py-3.5 text-lead"><T>Invoice</T></td>
+                          <td className="px-3 py-3.5 tabular-nums text-lead"><T>{formatDay(inv.invoice_date)}</T></td>
                           <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">{inv.buyer_name}</td>
                           <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(inv.total_value)}</td>
                           <td
@@ -494,12 +497,12 @@ export default function SalesClient({
                               inv.status !== "Cancelled" && inv.due_total > 0 ? "font-semibold text-terminal-deep" : "text-lead"
                             }`}
                           >
-                            {inv.status !== "Cancelled" && inv.due_total > 0 ? formatRs(inv.due_total) : "-"}
+                            <T>{inv.status !== "Cancelled" && inv.due_total > 0 ? formatRs(inv.due_total) : "-"}</T>
                           </td>
                           <td className="px-5 py-3.5">
                             {fading ? (
                               <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">
-                                Deleted
+                                <T>Deleted</T>
                               </span>
                             ) : (
                               <span className="flex flex-wrap items-center gap-1.5">
@@ -517,7 +520,7 @@ export default function SalesClient({
                               onClick={() => askDelete(inv)}
                               disabled={fading}
                               aria-label={inv.pending ? `Discard draft bill for ${inv.buyer_name}` : `Delete bill ${inv.invoice_number}`}
-                              title={inv.pending ? "Discard draft" : "Delete bill"}
+                              title={tt(inv.pending ? "Discard draft" : "Delete bill")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-terminal/10 hover:text-terminal-deep disabled:cursor-default"
                             >
                               <Icon name="trash" className="h-5 w-5" />
@@ -534,14 +537,14 @@ export default function SalesClient({
                             {row.number}
                           </Link>
                         </td>
-                        <td className="px-3 py-3.5 text-lead">{row.kind === "charging" ? "Charging" : "Claim charge"}</td>
-                        <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(row.date)}</td>
-                        <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium">{row.customer}</td>
+                        <td className="px-3 py-3.5 text-lead"><T>{row.kind === "charging" ? "Charging" : "Claim charge"}</T></td>
+                        <td className="px-3 py-3.5 tabular-nums text-lead"><T>{formatDay(row.date)}</T></td>
+                        <td className="max-w-[16rem] truncate px-3 py-3.5 font-medium"><T>{row.customer}</T></td>
                         <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(row.total)}</td>
                         <td className="px-3 py-3.5 text-end text-lead">-</td>
                         <td className="px-5 py-3.5">
                           <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">
-                            {row.statusLabel}
+                            <T>{row.statusLabel}</T>
                           </span>
                         </td>
                         <td className="px-3 py-3.5 text-end">
@@ -550,7 +553,7 @@ export default function SalesClient({
                               href={row.href}
                               target="_blank"
                               aria-label={`Open ${row.kind === "charging" ? "charging slip" : "claim slip"} ${row.number}`}
-                              title="Open slip"
+                              title={tt("Open slip")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate"
                             >
                               <Icon name="chevron" className="h-4 w-4" />
@@ -560,7 +563,7 @@ export default function SalesClient({
                               type="button"
                               onClick={() => askDeleteOther(row)}
                               aria-label={`Delete ${row.kind === "charging" ? "charging slip" : "claim"} ${row.number}`}
-                              title="Delete"
+                              title={tt("Delete")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-terminal/10 hover:text-terminal-deep"
                             >
                               <Icon name="trash" className="h-5 w-5" />
@@ -587,18 +590,18 @@ export default function SalesClient({
                         <span className="mt-0.5 block text-sm text-lead">
                           {inv.pending ? (
                             <span className="inline-flex items-center gap-1.5">
-                              Pending sync <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                              <T>Pending sync</T> <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
                             </span>
                           ) : (
                             <>
-                              {inv.invoice_number} · {formatDay(inv.invoice_date)}
+                              {inv.invoice_number} · <T>{formatDay(inv.invoice_date)}</T>
                             </>
                           )}
                         </span>
                         <span className="mt-1.5 block">
                           {fading ? (
                             <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">
-                              Deleted
+                              <T>Deleted</T>
                             </span>
                           ) : (
                             <span className="flex flex-wrap items-center gap-1.5">
@@ -615,9 +618,7 @@ export default function SalesClient({
                           {formatRs(inv.total_value)}
                         </span>
                         {inv.status !== "Cancelled" && inv.due_total > 0 && (
-                          <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep">
-                            {formatRs(inv.due_total)} due
-                          </span>
+                          <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(inv.due_total) }}>{"{formatRs} due"}</T></span>
                         )}
                       </span>
                       {!inv.pending && <Icon name="chevron" className="h-4 w-4 text-lead/60" />}
@@ -657,14 +658,14 @@ export default function SalesClient({
                     <Link href={row.href} target="_blank" className="card card-hover flex min-w-0 flex-1 items-center gap-3 p-4">
                       <span className="min-w-0 flex-1">
                         <span className="flex items-center gap-2">
-                          <span className="truncate font-semibold">{row.customer}</span>
+                          <span className="truncate font-semibold"><T>{row.customer}</T></span>
                         </span>
                         <span className="mt-0.5 block text-sm text-lead">
-                          {row.kind === "charging" ? "Charging" : "Claim charge"} · {row.number} · {formatDay(row.date)}
+                          <T>{row.kind === "charging" ? "Charging" : "Claim charge"}</T> · {row.number} · <T>{formatDay(row.date)}</T>
                         </span>
                         <span className="mt-1.5 block">
                           <span className="inline-flex rounded-full bg-plate px-2.5 py-1 text-xs font-semibold text-lead">
-                            {row.statusLabel}
+                            <T>{row.statusLabel}</T>
                           </span>
                         </span>
                       </span>
@@ -689,7 +690,7 @@ export default function SalesClient({
                 ))}
               </ul>
               {visible.length >= 1000 && (
-                <p className="mt-3 text-sm text-lead">Showing the latest 1,000 bills.</p>
+                <p className="mt-3 text-sm text-lead"><T>Showing the latest 1,000 bills.</T></p>
               )}
             </>
           )}
@@ -723,22 +724,22 @@ export default function SalesClient({
                   className="mt-1 h-5 w-5"
                 />
                 <span>
-                  <span className="block font-semibold">Put the items back in stock</span>
-                  <span className="block text-lead">Turn this off only if the goods really left the shop.</span>
+                  <span className="block font-semibold"><T>Put the items back in stock</T></span>
+                  <span className="block text-lead"><T>Turn this off only if the goods really left the shop.</T></span>
                 </span>
               </label>
             )}
             {delError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {delError}
+                <T>{delError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setTarget(null)} disabled={delBusy} autoFocus className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmDelete} disabled={delBusy} className="btn btn-danger">
-                {delBusy ? "Deleting" : target.pending ? "Discard draft" : "Delete bill"}
+                <T>{delBusy ? "Deleting" : target.pending ? "Discard draft" : "Delete bill"}</T>
               </button>
             </div>
           </div>
@@ -754,24 +755,21 @@ export default function SalesClient({
             aria-describedby="del-other-text"
             className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
           >
-            <h2 id="del-other-title" className="font-display text-2xl font-bold">
-              Delete {otherTarget.number}?
-            </h2>
+            <h2 id="del-other-title" className="font-display text-2xl font-bold"><T p={{ number: otherTarget.number }}>{"Delete {number}?"}</T></h2>
             <p id="del-other-text" className="mt-2 text-lead">
-              This permanently deletes the {otherTarget.kind === "charging" ? "charging slip" : "battery claim"} for{" "}
-              {otherTarget.customer} ({formatRs(otherTarget.total)}). It cannot be undone.
+              <T p={{ what: otherTarget.kind === "charging" ? "charging slip" : "battery claim", name: otherTarget.customer, amount: formatRs(otherTarget.total) }}>{"This permanently deletes the {what} for {name} ({amount}). It cannot be undone."}</T>
             </p>
             {otherDelError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {otherDelError}
+                <T>{otherDelError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setOtherTarget(null)} disabled={otherDelBusy} autoFocus className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmDeleteOther} disabled={otherDelBusy} className="btn btn-danger">
-                {otherDelBusy ? "Deleting" : otherTarget.kind === "charging" ? "Delete slip" : "Delete claim"}
+                <T>{otherDelBusy ? "Deleting" : otherTarget.kind === "charging" ? "Delete slip" : "Delete claim"}</T>
               </button>
             </div>
           </div>

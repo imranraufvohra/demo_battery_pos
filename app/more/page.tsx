@@ -12,6 +12,7 @@ import { getT } from "@/lib/i18n/server";
 import type { TKey } from "@/lib/i18n/en";
 import { loadRoleInfo } from "@/lib/rolesServer";
 
+import { T } from "@/components/T";
 export async function generateMetadata(): Promise<Metadata> {
   return { title: (await getT())("nav.more") };
 }
@@ -67,7 +68,7 @@ export default async function MorePage() {
             {name}
           </p>
           <p className="truncate text-sm text-lead">
-            {info.role ? t(`role.${info.role}`) + " · " : ""}
+            <T>{info.role ? t(`role.${info.role}`) + " · " : ""}</T>
             {email}
           </p>
         </div>

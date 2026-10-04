@@ -27,6 +27,8 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { InventoryItem, SupplierBalance, SupplierPaymentMethod } from "@/lib/types";
 import NewProductFields from "./NewProductFields";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type PurchaseStockItem = Pick<
   InventoryItem,
   "id" | "category" | "brand" | "model" | "type" | "voltage" | "plates" | "ah_rating" | "wattage" | "cost_price" | "quantity"
@@ -59,6 +61,7 @@ export default function NewPurchase({
   initialSupplierId: string | null;
   initialItemId: string | null;
 }) {
+  const t = useT();
   const router = useRouter();
   const clientId = useRef(crypto.randomUUID());
 
@@ -256,15 +259,15 @@ export default function NewPurchase({
 
   return (
     <div>
-      <PageHeader title="Receive stock" subtitle="Record a purchase bill from a supplier" />
+      <PageHeader title={t("Receive stock")} subtitle={t("Record a purchase bill from a supplier")} />
 
       <form onSubmit={onSubmit} noValidate className="mt-6 space-y-6">
         {/* Supplier */}
         <section className="card p-5">
-          <h2 className="font-display text-xl font-semibold">Supplier</h2>
+          <h2 className="font-display text-xl font-semibold"><T>Supplier</T></h2>
           <div className="relative mt-3">
             <label htmlFor="supplier-query" className="sr-only">
-              Supplier
+              <T>Supplier</T>
             </label>
             <input
               id="supplier-query"
@@ -273,7 +276,7 @@ export default function NewPurchase({
               value={supplierQuery}
               onChange={(e) => changeSupplierQuery(e.target.value)}
               onFocus={() => setSupplierListOpen(true)}
-              placeholder="Search or type a new supplier's name"
+              placeholder={t("Search or type a new supplier's name")}
               aria-invalid={errors.supplier ? true : undefined}
               className="input"
             />
@@ -301,22 +304,21 @@ export default function NewPurchase({
                       onClick={() => setSupplierListOpen(false)}
                       className="flex w-full items-center gap-2 px-4 py-3 text-start font-medium text-focus hover:bg-plate"
                     >
-                      <Icon name="plus" className="h-4 w-4" /> Add "{supplierQuery.trim()}" as a new supplier
-                    </button>
+                      <Icon name="plus" className="h-4 w-4" /> <T p={{ trim: supplierQuery.trim() }}>{"Add \"{trim}\" as a new supplier"}</T></button>
                   </li>
                 )}
               </ul>
             )}
           </div>
-          {errors.supplier && <p className="mt-1.5 text-sm text-terminal-deep">{errors.supplier}</p>}
+          {errors.supplier && <p className="mt-1.5 text-sm text-terminal-deep"><T>{errors.supplier}</T></p>}
 
           {selectedSupplier && (
             <p className="mt-2 text-sm text-lead">
-              {selectedSupplier.balance > 0
+              <T>{selectedSupplier.balance > 0
                 ? `You currently owe ${formatRs(selectedSupplier.balance)}.`
                 : selectedSupplier.balance < 0
                   ? `You have ${formatRs(-selectedSupplier.balance)} in advance with them.`
-                  : "No balance owed either way."}
+                  : "No balance owed either way."}</T>
             </p>
           )}
 
@@ -324,18 +326,18 @@ export default function NewPurchase({
             <div className="mt-3 grid grid-cols-1 gap-3 rounded-2xl bg-plate/60 p-3.5 sm:grid-cols-2">
               <div>
                 <label htmlFor="new-sup-phone" className="mb-1.5 block text-sm font-medium">
-                  Phone (optional)
+                  <T>Phone (optional)</T>
                 </label>
                 <input id="new-sup-phone" value={newSupplierPhone} onChange={(e) => setNewSupplierPhone(e.target.value)} className="input" />
               </div>
               <div>
                 <label htmlFor="new-sup-address" className="mb-1.5 block text-sm font-medium">
-                  Address (optional)
+                  <T>Address (optional)</T>
                 </label>
                 <input id="new-sup-address" value={newSupplierAddress} onChange={(e) => setNewSupplierAddress(e.target.value)} className="input" />
               </div>
               <p className="text-sm text-lead sm:col-span-2">
-                Saved as a new supplier when this bill is saved. Add their NTN/CNIC or an opening balance afterwards from the Suppliers page.
+                <T>Saved as a new supplier when this bill is saved. Add their NTN/CNIC or an opening balance afterwards from the Suppliers page.</T>
               </p>
             </div>
           )}
@@ -345,7 +347,7 @@ export default function NewPurchase({
         <section className="card grid gap-4 p-5 sm:grid-cols-2">
           <div>
             <label htmlFor="invoice-date" className="mb-1.5 block text-sm font-medium">
-              Date
+              <T>Date</T>
             </label>
             <input
               id="invoice-date"
@@ -356,32 +358,32 @@ export default function NewPurchase({
               aria-invalid={errors.invoice_date ? true : undefined}
               className="input"
             />
-            {errors.invoice_date && <p className="mt-1 text-sm text-terminal-deep">{errors.invoice_date}</p>}
+            {errors.invoice_date && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.invoice_date}</T></p>}
           </div>
           <div>
             <label htmlFor="supplier-inv-no" className="mb-1.5 block text-sm font-medium">
-              Supplier's invoice number
+              <T>Supplier's invoice number</T>
             </label>
             <input
               id="supplier-inv-no"
               value={supplierInvoiceNumber}
               onChange={(e) => setSupplierInvoiceNumber(e.target.value)}
-              placeholder="Optional, but helps avoid double entry"
+              placeholder={t("Optional, but helps avoid double entry")}
               className="input"
             />
           </div>
           <div className="sm:col-span-2">
             <label htmlFor="purchase-note" className="mb-1.5 block text-sm font-medium">
-              Note
+              <T>Note</T>
             </label>
-            <input id="purchase-note" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Optional" className="input" />
+            <input id="purchase-note" value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("Optional")} className="input" />
           </div>
         </section>
 
         {/* Lines */}
         <section className="card p-5">
           <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl font-semibold">Products</h2>
+            <h2 className="font-display text-xl font-semibold"><T>Products</T></h2>
             <span className="text-sm text-lead">
               {lines.length}/{MAX_PURCHASE_LINES}
             </span>
@@ -389,10 +391,10 @@ export default function NewPurchase({
 
           {duplicateError && (
             <p role="alert" className="mt-2 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              The same product is on this bill twice. Combine them into one line instead.
+              <T>The same product is on this bill twice. Combine them into one line instead.</T>
             </p>
           )}
-          {errors.lines && <p className="mt-2 text-sm text-terminal-deep">{errors.lines}</p>}
+          {errors.lines && <p className="mt-2 text-sm text-terminal-deep"><T>{errors.lines}</T></p>}
 
           <ul className="mt-3 space-y-3">
             {lines.map((l, idx) => {
@@ -405,9 +407,9 @@ export default function NewPurchase({
                     <div className="min-w-0">
                       <p className="truncate font-semibold">{l.display_name}</p>
                       {l.inventory_id ? (
-                        <p className="text-sm text-lead">Currently in stock</p>
+                        <p className="text-sm text-lead"><T>Currently in stock</T></p>
                       ) : (
-                        <p className="text-sm text-focus">New product</p>
+                        <p className="text-sm text-focus"><T>New product</T></p>
                       )}
                     </div>
                     <button
@@ -423,7 +425,7 @@ export default function NewPurchase({
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     <div>
                       <label htmlFor={`qty-${idx}`} className="mb-1 block text-xs font-medium text-lead">
-                        Quantity
+                        <T>Quantity</T>
                       </label>
                       <input
                         id={`qty-${idx}`}
@@ -437,7 +439,7 @@ export default function NewPurchase({
                     </div>
                     <div>
                       <label htmlFor={`cost-${idx}`} className="mb-1 block text-xs font-medium text-lead">
-                        Cost per unit (Rs)
+                        <T>Cost per unit (Rs)</T>
                       </label>
                       <input
                         id={`cost-${idx}`}
@@ -447,7 +449,7 @@ export default function NewPurchase({
                         aria-invalid={lineErr.unit_cost ? true : undefined}
                         className="input tabular-nums"
                       />
-                      {lineErr.unit_cost && <p className="mt-1 text-xs text-terminal-deep">{lineErr.unit_cost}</p>}
+                      {lineErr.unit_cost && <p className="mt-1 text-xs text-terminal-deep"><T>{lineErr.unit_cost}</T></p>}
                     </div>
                   </div>
 
@@ -458,9 +460,7 @@ export default function NewPurchase({
                         checked={l.keep_old_cost}
                         onChange={(e) => updateLine(idx, { keep_old_cost: e.target.checked })}
                         className="h-4 w-4"
-                      />
-                      Cost changed from {formatRs(l.current_cost_price ?? 0)} -- keep the old cost on this item instead
-                    </label>
+                      /><T p={{ formatRs: formatRs(l.current_cost_price ?? 0) }}>{"Cost changed from {formatRs} -- keep the old cost on this item instead"}</T></label>
                   )}
 
                   <p className="mt-2.5 text-end text-sm font-semibold tabular-nums text-lead">{formatRs(lineAmount(qty, cost))}</p>
@@ -470,12 +470,12 @@ export default function NewPurchase({
           </ul>
 
           {lines.length === 0 && (
-            <p className="mt-3 rounded-xl bg-plate/60 px-3.5 py-3 text-sm text-lead">No products added yet.</p>
+            <p className="mt-3 rounded-xl bg-plate/60 px-3.5 py-3 text-sm text-lead"><T>No products added yet.</T></p>
           )}
 
           <div className="relative mt-4">
             <label htmlFor="product-query" className="sr-only">
-              Add a product
+              <T>Add a product</T>
             </label>
             <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
@@ -487,14 +487,14 @@ export default function NewPurchase({
                 setProductListOpen(true);
               }}
               onFocus={() => setProductListOpen(true)}
-              placeholder="Search stock to add a product"
+              placeholder={t("Search stock to add a product")}
               disabled={lines.length >= MAX_PURCHASE_LINES}
               className="input ps-11"
             />
             {productListOpen && productQuery.trim() && (
               <ul className="absolute z-20 mt-1.5 max-h-72 w-full overflow-y-auto rounded-2xl border border-line bg-white shadow-lift">
                 {productMatches.length === 0 ? (
-                  <li className="px-4 py-3 text-sm text-lead">No matches in stock.</li>
+                  <li className="px-4 py-3 text-sm text-lead"><T>No matches in stock.</T></li>
                 ) : (
                   productMatches.map((item) => (
                     <li key={item.id}>
@@ -503,9 +503,7 @@ export default function NewPurchase({
                           <span className="block font-medium">
                             {item.brand} {item.model}
                           </span>
-                          <span className="block text-sm text-lead">
-                            {specText(item)} · {item.quantity} in stock
-                          </span>
+                          <span className="block text-sm text-lead"><T p={{ specText: specText(item), quantity: item.quantity }}>{"{specText} · {quantity} in stock"}</T></span>
                         </span>
                         <span className="text-sm tabular-nums text-lead">{formatRs(item.cost_price)}</span>
                       </button>
@@ -521,54 +519,54 @@ export default function NewPurchase({
             disabled={lines.length >= MAX_PURCHASE_LINES}
             className="btn btn-quiet mt-2.5 w-full sm:w-auto"
           >
-            <Icon name="plus" className="h-5 w-5" /> Add a product not in stock yet
+            <Icon name="plus" className="h-5 w-5" /> <T>Add a product not in stock yet</T>
           </button>
         </section>
 
         {/* Totals */}
         <section className="card space-y-3 p-5">
-          <h2 className="font-display text-xl font-semibold">Totals</h2>
+          <h2 className="font-display text-xl font-semibold"><T>Totals</T></h2>
           <div className="flex items-center justify-between text-[15px]">
-            <span className="text-lead">Subtotal</span>
+            <span className="text-lead"><T>Subtotal</T></span>
             <span className="tabular-nums">{formatRs(subtotal)}</span>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="discount" className="mb-1.5 block text-sm font-medium">
-                Discount (Rs)
+                <T>Discount (Rs)</T>
               </label>
               <input id="discount" inputMode="decimal" value={discount} onChange={(e) => setDiscount(e.target.value)} placeholder="0" aria-invalid={errors.discount ? true : undefined} className="input tabular-nums" />
               {errors.discount && <p className="mt-1 text-sm text-terminal-deep">{errors.discount}</p>}
             </div>
             <div>
               <label htmlFor="freight" className="mb-1.5 block text-sm font-medium">
-                Freight (Rs)
+                <T>Freight (Rs)</T>
               </label>
               <input id="freight" inputMode="decimal" value={freight} onChange={(e) => setFreight(e.target.value)} placeholder="0" className="input tabular-nums" />
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-line pt-3">
-            <span className="font-display text-lg font-semibold">Total</span>
+            <span className="font-display text-lg font-semibold"><T>Total</T></span>
             <span className="font-display text-2xl font-bold tabular-nums">{formatRs(total)}</span>
           </div>
         </section>
 
         {/* Payment */}
         <section className="card space-y-4 p-5">
-          <h2 className="font-display text-xl font-semibold">Payment (optional)</h2>
-          <p className="-mt-1 text-sm text-lead">Leave blank to record this as fully on credit for now.</p>
+          <h2 className="font-display text-xl font-semibold"><T>Payment (optional)</T></h2>
+          <p className="-mt-1 text-sm text-lead"><T>Leave blank to record this as fully on credit for now.</T></p>
           <div>
             <label htmlFor="paid-now" className="mb-1.5 block text-sm font-medium">
-              Paid now (Rs)
+              <T>Paid now (Rs)</T>
             </label>
             <input id="paid-now" inputMode="decimal" value={paidNow} onChange={(e) => setPaidNow(e.target.value)} placeholder="0" aria-invalid={errors.paid_now ? true : undefined} className="input tabular-nums" />
-            {errors.paid_now && <p className="mt-1 text-sm text-terminal-deep">{errors.paid_now}</p>}
+            {errors.paid_now && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.paid_now}</T></p>}
           </div>
 
           {paidNow.trim() !== "" && (parseAmount(paidNow) ?? 0) > 0 && (
             <>
               <div>
-                <span className="mb-1.5 block text-sm font-medium">Method</span>
+                <span className="mb-1.5 block text-sm font-medium"><T>Method</T></span>
                 <div className="flex flex-wrap gap-2">
                   {SUPPLIER_PAYMENT_METHODS.map((m) => (
                     <button
@@ -580,7 +578,7 @@ export default function NewPurchase({
                         method === m.value ? "border-casing bg-casing text-white" : "border-line bg-white text-lead hover:border-lead/40"
                       }`}
                     >
-                      {m.label}
+                      <T>{m.label}</T>
                     </button>
                   ))}
                 </div>
@@ -590,20 +588,20 @@ export default function NewPurchase({
                 <div className="grid grid-cols-1 gap-3 rounded-2xl bg-plate/60 p-3.5 sm:grid-cols-3">
                   <div>
                     <label htmlFor="cheque-number" className="mb-1.5 block text-sm font-medium">
-                      Cheque number
+                      <T>Cheque number</T>
                     </label>
                     <input id="cheque-number" value={chequeNumber} onChange={(e) => setChequeNumber(e.target.value)} aria-invalid={errors.cheque_number ? true : undefined} className="input" />
                     {errors.cheque_number && <p className="mt-1 text-xs text-terminal-deep">{errors.cheque_number}</p>}
                   </div>
                   <div>
                     <label htmlFor="cheque-date" className="mb-1.5 block text-sm font-medium">
-                      Cheque date
+                      <T>Cheque date</T>
                     </label>
                     <input id="cheque-date" type="date" value={chequeDate} onChange={(e) => setChequeDate(e.target.value)} className="input" />
                   </div>
                   <div>
                     <label htmlFor="bank-name" className="mb-1.5 block text-sm font-medium">
-                      Bank
+                      <T>Bank</T>
                     </label>
                     <input id="bank-name" value={bankName} onChange={(e) => setBankName(e.target.value)} className="input" />
                   </div>
@@ -612,9 +610,9 @@ export default function NewPurchase({
 
               <div>
                 <label htmlFor="reference" className="mb-1.5 block text-sm font-medium">
-                  Reference (optional)
+                  <T>Reference (optional)</T>
                 </label>
-                <input id="reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Transaction ID, receipt no., etc." className="input" />
+                <input id="reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder={t("Transaction ID, receipt no., etc.")} className="input" />
               </div>
             </>
           )}
@@ -622,16 +620,16 @@ export default function NewPurchase({
 
         {saveError && (
           <p role="alert" className="rounded-xl bg-terminal/10 px-3.5 py-3 text-sm text-terminal-deep">
-            {saveError}
+            <T>{saveError}</T>
           </p>
         )}
 
         <div className="flex justify-end gap-3 pb-6">
           <button type="button" onClick={() => router.back()} disabled={saving} className="btn btn-quiet">
-            Cancel
+            <T>Cancel</T>
           </button>
           <button type="submit" disabled={saving} className="btn btn-primary min-w-40">
-            {saving ? "Saving" : "Save purchase"}
+            <T>{saving ? "Saving" : "Save purchase"}</T>
           </button>
         </div>
       </form>

@@ -9,6 +9,8 @@ import { offlineSave } from "@/lib/offline/dataLayer";
 import type { Category } from "@/lib/types";
 import type { BillItem } from "./NewBill";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 /**
  * Quick "not in stock" form used from the bill screen. It is a trimmed version of the
  * Inventory item form: just enough to bill the item today. It always creates a real
@@ -58,6 +60,7 @@ export default function ManualItemForm({
   onClose: () => void;
   onAdded: (item: BillItem) => void;
 }) {
+  const tt = useT();
   const [form, setForm] = useState<FormState>(() => initialState());
   const [errors, setErrors] = useState<Errors>({});
   const [saving, setSaving] = useState(false);
@@ -134,15 +137,15 @@ export default function ManualItemForm({
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <div>
             <h2 id="manual-item-title" className="font-display text-2xl font-bold">
-              Item not in stock
+              <T>Item not in stock</T>
             </h2>
-            <p className="mt-0.5 text-sm text-lead">It will be added to Inventory and to this bill.</p>
+            <p className="mt-0.5 text-sm text-lead"><T>It will be added to Inventory and to this bill.</T></p>
           </div>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={tt("Close")}
             className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -151,13 +154,12 @@ export default function ManualItemForm({
 
         <div className="flex-1 space-y-5 overflow-y-auto px-5 py-6">
           <p className="rounded-xl bg-sun/20 px-3 py-2.5 text-sm">
-            This product is not in your inventory yet. Fill this in and it will be created automatically, with the
-            quantity below as its stock.
+            <T>{"This product is not in your inventory yet. Fill this in and it will be created automatically, with the quantity below as its stock."}</T>
           </p>
 
           <div>
             <label htmlFor="mi-category" className="mb-1.5 block text-sm font-medium">
-              Category
+              <T>Category</T>
             </label>
             <select
               id="mi-category"
@@ -169,9 +171,9 @@ export default function ManualItemForm({
               className="input"
             >
               {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>
-                  {c.label}
-                </option>
+                <Opt key={c.value} value={c.value}>
+                  <T>{c.label}</T>
+                </Opt>
               ))}
             </select>
           </div>
@@ -179,14 +181,14 @@ export default function ManualItemForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="mi-brand" className="mb-1.5 block text-sm font-medium">
-                Brand
+                <T>Brand</T>
               </label>
               <input
                 id="mi-brand"
                 type="text"
                 autoFocus
                 autoComplete="off"
-                placeholder="Osaka"
+                placeholder={tt("Osaka")}
                 value={form.brand}
                 onChange={(e) => set("brand", e.target.value)}
                 aria-invalid={errors.brand ? true : undefined}
@@ -196,13 +198,13 @@ export default function ManualItemForm({
             </div>
             <div>
               <label htmlFor="mi-model" className="mb-1.5 block text-sm font-medium">
-                Model
+                <T>Model</T>
               </label>
               <input
                 id="mi-model"
                 type="text"
                 autoComplete="off"
-                placeholder="200Ah Tubular"
+                placeholder={tt("200Ah Tubular")}
                 value={form.model}
                 onChange={(e) => set("model", e.target.value)}
                 aria-invalid={errors.model ? true : undefined}
@@ -214,14 +216,14 @@ export default function ManualItemForm({
 
           <div>
             <label htmlFor="mi-type" className="mb-1.5 block text-sm font-medium">
-              Type or spec (optional)
+              <T>Type or spec (optional)</T>
             </label>
             <input
               id="mi-type"
               type="text"
               list="mi-type-options"
               autoComplete="off"
-              placeholder="Pick a suggestion or type your own"
+              placeholder={tt("Pick a suggestion or type your own")}
               value={form.type}
               onChange={(e) => set("type", e.target.value)}
               className="input"
@@ -236,7 +238,7 @@ export default function ManualItemForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label htmlFor="mi-quantity" className="mb-1.5 block text-sm font-medium">
-                Quantity
+                <T>Quantity</T>
               </label>
               <input
                 id="mi-quantity"
@@ -251,7 +253,7 @@ export default function ManualItemForm({
             </div>
             <div>
               <label htmlFor="mi-rate" className="mb-1.5 block text-sm font-medium">
-                Sale price (Rs)
+                <T>Sale price (Rs)</T>
               </label>
               <input
                 id="mi-rate"
@@ -268,7 +270,7 @@ export default function ManualItemForm({
 
           <div>
             <label htmlFor="mi-cost" className="mb-1.5 block text-sm font-medium">
-              Cost price (Rs, optional)
+              <T>Cost price (Rs, optional)</T>
             </label>
             <input
               id="mi-cost"
@@ -277,7 +279,7 @@ export default function ManualItemForm({
               value={form.cost_price}
               onChange={(e) => set("cost_price", e.target.value.replace(/[^\d.]/g, ""))}
               aria-invalid={errors.cost_price ? true : undefined}
-              placeholder="Leave empty if unknown"
+              placeholder={tt("Leave empty if unknown")}
               className="input tabular-nums"
             />
             {errors.cost_price && <p className="mt-1 text-sm text-terminal-deep">{errors.cost_price}</p>}
@@ -287,15 +289,15 @@ export default function ManualItemForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {saveError && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {saveError}
+              <T>{saveError}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-40">
-              {saving ? "Adding" : "Add to bill"}
+              <T>{saving ? "Adding" : "Add to bill"}</T>
             </button>
           </div>
         </div>

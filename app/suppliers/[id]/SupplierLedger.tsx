@@ -13,6 +13,8 @@ import { balanceLabel } from "@/lib/suppliers";
 import type { LedgerRow, PurchaseInvoice, Supplier, SupplierBalance } from "@/lib/types";
 import SupplierForm from "../SupplierForm";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
 
 function InfoCard({ icon, label, value, muted, tone }: { icon: IconName; label: string; value: string; muted?: boolean; tone: string }) {
@@ -22,8 +24,8 @@ function InfoCard({ icon, label, value, muted, tone }: { icon: IconName; label: 
         <Icon name={icon} className="h-5 w-5" />
       </span>
       <div className="min-w-0">
-        <dt className="text-sm text-lead">{label}</dt>
-        <dd className={`mt-0.5 break-words font-semibold tabular-nums ${muted ? "font-normal text-lead" : ""}`}>{value}</dd>
+        <dt className="text-sm text-lead"><T>{label}</T></dt>
+        <dd className={`mt-0.5 break-words font-semibold tabular-nums ${muted ? "font-normal text-lead" : ""}`}><T>{value}</T></dd>
       </div>
     </div>
   );
@@ -46,18 +48,18 @@ function LedgerLine({ row }: { row: LedgerRow }) {
         <Icon name={ENTRY_ICON[row.entry_type]} className="h-[18px] w-[18px]" />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-semibold">{row.entry_label}</span>
+        <span className="block font-semibold"><T>{row.entry_label}</T></span>
         <span className="block text-sm text-lead">
-          {formatDay(row.event_date)}
-          {row.reference ? ` · ${row.reference}` : ""}
+          <T>{formatDay(row.event_date)}</T>
+          <T>{row.reference ? ` · ${row.reference}` : ""}</T>
         </span>
       </span>
       <span className="text-end">
         <span className={`block font-semibold tabular-nums ${row.amount >= 0 ? "text-terminal-deep" : "text-cell-deep"}`}>
-          {row.amount >= 0 ? "+" : "-"}
+          <T>{row.amount >= 0 ? "+" : "-"}</T>
           {formatRs(Math.abs(row.amount))}
         </span>
-        <span className="block text-xs text-lead">Bal {formatRs(row.running_balance)}</span>
+        <span className="block text-xs text-lead"><T p={{ formatRs: formatRs(row.running_balance) }}>{"Bal {formatRs}"}</T></span>
       </span>
     </li>
   );
@@ -78,6 +80,7 @@ export default function SupplierLedger({
   purchases: PurchaseInvoice[];
   purchasesReady: boolean;
 }) {
+  const tt = useT();
   const router = useRouter();
   const roleInfo = useRoleInfo();
   const canManageSuppliers = can(roleInfo, "suppliers.manage");
@@ -98,7 +101,7 @@ export default function SupplierLedger({
   return (
     <div>
       <Link href="/suppliers" className="anim-rise inline-flex items-center gap-1 text-[15px] font-medium text-lead hover:text-casing">
-        <Icon name="back" className="h-4 w-4" /> Suppliers
+        <Icon name="back" className="h-4 w-4" /> <T>Suppliers</T>
       </Link>
 
       <section className="hero-card anim-slide relative mt-3 overflow-hidden rounded-3xl p-5 text-white shadow-lift sm:p-7">
@@ -106,30 +109,30 @@ export default function SupplierLedger({
           <div className="min-w-0 flex-1">
             <h1 className="break-words font-display text-4xl font-bold leading-none sm:text-5xl">{supplier.name}</h1>
             <div className="mt-2.5 flex flex-wrap items-center gap-2 text-sm text-white/65">
-              {!supplier.is_active && <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-medium text-white">Inactive</span>}
-              <span>Supplier since {formatDate(supplier.created_at)}</span>
+              {!supplier.is_active && <span className="rounded-full bg-white/15 px-2.5 py-0.5 font-medium text-white"><T>Inactive</T></span>}
+              <span><T p={{ formatDate: formatDate(supplier.created_at) }}>{"Supplier since {formatDate}"}</T></span>
             </div>
           </div>
           <div className="text-end">
-            <p className="text-sm text-white/70">Balance</p>
-            <p className={`font-display text-3xl font-bold sm:text-4xl ${balanceCls}`}>{balanceText}</p>
+            <p className="text-sm text-white/70"><T>Balance</T></p>
+            <p className={`font-display text-3xl font-bold sm:text-4xl ${balanceCls}`}><T>{balanceText}</T></p>
           </div>
         </div>
 
         <div className="relative mt-5 flex flex-wrap gap-2.5">
           {canReceiveStock && (
 <Link href={`/purchases/new?supplier=${supplier.id}`} className="on-dark btn btn-primary">
-            <Icon name="truck" className="h-5 w-5" /> Receive stock
+            <Icon name="truck" className="h-5 w-5" /> <T>Receive stock</T>
           </Link>
 )}
           {supplier.balance > 0 && (
             <Link href={`/payments/new?supplier=${supplier.id}`} className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20">
-              <Icon name="banknote" className="h-5 w-5" /> Make payment
+              <Icon name="banknote" className="h-5 w-5" /> <T>Make payment</T>
             </Link>
           )}
           {supplier.phone && (
             <a href={`tel:${supplier.phone}`} className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20">
-              <Icon name="phone" className="h-5 w-5" /> Call
+              <Icon name="phone" className="h-5 w-5" /> <T>Call</T>
             </a>
           )}
           {canManageSuppliers && (
@@ -138,30 +141,30 @@ export default function SupplierLedger({
             onClick={() => setEditing(true)}
             className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20"
           >
-            <Icon name="edit" className="h-5 w-5" /> Edit
+            <Icon name="edit" className="h-5 w-5" /> <T>Edit</T>
           </button>
 )}
         </div>
       </section>
 
       <dl className="anim-rise mt-4 grid gap-3 sm:grid-cols-2" style={delay(2)}>
-        <InfoCard icon="phone" label="Phone" value={supplier.phone ?? "Not saved"} muted={!supplier.phone} tone="bg-cell/10 text-cell" />
-        <InfoCard icon="idcard" label="NTN / CNIC" value={supplier.ntn_or_cnic ?? "Not saved"} muted={!supplier.ntn_or_cnic} tone="bg-focus/10 text-focus" />
-        <InfoCard icon="pin" label="Address" value={supplier.address || "Not saved"} muted={!supplier.address} tone="bg-sun/25 text-amber-800" />
-        <InfoCard icon="calendar" label="Last activity" value={supplier.last_purchase_date ? formatDay(supplier.last_purchase_date) : "No purchases yet"} tone="bg-violet-500/10 text-violet-700" />
+        <InfoCard icon="phone" label={tt("Phone")} value={supplier.phone ?? "Not saved"} muted={!supplier.phone} tone="bg-cell/10 text-cell" />
+        <InfoCard icon="idcard" label={tt("NTN / CNIC")} value={supplier.ntn_or_cnic ?? "Not saved"} muted={!supplier.ntn_or_cnic} tone="bg-focus/10 text-focus" />
+        <InfoCard icon="pin" label={tt("Address")} value={supplier.address || "Not saved"} muted={!supplier.address} tone="bg-sun/25 text-amber-800" />
+        <InfoCard icon="calendar" label={tt("Last activity")} value={supplier.last_purchase_date ? formatDay(supplier.last_purchase_date) : "No purchases yet"} tone="bg-violet-500/10 text-violet-700" />
       </dl>
 
       <dl className="anim-rise mt-4 grid grid-cols-3 gap-2 sm:gap-3" style={delay(3)}>
         <div className="card p-3.5">
-          <dt className="text-xs text-lead sm:text-sm">Total bought</dt>
+          <dt className="text-xs text-lead sm:text-sm"><T>Total bought</T></dt>
           <dd className="font-display text-xl font-semibold tabular-nums sm:text-2xl">{formatRs(supplier.total_bought)}</dd>
         </div>
         <div className="card p-3.5">
-          <dt className="text-xs text-lead sm:text-sm">Total paid</dt>
+          <dt className="text-xs text-lead sm:text-sm"><T>Total paid</T></dt>
           <dd className="font-display text-xl font-semibold tabular-nums text-cell-deep sm:text-2xl">{formatRs(supplier.total_paid)}</dd>
         </div>
         <div className={`card p-3.5 ${supplier.balance > 0 ? "border-terminal/30 bg-terminal/5" : ""}`}>
-          <dt className="text-xs text-lead sm:text-sm">Balance</dt>
+          <dt className="text-xs text-lead sm:text-sm"><T>Balance</T></dt>
           <dd className={`font-display text-xl font-semibold tabular-nums sm:text-2xl ${supplier.balance > 0 ? "text-terminal-deep" : ""}`}>
             {formatRs(Math.abs(supplier.balance))}
           </dd>
@@ -184,21 +187,19 @@ export default function SupplierLedger({
                 tab === t.value ? "border-b-2 border-casing text-casing" : "text-lead hover:text-casing"
               }`}
             >
-              {t.label}
+              <T>{t.label}</T>
             </button>
           ))}
         </div>
 
         {tab === "ledger" ? (
           !ledgerReady ? (
-            <p className="px-5 py-6 text-lead">
-              The ledger could not be loaded. In Supabase, open SQL Editor and run{" "}
-              <code className="rounded bg-plate px-1.5 py-0.5 text-casing">12_suppliers_purchases.sql</code>.
+            <p className="px-5 py-6 text-lead"><T p={{ p: " " }}>{"The ledger could not be loaded. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">12_suppliers_purchases.sql</code>.
             </p>
           ) : ledger.length === 0 ? (
             <div className="px-6 py-10 text-center">
-              <p className="font-display text-xl font-semibold">Nothing recorded yet</p>
-              <p className="mt-1 text-lead">An opening balance, purchase bills and payments will all show up here.</p>
+              <p className="font-display text-xl font-semibold"><T>Nothing recorded yet</T></p>
+              <p className="mt-1 text-lead"><T>An opening balance, purchase bills and payments will all show up here.</T></p>
             </div>
           ) : (
             <ul className="divide-y divide-line/60 px-2 py-2">
@@ -208,17 +209,17 @@ export default function SupplierLedger({
             </ul>
           )
         ) : !purchasesReady ? (
-          <p className="px-5 py-6 text-lead">Purchase bills could not be loaded.</p>
+          <p className="px-5 py-6 text-lead"><T>Purchase bills could not be loaded.</T></p>
         ) : purchases.length === 0 ? (
           <div className="px-6 py-10 text-center">
             <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-focus/10 text-focus">
               <Icon name="truck" className="h-7 w-7" />
             </span>
-            <h3 className="mt-3 font-display text-2xl font-semibold">No purchase bills yet</h3>
-            <p className="mx-auto mt-1 max-w-md text-lead">Stock received from {supplier.name} will appear here.</p>
+            <h3 className="mt-3 font-display text-2xl font-semibold"><T>No purchase bills yet</T></h3>
+            <p className="mx-auto mt-1 max-w-md text-lead"><T p={{ name: supplier.name }}>{"Stock received from {name} will appear here."}</T></p>
             {canReceiveStock && (
 <Link href={`/purchases/new?supplier=${supplier.id}`} className="btn btn-primary mt-4">
-              Receive first stock
+              <T>Receive first stock</T>
             </Link>
 )}
           </div>
@@ -230,14 +231,14 @@ export default function SupplierLedger({
                   <span className="min-w-0 flex-1">
                     <span className="block font-semibold">{p.purchase_number}</span>
                     <span className="block text-sm text-lead">
-                      {formatDay(p.invoice_date)}
-                      {p.status === "Cancelled" ? " · Cancelled" : ""}
+                      <T>{formatDay(p.invoice_date)}</T>
+                      <T>{p.status === "Cancelled" ? " · Cancelled" : ""}</T>
                     </span>
                   </span>
                   <span className="text-end">
                     <span className="block font-semibold tabular-nums">{formatRs(p.total_value)}</span>
                     {p.status !== "Cancelled" && p.due_total > 0 && (
-                      <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>
+                      <span className="block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(p.due_total) }}>{"{formatRs} due"}</T></span>
                     )}
                   </span>
                   <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />

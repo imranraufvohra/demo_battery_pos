@@ -16,6 +16,8 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { PaymentDetails, PurchaseInvoice, SupplierBalance } from "@/lib/types";
 import PurchasePayBadge from "../purchases/PayBadge";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Tab = "payments" | "purchases" | "suppliers";
 
 const TABS: { value: Tab; label: string }[] = [
@@ -37,6 +39,7 @@ export default function PaymentsClient({
   supplierNames: Record<string, string>;
   initialTab: Tab;
 }) {
+  const tt = useT();
   const router = useRouter();
   const [tab, setTab] = useState<Tab>(initialTab);
   const [query, setQuery] = useState("");
@@ -117,11 +120,11 @@ export default function PaymentsClient({
   return (
     <div>
       <PageHeader
-        title="Payments"
+        title={tt("Payments")}
         subtitle={payments.length === 0 ? "Money paid to suppliers will appear here." : `${payments.length} payments recorded`}
         action={
           <Link href="/payments/new" className="btn btn-primary">
-            <Icon name="plus" className="h-5 w-5" /> Make payment
+            <Icon name="plus" className="h-5 w-5" /> <T>Make payment</T>
           </Link>
         }
       />
@@ -140,13 +143,13 @@ export default function PaymentsClient({
                   : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
               }`}
             >
-              {t.label}
+              <T>{t.label}</T>
             </button>
           ))}
         </div>
         <div className="relative sm:max-w-md">
           <label htmlFor="payments-search" className="sr-only">
-            Search
+            <T>Search</T>
           </label>
           <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
           <input
@@ -154,7 +157,7 @@ export default function PaymentsClient({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+            placeholder={tt(placeholder)}
             className="input ps-11"
           />
         </div>
@@ -167,24 +170,24 @@ export default function PaymentsClient({
               <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cell/10 text-cell">
                 <Icon name="banknote" className="h-7 w-7" />
               </span>
-              <h2 className="mt-4 font-display text-3xl font-semibold">No payments yet</h2>
+              <h2 className="mt-4 font-display text-3xl font-semibold"><T>No payments yet</T></h2>
               <p className="mx-auto mt-2 max-w-md text-lead">
-                Pay a supplier against one bill, or pay them on account. Either way it shows up here and in their ledger.
+                <T>Pay a supplier against one bill, or pay them on account. Either way it shows up here and in their ledger.</T>
               </p>
               <Link href="/payments/new" className="btn btn-primary mt-6">
-                Make first payment
+                <T>Make first payment</T>
               </Link>
             </section>
           ) : shownPayments.length === 0 ? (
             <div className="card mt-4 px-6 py-12 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing matches</p>
-              <p className="mt-2 text-lead">Try a different search.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+              <p className="mt-2 text-lead"><T>Try a different search.</T></p>
             </div>
           ) : (
             <>
               <dl className="anim-rise mt-4 grid grid-cols-1 gap-3 sm:max-w-xs">
                 <div className="card p-3.5">
-                  <dt className="text-xs text-lead sm:text-sm">Total shown</dt>
+                  <dt className="text-xs text-lead sm:text-sm"><T>Total shown</T></dt>
                   <dd className="font-display text-xl font-semibold tabular-nums text-cell-deep sm:text-2xl">{formatRs(totalPaidShown)}</dd>
                 </div>
               </dl>
@@ -193,14 +196,14 @@ export default function PaymentsClient({
                 <table className="w-full text-start text-[15px]">
                   <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                     <tr>
-                      <th className="px-5 py-3 font-medium">Payment</th>
-                      <th className="px-3 py-3 font-medium">Date</th>
-                      <th className="px-3 py-3 font-medium">Supplier</th>
-                      <th className="px-3 py-3 font-medium">Against</th>
-                      <th className="px-3 py-3 font-medium">Method</th>
-                      <th className="px-3 py-3 text-end font-medium">Amount</th>
+                      <th className="px-5 py-3 font-medium"><T>Payment</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Date</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Supplier</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Against</T></th>
+                      <th className="px-3 py-3 font-medium"><T>Method</T></th>
+                      <th className="px-3 py-3 text-end font-medium"><T>Amount</T></th>
                       <th className="px-3 py-3 text-end font-medium">
-                        <span className="sr-only">Actions</span>
+                        <span className="sr-only"><T>Actions</T></span>
                       </th>
                     </tr>
                   </thead>
@@ -208,7 +211,7 @@ export default function PaymentsClient({
                     {shownPayments.map((p) => (
                       <tr key={p.id} className={`transition-colors hover:bg-plate/50 ${p.status === "Cancelled" ? "opacity-60" : ""}`}>
                         <td className="px-5 py-3.5 font-semibold">{p.payment_number}</td>
-                        <td className="px-3 py-3.5 tabular-nums text-lead">{formatDay(p.paid_at)}</td>
+                        <td className="px-3 py-3.5 tabular-nums text-lead"><T>{formatDay(p.paid_at)}</T></td>
                         <td className="max-w-[14rem] truncate px-3 py-3.5 font-medium">
                           <Link href={`/suppliers/${p.supplier_id}`} className="text-focus hover:underline">
                             {p.supplier_name}
@@ -223,14 +226,14 @@ export default function PaymentsClient({
                             "On account"
                           )}
                         </td>
-                        <td className="px-3 py-3.5 text-lead">{supplierMethodLabel(p.method)}</td>
+                        <td className="px-3 py-3.5 text-lead"><T>{supplierMethodLabel(p.method)}</T></td>
                         <td className="px-3 py-3.5 text-end font-semibold tabular-nums">{formatRs(p.amount)}</td>
                         <td className="px-3 py-3.5 text-end">
                           <div className="flex items-center justify-end gap-1">
                             <Link
                               href={`/print/payment/${p.id}?auto=1`}
                               aria-label={`Print voucher ${p.payment_number}`}
-                              title="Print voucher"
+                              title={tt("Print voucher")}
                               className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-plate"
                             >
                               <Icon name="printer" className="h-5 w-5" />
@@ -240,7 +243,7 @@ export default function PaymentsClient({
                                 type="button"
                                 onClick={() => askCancel(p)}
                                 aria-label={`Cancel payment ${p.payment_number}`}
-                                title="Cancel payment"
+                                title={tt("Cancel payment")}
                                 className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead hover:bg-terminal/10 hover:text-terminal-deep"
                               >
                                 <Icon name="x" className="h-5 w-5" />
@@ -261,11 +264,11 @@ export default function PaymentsClient({
                       <span className="min-w-0 flex-1">
                         <span className="truncate font-semibold">{p.supplier_name}</span>
                         <span className="mt-0.5 block text-sm text-lead">
-                          {p.payment_number} · {formatDay(p.paid_at)}
+                          {p.payment_number} · <T>{formatDay(p.paid_at)}</T>
                         </span>
                         <span className="mt-0.5 block text-sm text-lead">
-                          {p.purchase_id && p.purchase_number ? p.purchase_number : "On account"} · {supplierMethodLabel(p.method)}
-                          {p.status === "Cancelled" ? " · Cancelled" : ""}
+                          {p.purchase_id && p.purchase_number ? p.purchase_number : "On account"} · <T>{supplierMethodLabel(p.method)}</T>
+                          <T>{p.status === "Cancelled" ? " · Cancelled" : ""}</T>
                         </span>
                       </span>
                       <span className="font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(p.amount)}</span>
@@ -290,7 +293,7 @@ export default function PaymentsClient({
                   </li>
                 ))}
               </ul>
-              {payments.length >= 1000 && <p className="mt-3 text-sm text-lead">Showing the latest 1,000 payments.</p>}
+              {payments.length >= 1000 && <p className="mt-3 text-sm text-lead"><T>Showing the latest 1,000 payments.</T></p>}
             </>
           )}
         </>
@@ -300,14 +303,14 @@ export default function PaymentsClient({
         <>
           {shownPurchasesAll.length === 0 ? (
             <div className="card anim-rise mt-6 px-6 py-12 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing matches</p>
-              <p className="mt-2 text-lead">Try a different search, or make a purchase first.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+              <p className="mt-2 text-lead"><T>Try a different search, or make a purchase first.</T></p>
             </div>
           ) : (
             <>
               <dl className="anim-rise mt-4 grid grid-cols-1 gap-3 sm:max-w-xs">
                 <div className={`card p-3.5 ${totalDueShown > 0 ? "border-terminal/30 bg-terminal/5" : ""}`}>
-                  <dt className="text-xs text-lead sm:text-sm">Still owed, shown</dt>
+                  <dt className="text-xs text-lead sm:text-sm"><T>Still owed, shown</T></dt>
                   <dd className={`font-display text-xl font-semibold tabular-nums sm:text-2xl ${totalDueShown > 0 ? "text-terminal-deep" : ""}`}>
                     {formatRs(totalDueShown)}
                   </dd>
@@ -317,9 +320,9 @@ export default function PaymentsClient({
                 {shownPurchasesAll.map((p) => (
                   <li key={p.id} className="card flex items-center gap-3 p-4">
                     <Link href={`/purchases/${p.id}`} className="min-w-0 flex-1">
-                      <span className="truncate font-semibold">{supplierNames[p.supplier_id] ?? "Unknown supplier"}</span>
+                      <span className="truncate font-semibold"><T>{supplierNames[p.supplier_id] ?? "Unknown supplier"}</T></span>
                       <span className="mt-0.5 block text-sm text-lead">
-                        {p.purchase_number} · {formatDay(p.invoice_date)}
+                        {p.purchase_number} · <T>{formatDay(p.invoice_date)}</T>
                       </span>
                       <span className="mt-1.5 block">
                         <PurchasePayBadge tag={p.payment_tag} status={p.status} />
@@ -328,12 +331,12 @@ export default function PaymentsClient({
                     <div className="text-end">
                       <span className="block font-display text-2xl font-semibold leading-none tabular-nums">{formatRs(p.total_value)}</span>
                       {p.status !== "Cancelled" && p.due_total > 0 && (
-                        <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(p.due_total)} due</span>
+                        <span className="mt-1 block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(p.due_total) }}>{"{formatRs} due"}</T></span>
                       )}
                     </div>
                     {p.status !== "Cancelled" && p.due_total > 0 && (
                       <Link href={`/payments/new?purchase=${p.id}`} className="btn btn-primary btn-sm shrink-0">
-                        Pay
+                        <T>Pay</T>
                       </Link>
                     )}
                   </li>
@@ -348,8 +351,8 @@ export default function PaymentsClient({
         <>
           {shownSuppliers.length === 0 ? (
             <div className="card anim-rise mt-6 px-6 py-12 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing matches</p>
-              <p className="mt-2 text-lead">Try a different search.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+              <p className="mt-2 text-lead"><T>Try a different search.</T></p>
             </div>
           ) : (
             <ul className="mt-4 space-y-2.5">
@@ -361,11 +364,11 @@ export default function PaymentsClient({
                     <Link href={`/suppliers/${s.id}`} className="min-w-0 flex-1">
                       <span className="truncate font-semibold">{s.name}</span>
                       {s.phone && <span className="mt-0.5 block text-sm text-lead">{s.phone}</span>}
-                      <span className={`mt-1 block text-sm font-semibold tabular-nums ${cls}`}>{text}</span>
+                      <span className={`mt-1 block text-sm font-semibold tabular-nums ${cls}`}><T>{text}</T></span>
                     </Link>
                     {s.balance > 0 && (
                       <Link href={`/payments/new?supplier=${s.id}`} className="btn btn-primary btn-sm shrink-0">
-                        Pay
+                        <T>Pay</T>
                       </Link>
                     )}
                   </li>
@@ -379,15 +382,10 @@ export default function PaymentsClient({
       {target && (
         <div className="anim-fade fixed inset-0 z-50 flex items-center justify-center bg-casing/60 p-4">
           <div role="alertdialog" aria-modal="true" aria-labelledby="cancel-pay-title" className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-            <h2 id="cancel-pay-title" className="font-display text-2xl font-bold">
-              Cancel {target.payment_number}?
-            </h2>
-            <p className="mt-2 text-lead">
-              This marks the {formatRs(target.amount)} payment to {target.supplier_name} cancelled. It stops counting toward what's paid,
-              so the balance owed goes back up. It cannot be undone.
-            </p>
+            <h2 id="cancel-pay-title" className="font-display text-2xl font-bold"><T p={{ payment_number: target.payment_number }}>{"Cancel {payment_number}?"}</T></h2>
+            <p className="mt-2 text-lead"><T p={{ formatRs: formatRs(target.amount), supplier_name: target.supplier_name }}>{"This marks the {formatRs} payment to {supplier_name} cancelled. It stops counting toward what's paid, so the balance owed goes back up. It cannot be undone."}</T></p>
             <label htmlFor="cancel-pay-reason" className="mt-4 block text-sm font-medium">
-              Reason
+              <T>Reason</T>
             </label>
             <input
               id="cancel-pay-reason"
@@ -395,20 +393,20 @@ export default function PaymentsClient({
               autoFocus
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. Entered by mistake, cheque bounced"
+              placeholder={tt("e.g. Entered by mistake, cheque bounced")}
               className="input mt-1.5"
             />
             {cancelError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {cancelError}
+                <T>{cancelError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setTarget(null)} disabled={busy} className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmCancel} disabled={busy} className="btn btn-danger">
-                {busy ? "Cancelling" : "Cancel payment"}
+                <T>{busy ? "Cancelling" : "Cancel payment"}</T>
               </button>
             </div>
           </div>

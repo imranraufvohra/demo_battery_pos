@@ -5,7 +5,10 @@ import type { Customer } from "@/lib/types";
 import CustomerProfile, { type CustomerBill } from "./CustomerProfile";
 import type { CustomerPayment } from "./CustomerLedger";
 
-export const metadata: Metadata = { title: "Customer" };
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Customer") };
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

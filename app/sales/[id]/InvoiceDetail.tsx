@@ -20,9 +20,12 @@ import FbrBadge from "../FbrBadge";
 import FbrCard from "./FbrCard";
 import { showFbrBadge, type FbrInfo } from "@/lib/fbrStatus";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 const btrim = (s: string) => s.trim();
 
 export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocument; fbr?: FbrInfo | null }) {
+  const tt = useT();
   const roleInfo = useRoleInfo();
   const canDeleteBill = can(roleInfo, "sales.delete");
   const { invoice: inv, items, payments } = doc;
@@ -211,29 +214,29 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
   return (
     <div>
       <Link href="/sales" className="anim-rise inline-flex items-center gap-1 text-[15px] font-medium text-lead hover:text-casing">
-        <Icon name="back" className="h-4 w-4" /> Sales
+        <Icon name="back" className="h-4 w-4" /> <T>Sales</T>
       </Link>
 
       <section className="hero-card anim-slide relative mt-3 overflow-hidden rounded-3xl p-5 text-white shadow-lift sm:p-7">
         <div className="relative flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-sm text-white/70">
-              {inv.invoice_type} · {formatDay(inv.invoice_date)}
+              <T>{inv.invoice_type}</T> · <T>{formatDay(inv.invoice_date)}</T>
             </p>
             <h1 className="mt-1 font-display text-4xl font-bold leading-none sm:text-5xl">{inv.invoice_number}</h1>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <PayBadge status={inv.payment_status} bill={inv.status} onDark />
               {showFbrBadge(fbr ?? undefined, inv.status === "Cancelled") && fbr && <FbrBadge info={fbr} onDark />}
-              {inv.status === "Cancelled" && <span className="text-sm text-white/70">This bill is cancelled.</span>}
+              {inv.status === "Cancelled" && <span className="text-sm text-white/70"><T>This bill is cancelled.</T></span>}
             </div>
           </div>
           <div className="text-end">
-            <p className="text-sm text-white/70">Total</p>
+            <p className="text-sm text-white/70"><T>Total</T></p>
             <p className="font-display text-4xl font-bold tabular-nums sm:text-5xl">{formatRs(inv.total_value)}</p>
             {inv.due_total > 0 && inv.status !== "Cancelled" ? (
-              <p className="mt-1 font-semibold tabular-nums text-red-200">{formatRs(inv.due_total)} still due</p>
+              <p className="mt-1 font-semibold tabular-nums text-red-200"><T p={{ formatRs: formatRs(inv.due_total) }}>{"{formatRs} still due"}</T></p>
             ) : (
-              <p className="mt-1 text-sm text-emerald-200">Paid in full</p>
+              <p className="mt-1 text-sm text-emerald-200"><T>Paid in full</T></p>
             )}
           </div>
         </div>
@@ -245,30 +248,30 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
       <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
         <div className="space-y-4">
           <section className="card anim-rise overflow-hidden" style={{ "--i": 1 } as React.CSSProperties}>
-            <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold">Items</h2>
+            <h2 className="px-5 pb-2 pt-5 font-display text-2xl font-semibold"><T>Items</T></h2>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[30rem] text-start">
                 <thead className="bg-plate/70 text-sm text-lead">
                   <tr>
-                    <th className="px-5 py-2.5 font-medium">Item</th>
-                    <th className="px-3 py-2.5 text-end font-medium">Qty</th>
-                    <th className="px-3 py-2.5 text-end font-medium">Rate</th>
-                    <th className="px-5 py-2.5 text-end font-medium">Amount</th>
+                    <th className="px-5 py-2.5 font-medium"><T>Item</T></th>
+                    <th className="px-3 py-2.5 text-end font-medium"><T>Qty</T></th>
+                    <th className="px-3 py-2.5 text-end font-medium"><T>Rate</T></th>
+                    <th className="px-5 py-2.5 text-end font-medium"><T>Amount</T></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/60">
                   {items.length === 0 && (
                     <tr>
                       <td colSpan={4} className="px-5 py-4 text-lead">
-                        Credit entered by hand. This bill has no items, so stock did not change.
+                        <T>Credit entered by hand. This bill has no items, so stock did not change.</T>
                       </td>
                     </tr>
                   )}
                   {items.map((it) => (
                     <tr key={it.id}>
                       <td className="px-5 py-3">
-                        <span className="font-semibold">{it.description}</span>
-                        {it.hs_code && <span className="block text-xs text-lead">HS code {it.hs_code}</span>}
+                        <span className="font-semibold"><T>{it.description}</T></span>
+                        {it.hs_code && <span className="block text-xs text-lead"><T p={{ hs_code: it.hs_code }}>{"HS code {hs_code}"}</T></span>}
                       </td>
                       <td className="px-3 py-3 text-end tabular-nums">{it.quantity}</td>
                       <td className="px-3 py-3 text-end tabular-nums">{formatRs(it.rate)}</td>
@@ -280,15 +283,15 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
             </div>
             <dl className="space-y-1.5 border-t border-line px-5 py-4">
               <div className="flex justify-between">
-                <dt className="text-lead">Total</dt>
+                <dt className="text-lead"><T>Total</T></dt>
                 <dd className="font-display text-2xl font-bold tabular-nums">{formatRs(inv.total_value)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-lead">Paid</dt>
+                <dt className="text-lead"><T>Paid</T></dt>
                 <dd className="font-semibold tabular-nums">{formatRs(inv.paid_total)}</dd>
               </div>
               <div className="flex justify-between">
-                <dt className="text-lead">Still due</dt>
+                <dt className="text-lead"><T>Still due</T></dt>
                 <dd className={`font-semibold tabular-nums ${inv.due_total > 0 ? "text-terminal-deep" : "text-cell-deep"}`}>
                   {formatRs(inv.due_total)}
                 </dd>
@@ -300,7 +303,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
         <div className="space-y-4">
           {fbr && <FbrCard info={fbr} invoiceNumber={inv.invoice_number} cancelled={inv.status === "Cancelled"} />}
           <section className="card anim-rise p-5" style={{ "--i": 2 } as React.CSSProperties}>
-            <h2 className="font-display text-2xl font-semibold">Customer</h2>
+            <h2 className="font-display text-2xl font-semibold"><T>Customer</T></h2>
             <p className="mt-2 break-words font-semibold">
               {inv.customer_id ? (
                 <Link href={`/customers/${inv.customer_id}`} className="text-focus hover:underline">
@@ -313,41 +316,41 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
             <dl className="mt-1.5 space-y-1 text-[15px] text-lead">
               {inv.buyer_phone && <div>{formatPhone(inv.buyer_phone)}</div>}
               {inv.buyer_address && <div>{inv.buyer_address}</div>}
-              <div>{inv.buyer_registration_type}</div>
+              <div><T>{inv.buyer_registration_type}</T></div>
               {inv.buyer_cnic_or_ntn && (
                 <div className="tabular-nums">
-                  {kind} {formatRegNo(inv.buyer_cnic_or_ntn)}
+                  <T>{kind}</T> {formatRegNo(inv.buyer_cnic_or_ntn)}
                 </div>
               )}
             </dl>
             {inv.note && (
               <p className="mt-3 rounded-xl bg-plate/70 px-3 py-2 text-[15px]">
-                <span className="text-lead">Note: </span>
-                {inv.note}
+                <span className="text-lead"><T>Note:</T> </span>
+                <T>{inv.note}</T>
               </p>
             )}
           </section>
 
           <section className="card anim-rise p-5" style={{ "--i": 3 } as React.CSSProperties}>
             <div className="flex items-center justify-between gap-3">
-              <h2 className="font-display text-2xl font-semibold">Payments</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Payments</T></h2>
               {canReceive && (
                 <button type="button" onClick={openPayment} className="btn btn-primary btn-sm">
-                  <Icon name="banknote" className="h-4 w-4" /> Receive payment
+                  <Icon name="banknote" className="h-4 w-4" /> <T>Receive payment</T>
                 </button>
               )}
             </div>
             {payments.length === 0 ? (
-              <p className="mt-2 text-lead">Nothing received yet. The full {formatRs(inv.total_value)} is credit.</p>
+              <p className="mt-2 text-lead"><T p={{ formatRs: formatRs(inv.total_value) }}>{"Nothing received yet. The full {formatRs} is credit."}</T></p>
             ) : (
               <ul className="mt-2 divide-y divide-line/60">
                 {payments.map((p) => (
                   <li key={p.id} className="flex items-center justify-between gap-3 py-2.5">
                     <span>
-                      <span className="block font-semibold">{methodLabel(p.method)}</span>
+                      <span className="block font-semibold"><T>{methodLabel(p.method)}</T></span>
                       <span className="block text-sm text-lead">
-                        {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))},{" "}
-                        {formatTime(p.paid_at)}
+                        <T>{formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))}</T>,{" "}
+                        <T>{formatTime(p.paid_at)}</T>
                       </span>
                     </span>
                     <span className="font-semibold tabular-nums">{formatRs(p.amount)}</span>
@@ -359,26 +362,26 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
 
           {canCancel && (
 <section className="card anim-rise p-5" style={{ "--i": 4 } as React.CSSProperties}>
-            <h2 className="font-display text-2xl font-semibold">Cancel this bill</h2>
+            <h2 className="font-display text-2xl font-semibold"><T>Cancel this bill</T></h2>
             <p className="mt-2 text-[15px] text-lead">
-              {wasSentToFbr
+              <T>{wasSentToFbr
                 ? "This bill was already reported to FBR. Cancelling it here marks it cancelled in PowerCell POS only -- FBR keeps its own record. To correct FBR's record, use a debit note."
-                : "Keeps the bill on record but marks it cancelled, and puts the items back in stock."}
+                : "Keeps the bill on record but marks it cancelled, and puts the items back in stock."}</T>
             </p>
             <button type="button" onClick={openCancel} className="btn btn-danger mt-3">
-              <Icon name="x" className="h-5 w-5" /> Cancel bill
+              <Icon name="x" className="h-5 w-5" /> <T>Cancel bill</T>
             </button>
           </section>
 )}
 
           {canDeleteBill && (
 <section className="card anim-rise p-5" style={{ "--i": 5 } as React.CSSProperties}>
-            <h2 className="font-display text-2xl font-semibold">Delete this bill</h2>
+            <h2 className="font-display text-2xl font-semibold"><T>Delete this bill</T></h2>
             <p className="mt-2 text-[15px] text-lead">
-              Removes the bill, its items and its payments completely. Use this for demo or test bills.
+              <T>Removes the bill, its items and its payments completely. Use this for demo or test bills.</T>
             </p>
             <button type="button" onClick={openDelete} className="btn btn-danger mt-3">
-              <Icon name="trash" className="h-5 w-5" /> Delete bill
+              <Icon name="trash" className="h-5 w-5" /> <T>Delete bill</T>
             </button>
           </section>
 )}
@@ -390,24 +393,22 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
           <form onSubmit={savePayment} className="flex min-h-0 flex-1 flex-col" noValidate>
             <div className="flex items-center justify-between px-5 pb-2 pt-4">
               <h2 id="pay-title" className="font-display text-3xl font-bold">
-                Receive payment
+                <T>Receive payment</T>
               </h2>
               <button
                 type="button"
                 onClick={() => setPaying(false)}
-                aria-label="Close"
+                aria-label={tt("Close")}
                 className="inline-flex h-11 w-11 items-center justify-center rounded-full text-lead hover:bg-plate"
               >
                 <Icon name="x" className="h-5 w-5" />
               </button>
             </div>
             <div className="flex-1 space-y-4 overflow-y-auto px-5 pb-4">
-              <p className="text-lead">
-                {inv.buyer_name} owes <span className="font-semibold text-terminal-deep">{formatRs(inv.due_total)}</span> on {inv.invoice_number}.
-              </p>
+              <p className="text-lead"><T p={{ buyer_name: inv.buyer_name }}>{"{buyer_name} owes"}</T> <span className="font-semibold text-terminal-deep">{formatRs(inv.due_total)}</span> <T p={{ invoice_number: inv.invoice_number }}>{"on {invoice_number}."}</T></p>
               <div>
                 <label htmlFor="pay-amount" className="text-sm font-medium text-lead">
-                  Amount received (Rs)
+                  <T>Amount received (Rs)</T>
                 </label>
                 <input
                   id="pay-amount"
@@ -422,33 +423,33 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                   onClick={() => setAmountText(String(inv.due_total))}
                   className="mt-1.5 text-sm font-semibold text-focus hover:underline"
                 >
-                  Pay everything due
+                  <T>Pay everything due</T>
                 </button>
               </div>
               <div>
                 <label htmlFor="pay-method" className="text-sm font-medium text-lead">
-                  Payment method
+                  <T>Payment method</T>
                 </label>
                 <select id="pay-method" value={method} onChange={(e) => setMethod(e.target.value as PaymentMethod)} className="input mt-1.5">
                   {PAYMENT_METHODS.map((m) => (
-                    <option key={m.value} value={m.value}>
-                      {m.label}
-                    </option>
+                    <Opt key={m.value} value={m.value}>
+                      <T>{m.label}</T>
+                    </Opt>
                   ))}
                 </select>
               </div>
               {error && (
                 <p role="alert" className="rounded-xl bg-terminal/10 px-3 py-2.5 text-[15px] text-terminal-deep">
-                  {error}
+                  <T>{error}</T>
                 </p>
               )}
             </div>
             <div className="pb-safe flex justify-end gap-3 border-t border-line px-5 py-4">
               <button type="button" onClick={() => setPaying(false)} disabled={busy} className="btn btn-quiet">
-                Cancel
+                <T>Cancel</T>
               </button>
               <button type="submit" disabled={busy} className="btn btn-primary">
-                {busy ? "Saving" : "Save payment"}
+                <T>{busy ? "Saving" : "Save payment"}</T>
               </button>
             </div>
           </form>
@@ -464,13 +465,8 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
             aria-describedby="del-text"
             className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
           >
-            <h2 id="del-title" className="font-display text-2xl font-bold">
-              Delete {inv.invoice_number}?
-            </h2>
-            <p id="del-text" className="mt-2 text-lead">
-              This permanently deletes the bill for {inv.buyer_name} ({formatRs(inv.total_value)}) with all its items
-              and payments. It cannot be undone.
-            </p>
+            <h2 id="del-title" className="font-display text-2xl font-bold"><T p={{ invoice_number: inv.invoice_number }}>{"Delete {invoice_number}?"}</T></h2>
+            <p id="del-text" className="mt-2 text-lead"><T p={{ buyer_name: inv.buyer_name, formatRs: formatRs(inv.total_value) }}>{"This permanently deletes the bill for {buyer_name} ({formatRs}) with all its items and payments. It cannot be undone."}</T></p>
             <label className="mt-4 flex items-start gap-3 rounded-xl bg-plate/70 px-3 py-3 text-[15px]">
               <input
                 type="checkbox"
@@ -480,31 +476,31 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                 className="mt-1 h-5 w-5"
               />
               <span>
-                <span className="block font-semibold">Put the items back in stock</span>
-                <span className="block text-lead">Turn this off only if the goods really left the shop.</span>
+                <span className="block font-semibold"><T>Put the items back in stock</T></span>
+                <span className="block text-lead"><T>Turn this off only if the goods really left the shop.</T></span>
               </span>
             </label>
             {delError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {delError}
+                <T>{delError}</T>
               </p>
             )}
             {delBlockedByFbr && fbr?.environment === "sandbox" && (
               <p className="mt-2 text-sm text-lead">
-                This looks like a sandbox test bill. You can remove its test FBR rows and delete it below.
+                <T>This looks like a sandbox test bill. You can remove its test FBR rows and delete it below.</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setDeleting(false)} disabled={delBusy} autoFocus className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               {delBlockedByFbr && fbr?.environment === "sandbox" ? (
                 <button type="button" onClick={deleteSandboxTestBill} disabled={delBusy} className="btn btn-danger">
-                  {delBusy ? "Deleting" : "Delete test FBR bill"}
+                  <T>{delBusy ? "Deleting" : "Delete test FBR bill"}</T>
                 </button>
               ) : (
                 <button type="button" onClick={deleteBill} disabled={delBusy} className="btn btn-danger">
-                  {delBusy ? "Deleting" : "Delete bill"}
+                  <T>{delBusy ? "Deleting" : "Delete bill"}</T>
                 </button>
               )}
             </div>
@@ -521,15 +517,10 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
             aria-describedby="cancel-text"
             className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
           >
-            <h2 id="cancel-title" className="font-display text-2xl font-bold">
-              Cancel {inv.invoice_number}?
-            </h2>
-            <p id="cancel-text" className="mt-2 text-lead">
-              {inv.buyer_name}, {formatRs(inv.total_value)}. The bill stays on record, marked cancelled.
-              {wasSentToFbr && " This bill was already reported to FBR -- FBR's own record is not changed by this."}
-            </p>
+            <h2 id="cancel-title" className="font-display text-2xl font-bold"><T p={{ invoice_number: inv.invoice_number }}>{"Cancel {invoice_number}?"}</T></h2>
+            <p id="cancel-text" className="mt-2 text-lead"><T p={{ buyer_name: inv.buyer_name, formatRs: formatRs(inv.total_value), this: wasSentToFbr && " This bill was already reported to FBR -- FBR's own record is not changed by this." }}>{"{buyer_name}, {formatRs}. The bill stays on record, marked cancelled.{this}"}</T></p>
             <label htmlFor="cancel-reason" className="mt-4 block text-sm font-medium text-lead">
-              Reason
+              <T>Reason</T>
             </label>
             <input
               id="cancel-reason"
@@ -537,7 +528,7 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
               disabled={cancelBusy}
-              placeholder="e.g. Customer changed their mind"
+              placeholder={tt("e.g. Customer changed their mind")}
               className="input mt-1.5"
             />
             <label className="mt-4 flex items-start gap-3 rounded-xl bg-plate/70 px-3 py-3 text-[15px]">
@@ -549,21 +540,21 @@ export default function InvoiceDetail({ doc, fbr = null }: { doc: InvoiceDocumen
                 className="mt-1 h-5 w-5"
               />
               <span>
-                <span className="block font-semibold">Put the items back in stock</span>
-                <span className="block text-lead">Turn this off only if the goods really left the shop.</span>
+                <span className="block font-semibold"><T>Put the items back in stock</T></span>
+                <span className="block text-lead"><T>Turn this off only if the goods really left the shop.</T></span>
               </span>
             </label>
             {cancelError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {cancelError}
+                <T>{cancelError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setCancelling(false)} disabled={cancelBusy} className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={cancelBill} disabled={cancelBusy} className="btn btn-danger">
-                {cancelBusy ? "Cancelling" : "Cancel bill"}
+                <T>{cancelBusy ? "Cancelling" : "Cancel bill"}</T>
               </button>
             </div>
           </div>

@@ -17,6 +17,8 @@ import { can } from "@/lib/roles";
 import PayBadge from "../sales/PayBadge";
 import AddUdhaarForm, { type CustomerPick } from "./AddUdhaarForm";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Sort = "biggest" | "oldest";
 
 const SORTS: { value: Sort; label: string }[] = [
@@ -56,6 +58,7 @@ export default function UdhaarClient({
   serverInvoices: Invoice[];
   customers?: CustomerPick[];
 }) {
+  const tt = useT();
   const router = useRouter();
   const roleInfo = useRoleInfo();
   const canAdd = can(roleInfo, "udhaar.add");
@@ -122,12 +125,12 @@ export default function UdhaarClient({
   return (
     <div>
       <PageHeader
-        title="Credit"
-        subtitle="Money customers still have to pay you"
+        title={tt("Credit")}
+        subtitle={tt("Money customers still have to pay you")}
         action={
           canAdd && (
             <button type="button" onClick={() => setAdding(true)} className="btn btn-primary">
-              <Icon name="plus" className="h-5 w-5" /> Add credit
+              <Icon name="plus" className="h-5 w-5" /> <T>Add credit</T>
             </button>
           )
         }
@@ -144,7 +147,7 @@ export default function UdhaarClient({
             <Icon name="banknote" className="h-5 w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm text-lead">Total to collect</span>
+            <span className="block text-sm text-lead"><T>Total to collect</T></span>
             <span className="block whitespace-nowrap font-display text-3xl font-semibold leading-none tabular-nums">
               {formatRs(totalDue)}
             </span>
@@ -155,7 +158,7 @@ export default function UdhaarClient({
             <Icon name="receipt" className="h-5 w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm text-lead">Credit bills</span>
+            <span className="block text-sm text-lead"><T>Credit bills</T></span>
             <span className="block font-display text-3xl font-semibold leading-none tabular-nums">{dueBills.length}</span>
           </span>
         </div>
@@ -164,7 +167,7 @@ export default function UdhaarClient({
             <Icon name="users" className="h-5 w-5" />
           </span>
           <span className="min-w-0">
-            <span className="block text-sm text-lead">Customers who owe</span>
+            <span className="block text-sm text-lead"><T>Customers who owe</T></span>
             <span className="block font-display text-3xl font-semibold leading-none tabular-nums">{customerCount}</span>
           </span>
         </div>
@@ -175,11 +178,11 @@ export default function UdhaarClient({
           <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-cell/10 text-cell">
             <Icon name="check" className="h-7 w-7" strokeWidth={2.2} />
           </span>
-          <h2 className="mt-3 font-display text-2xl font-semibold">No credit</h2>
-          <p className="mx-auto mt-1 max-w-sm text-lead">Every bill is paid. Credit bills will show here.</p>
+          <h2 className="mt-3 font-display text-2xl font-semibold"><T>No credit</T></h2>
+          <p className="mx-auto mt-1 max-w-sm text-lead"><T>Every bill is paid. Credit bills will show here.</T></p>
           {canAdd && (
             <button type="button" onClick={() => setAdding(true)} className="btn btn-quiet mt-4">
-              Add credit by hand
+              <T>Add credit by hand</T>
             </button>
           )}
         </section>
@@ -187,18 +190,18 @@ export default function UdhaarClient({
         <>
           <div className="anim-rise mt-5 flex flex-col gap-3 sm:flex-row sm:items-center" style={{ "--i": 2 } as React.CSSProperties}>
             <label className="relative block w-full sm:max-w-md">
-              <span className="sr-only">Search credit</span>
+              <span className="sr-only"><T>Search credit</T></span>
               <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search customer, phone or bill number"
+                placeholder={tt("Search customer, phone or bill number")}
                 className="input ps-11"
                 autoComplete="off"
               />
             </label>
-            <div role="group" aria-label="Sort credit" className="flex gap-2">
+            <div role="group" aria-label={tt("Sort credit")} className="flex gap-2">
               {SORTS.map((s) => (
                 <button
                   key={s.value}
@@ -209,24 +212,24 @@ export default function UdhaarClient({
                     sort === s.value ? "bg-casing text-white" : "border border-line bg-white text-casing hover:bg-plate"
                   }`}
                 >
-                  {s.label}
+                  <T>{s.label}</T>
                 </button>
               ))}
             </div>
           </div>
 
           <p className="mt-3 text-sm text-lead" aria-live="polite">
-            {groups.length} {groups.length === 1 ? "customer" : "customers"} · {shownBills}{" "}
-            {shownBills === 1 ? "bill" : "bills"} ·{" "}
-            <span className="font-semibold text-terminal-deep">{formatRs(shownDue)} to collect</span>
+            {groups.length} <T>{groups.length === 1 ? "customer" : "customers"}</T> · {shownBills}{" "}
+            <T>{shownBills === 1 ? "bill" : "bills"}</T> ·{" "}
+            <span className="font-semibold text-terminal-deep"><T p={{ formatRs: formatRs(shownDue) }}>{"{formatRs} to collect"}</T></span>
           </p>
 
           {groups.length === 0 ? (
             <div className="card mt-4 px-6 py-10 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing matches</p>
-              <p className="mt-1 text-lead">Check the spelling, or clear the search.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+              <p className="mt-1 text-lead"><T>Check the spelling, or clear the search.</T></p>
               <button type="button" className="btn btn-quiet mt-4" onClick={() => setQuery("")}>
-                Clear search
+                <T>Clear search</T>
               </button>
             </div>
           ) : (
@@ -243,12 +246,12 @@ export default function UdhaarClient({
                         <span className="block truncate font-semibold">{g.name}</span>
                       )}
                       <span className="block truncate text-sm text-lead">
-                        {g.bills.length} {g.bills.length === 1 ? "bill" : "bills"} · oldest {ageLabel(g.oldest)}
+                        <T p={{ n: g.bills.length, age: ageLabel(g.oldest) }}>{g.bills.length === 1 ? "{n} bill · oldest {age}" : "{n} bills · oldest {age}"}</T>
                         {g.phone ? ` · ${g.phone}` : ""}
                       </span>
                     </span>
                     <span className="text-end">
-                      <span className="block text-xs text-lead">Total due</span>
+                      <span className="block text-xs text-lead"><T>Total due</T></span>
                       <span className="block font-display text-2xl font-semibold leading-none tabular-nums text-terminal-deep">
                         {formatRs(g.due)}
                       </span>
@@ -263,7 +266,7 @@ export default function UdhaarClient({
                               {b.pending ? "Pending sync" : b.invoice_number}
                             </span>
                             <span className="block text-sm text-lead">
-                              {formatDay(b.invoice_date)} · {ageLabel(b.invoice_date)}
+                              <T>{formatDay(b.invoice_date)}</T> · <T>{ageLabel(b.invoice_date)}</T>
                             </span>
                             <span className="mt-1 block">
                               <PayBadge status={b.payment_status} bill={b.status} />
@@ -271,10 +274,9 @@ export default function UdhaarClient({
                           </span>
                           <span className="text-end">
                             <span className="block text-sm text-lead tabular-nums">
-                              Bill {formatRs(b.total_value)}
-                              {b.paid_total > 0 ? ` · Paid ${formatRs(b.paid_total)}` : ""}
+                              <T p={{ amount: formatRs(b.total_value), paid: formatRs(b.paid_total) }}>{b.paid_total > 0 ? "Bill {amount} · Paid {paid}" : "Bill {amount}"}</T>
                             </span>
-                            <span className="block font-semibold tabular-nums text-terminal-deep">{formatRs(b.due_total)} due</span>
+                            <span className="block font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(b.due_total) }}>{"{formatRs} due"}</T></span>
                           </span>
                           {!b.pending && <Icon name="chevron" className="h-4 w-4 text-lead/60" />}
                         </>

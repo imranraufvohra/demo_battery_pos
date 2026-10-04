@@ -1,6 +1,7 @@
 import Icon from "@/components/Icons";
 import type { RegistrationType } from "@/lib/types";
 
+import { T } from "@/components/T";
 export default function RegistrationBadge({
   type,
   onDark = false,
@@ -19,7 +20,7 @@ export default function RegistrationBadge({
   return (
     <span className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-medium ${tone}`}>
       {registered && <Icon name="shield" className="h-3.5 w-3.5" strokeWidth={2.2} />}
-      {type}
+      <T>{type}</T>
     </span>
   );
 }

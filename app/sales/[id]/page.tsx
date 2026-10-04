@@ -6,7 +6,11 @@ import { loadFbrStatus } from "@/lib/fbrStatusLoad";
 import { createClient } from "@/lib/supabase/server";
 import InvoiceDetail from "./InvoiceDetail";
 
-export const metadata: Metadata = { title: "Bill" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Bill") };
+}
 
 const when = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -41,23 +45,22 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
       <InvoiceDetail doc={doc} fbr={fbr} />
       {(madeBy || pays.some((p) => p.received_by && names[p.received_by])) && (
         <section className="card mt-4 p-5">
-          <h2 className="font-display text-2xl font-semibold">Who did this</h2>
+          <h2 className="font-display text-2xl font-semibold"><T>Who did this</T></h2>
           <ul className="mt-2 space-y-1 text-[15px]">
             {madeBy && (
               <li>
-                Bill made by <b>{madeBy}</b>, {when.format(new Date(inv.created_at))}
+                <T>Bill made by</T> <b><T>{madeBy}</T></b>, <T>{when.format(new Date(inv.created_at))}</T>
               </li>
             )}
             {pays.map((p) =>
               p.received_by && names[p.received_by] ? (
-                <li key={p.id}>
-                  {formatMoney(Number(p.amount))} received by <b>{names[p.received_by]}</b>,{" "}
-                  {when.format(new Date(p.paid_at))}
+                <li key={p.id}><T p={{ formatMoney: formatMoney(Number(p.amount)) }}>{"{formatMoney} received by"}</T> <b><T>{names[p.received_by]}</T></b>,{" "}
+                  <T>{when.format(new Date(p.paid_at))}</T>
                 </li>
               ) : null
             )}
           </ul>
-          <p className="mt-2 text-sm text-lead">The Owner can see every change in Activity log.</p>
+          <p className="mt-2 text-sm text-lead"><T>The Owner can see every change in Activity log.</T></p>
         </section>
       )}
     </>

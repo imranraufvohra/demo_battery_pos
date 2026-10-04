@@ -19,6 +19,8 @@ import CustomerForm, { type CustomerLite } from "../CustomerForm";
 import CustomerLedger, { type CustomerPayment } from "./CustomerLedger";
 import RegistrationBadge from "../RegistrationBadge";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type CustomerBill = Pick<
   Invoice,
   "id" | "invoice_number" | "invoice_date" | "total_value" | "paid_total" | "due_total" | "payment_status" | "status"
@@ -45,8 +47,8 @@ function InfoCard({
         <Icon name={icon} className="h-5 w-5" />
       </span>
       <div className="min-w-0">
-        <dt className="text-sm text-lead">{label}</dt>
-        <dd className={`mt-0.5 break-words font-semibold tabular-nums ${muted ? "font-normal text-lead" : ""}`}>{value}</dd>
+        <dt className="text-sm text-lead"><T>{label}</T></dt>
+        <dd className={`mt-0.5 break-words font-semibold tabular-nums ${muted ? "font-normal text-lead" : ""}`}><T>{value}</T></dd>
       </div>
     </div>
   );
@@ -67,6 +69,7 @@ export default function CustomerProfile({
   payments: CustomerPayment[];
   paymentsReady: boolean;
 }) {
+  const tt = useT();
   const router = useRouter();
   const roleInfo = useRoleInfo();
   const canEditCust = can(roleInfo, "customers.edit");
@@ -108,7 +111,7 @@ export default function CustomerProfile({
   return (
     <div>
       <Link href="/customers" className="anim-rise inline-flex items-center gap-1 text-[15px] font-medium text-lead hover:text-casing">
-        <Icon name="back" className="h-4 w-4" /> Customers
+        <Icon name="back" className="h-4 w-4" /> <T>Customers</T>
       </Link>
 
       <section className="hero-card anim-slide relative mt-3 overflow-hidden rounded-3xl p-5 text-white shadow-lift sm:p-7">
@@ -118,7 +121,7 @@ export default function CustomerProfile({
             <h1 className="break-words font-display text-4xl font-bold leading-none sm:text-5xl">{customer.name}</h1>
             <div className="mt-2.5 flex flex-wrap items-center gap-2">
               <RegistrationBadge type={customer.registration_type} onDark />
-              <span className="text-sm text-white/65">Customer since {formatDate(customer.created_at)}</span>
+              <span className="text-sm text-white/65"><T p={{ formatDate: formatDate(customer.created_at) }}>{"Customer since {formatDate}"}</T></span>
             </div>
           </div>
         </div>
@@ -126,13 +129,13 @@ export default function CustomerProfile({
         <div className="relative mt-5 flex flex-wrap gap-2.5">
           {canBill && (
 <Link href={`/sales/new?customer=${customer.id}`} className="on-dark btn btn-primary">
-            <Icon name="receipt" className="h-5 w-5" /> New bill
+            <Icon name="receipt" className="h-5 w-5" /> <T>New bill</T>
           </Link>
 )}
           {customer.phone && (
             <>
               <a href={`tel:${customer.phone}`} className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20">
-                <Icon name="phone" className="h-5 w-5" /> Call
+                <Icon name="phone" className="h-5 w-5" /> <T>Call</T>
               </a>
               <a
                 href={whatsappLink(customer.phone)}
@@ -140,7 +143,7 @@ export default function CustomerProfile({
                 rel="noopener noreferrer"
                 className="on-dark btn bg-[#25a35a] text-white hover:bg-[#1f8f4e]"
               >
-                <Icon name="chat" className="h-5 w-5" /> WhatsApp
+                <Icon name="chat" className="h-5 w-5" /> <T>WhatsApp</T>
               </a>
             </>
           )}
@@ -150,7 +153,7 @@ export default function CustomerProfile({
             onClick={() => setEditing(true)}
             className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20"
           >
-            <Icon name="edit" className="h-5 w-5" /> Edit
+            <Icon name="edit" className="h-5 w-5" /> <T>Edit</T>
           </button>
 )}
           {canDeleteCust && (
@@ -164,7 +167,7 @@ export default function CustomerProfile({
             aria-label={`Delete ${customer.name}`}
           >
             <Icon name="trash" className="h-5 w-5" />
-            <span className="sm:inline">Delete</span>
+            <span className="sm:inline"><T>Delete</T></span>
           </button>
 )}
         </div>
@@ -173,7 +176,7 @@ export default function CustomerProfile({
       <dl className="anim-rise mt-4 grid gap-3 sm:grid-cols-2" style={delay(2)}>
         <InfoCard
           icon="phone"
-          label="Phone"
+          label={tt("Phone")}
           value={customer.phone ? formatPhone(customer.phone) : "Not saved"}
           muted={!customer.phone}
           tone="bg-cell/10 text-cell"
@@ -187,14 +190,14 @@ export default function CustomerProfile({
         />
         <InfoCard
           icon="pin"
-          label="Address"
+          label={tt("Address")}
           value={customer.address || "Not saved"}
           muted={!customer.address}
           tone="bg-sun/25 text-amber-800"
         />
         <InfoCard
           icon="calendar"
-          label="Last updated"
+          label={tt("Last updated")}
           value={formatDate(customer.updated_at)}
           tone="bg-violet-500/10 text-violet-700"
         />
@@ -203,31 +206,27 @@ export default function CustomerProfile({
       {/* Bills */}
       <section className="card anim-rise mt-4 overflow-hidden" style={delay(3)}>
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 pb-2 pt-5">
-          <h2 className="font-display text-2xl font-semibold">Bills</h2>
+          <h2 className="font-display text-2xl font-semibold"><T>Bills</T></h2>
           {billsReady && bills.length > 0 && canBill && (
             <Link href={`/sales/new?customer=${customer.id}`} className="btn btn-quiet btn-sm">
-              <Icon name="plus" className="h-4 w-4" /> New bill
+              <Icon name="plus" className="h-4 w-4" /> <T>New bill</T>
             </Link>
           )}
         </div>
 
         {!billsReady ? (
-          <p className="px-5 pb-6 text-lead">
-            Bills could not be loaded. In Supabase, open SQL Editor and run{" "}
-            <code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
+          <p className="px-5 pb-6 text-lead"><T p={{ p: " " }}>{"Bills could not be loaded. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
           </p>
         ) : bills.length === 0 ? (
           <div className="px-6 pb-10 pt-4 text-center">
             <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sun/25 text-amber-800">
               <Icon name="tag" className="h-7 w-7" />
             </span>
-            <h3 className="mt-3 font-display text-2xl font-semibold">No bills yet</h3>
-            <p className="mx-auto mt-1 max-w-md text-lead">
-              Bills made for {customer.name} will appear here, with what they paid and what is still due.
-            </p>
+            <h3 className="mt-3 font-display text-2xl font-semibold"><T>No bills yet</T></h3>
+            <p className="mx-auto mt-1 max-w-md text-lead"><T p={{ name: customer.name }}>{"Bills made for {name} will appear here, with what they paid and what is still due."}</T></p>
             {canBill && (
 <Link href={`/sales/new?customer=${customer.id}`} className="btn btn-primary mt-4">
-              Make first bill
+              <T>Make first bill</T>
             </Link>
 )}
           </div>
@@ -235,15 +234,15 @@ export default function CustomerProfile({
           <>
             <dl className="grid grid-cols-3 gap-2 px-5 pb-3 pt-1">
               <div className="rounded-xl bg-plate/70 p-3">
-                <dt className="text-xs text-lead sm:text-sm">Billed</dt>
+                <dt className="text-xs text-lead sm:text-sm"><T>Billed</T></dt>
                 <dd className="font-display text-xl font-semibold tabular-nums sm:text-2xl">{formatRs(billed)}</dd>
               </div>
               <div className="rounded-xl bg-plate/70 p-3">
-                <dt className="text-xs text-lead sm:text-sm">Paid</dt>
+                <dt className="text-xs text-lead sm:text-sm"><T>Paid</T></dt>
                 <dd className="font-display text-xl font-semibold tabular-nums text-cell-deep sm:text-2xl">{formatRs(paid)}</dd>
               </div>
               <div className={`rounded-xl p-3 ${owed > 0 ? "bg-terminal/10" : "bg-plate/70"}`}>
-                <dt className="text-xs text-lead sm:text-sm">Balance due</dt>
+                <dt className="text-xs text-lead sm:text-sm"><T>Balance due</T></dt>
                 <dd className={`font-display text-xl font-semibold tabular-nums sm:text-2xl ${owed > 0 ? "text-terminal-deep" : ""}`}>
                   {formatRs(owed)}
                 </dd>
@@ -255,13 +254,13 @@ export default function CustomerProfile({
                   <Link href={`/sales/${b.id}`} className="group flex items-center gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-plate/70">
                     <span className="min-w-0 flex-1">
                       <span className="block font-semibold">{b.invoice_number}</span>
-                      <span className="block text-sm text-lead">{formatDay(b.invoice_date)}</span>
+                      <span className="block text-sm text-lead"><T>{formatDay(b.invoice_date)}</T></span>
                     </span>
                     <PayBadge status={b.payment_status} bill={b.status} />
                     <span className="text-end">
                       <span className="block font-semibold tabular-nums">{formatRs(b.total_value)}</span>
                       {b.status !== "Cancelled" && b.due_total > 0 && (
-                        <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(b.due_total)} due</span>
+                        <span className="block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(b.due_total) }}>{"{formatRs} due"}</T></span>
                       )}
                     </span>
                     <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
@@ -284,9 +283,9 @@ export default function CustomerProfile({
       {deleting && (
         <ConfirmDialog
           title={`Delete ${customer.name}?`}
-          body="This deletes the customer AND all their bills, payments and credit. Items on those bills go back into stock. It cannot be undone. A customer who has a bill reported to FBR cannot be deleted."
-          confirmLabel="Delete customer"
-          cancelLabel="Keep customer"
+          body={tt("This deletes the customer AND all their bills, payments and credit. Items on those bills go back into stock. It cannot be undone. A customer who has a bill reported to FBR cannot be deleted.")}
+          confirmLabel={tt("Delete customer")}
+          cancelLabel={tt("Keep customer")}
           busy={busy}
           error={error}
           onCancel={() => setDeleting(false)}

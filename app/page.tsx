@@ -17,7 +17,11 @@ import type { Customer, Invoice, InventoryItem } from "@/lib/types";
 import PayBadge from "./sales/PayBadge";
 import StockGauge from "./inventory/StockGauge";
 
-export const metadata: Metadata = { title: "Home" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Home") };
+}
 
 // Small helper: staggers the entrance animation of each block.
 const delay = (i: number) => ({ "--i": i }) as React.CSSProperties;
@@ -64,6 +68,7 @@ function todayLabel() {
 }
 
 export default async function HomePage() {
+  const tt = await getT();
   const supabase = await createClient();
   // Start the role lookup, the FBR warnings and the four queries all at once instead of one after another.
   // (The FBR warnings are only shown to Owner/Accountant, see seesFbrWarnings below.)
@@ -188,25 +193,25 @@ export default async function HomePage() {
         >
           <div className="relative flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p className="text-sm text-white/70">{todayLabel()}</p>
-              <h1 className="mt-1 font-display text-4xl font-bold leading-none sm:text-5xl">{greeting()}</h1>
+              <p className="text-sm text-white/70"><T>{todayLabel()}</T></p>
+              <h1 className="mt-1 font-display text-4xl font-bold leading-none sm:text-5xl"><T>{greeting()}</T></h1>
               <p className="mt-2 max-w-md text-[15px] text-white/75">
-                {items.length === 0
+                <T>{items.length === 0
                   ? "Add your first item to start tracking stock."
-                  : "Here is how your stock looks right now."}
+                  : "Here is how your stock looks right now."}</T>
               </p>
             </div>
             <div className="hidden gap-2 sm:flex lg:hidden">
               {canBill && (
 <Link href="/sales/new" className="btn btn-primary">
-                <Icon name="receipt" className="h-5 w-5" /> New bill
+                <Icon name="receipt" className="h-5 w-5" /> <T>New bill</T>
               </Link>
 )}
               <Link
                 href="/customers?add=1"
                 className="on-dark btn border border-white/20 bg-white/10 text-white hover:bg-white/20"
               >
-                <Icon name="userplus" className="h-5 w-5" /> Add customer
+                <Icon name="userplus" className="h-5 w-5" /> <T>Add customer</T>
               </Link>
             </div>
           </div>
@@ -215,15 +220,15 @@ export default async function HomePage() {
             {stats.map((s) => (
               <div
                 key={s.label}
-                title={s.full}
+                title={tt(s.full)}
                 className="min-w-[9.5rem] flex-1 snap-start rounded-2xl border border-white/10 bg-white/[0.08] p-3.5 sm:min-w-0 sm:p-4"
               >
                 <span className={`mb-2.5 inline-flex h-9 w-9 items-center justify-center rounded-xl ${s.chip}`}>
                   <Icon name={s.icon} className="h-[18px] w-[18px]" />
                 </span>
-                <p className="text-sm leading-tight text-white/70">{s.label}</p>
+                <p className="text-sm leading-tight text-white/70"><T>{s.label}</T></p>
                 <p className="mt-1 whitespace-nowrap font-display text-[26px] font-semibold leading-none tabular-nums xl:text-3xl">
-                  {s.value}
+                  <T>{s.value}</T>
                 </p>
               </div>
             ))}
@@ -231,7 +236,7 @@ export default async function HomePage() {
         </section>
 
         {/* Money today */}
-        <section aria-label="Money today" className="anim-rise mt-4" style={delay(1)}>
+        <section aria-label={tt("Money today")} className="anim-rise mt-4" style={delay(1)}>
           {billsReady ? (
             <div className="grid gap-3 sm:grid-cols-3">
               {moneyCards.map((m) => (
@@ -240,17 +245,15 @@ export default async function HomePage() {
                     <Icon name={m.icon} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0">
-                    <span className="block text-sm text-lead">{m.label}</span>
-                    <span className="block whitespace-nowrap font-display text-3xl font-semibold leading-none tabular-nums">{m.value}</span>
-                    <span className="mt-1 block text-sm text-lead">{m.sub}</span>
+                    <span className="block text-sm text-lead"><T>{m.label}</T></span>
+                    <span className="block whitespace-nowrap font-display text-3xl font-semibold leading-none tabular-nums"><T>{m.value}</T></span>
+                    <span className="mt-1 block text-sm text-lead"><T>{m.sub}</T></span>
                   </span>
                 </Link>
               ))}
             </div>
           ) : (
-            <div className="card p-4 text-lead">
-              Sales numbers are not set up yet. In Supabase, open SQL Editor and run{" "}
-              <code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
+            <div className="card p-4 text-lead"><T p={{ p: " " }}>{"Sales numbers are not set up yet. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">03_invoices.sql</code>.
             </div>
           )}
         </section>
@@ -275,16 +278,16 @@ export default async function HomePage() {
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-terminal" />
                 </span>
                 <span className="flex-1 text-[15px] font-medium">
-                  {lowItems.length} {lowItems.length === 1 ? "item is" : "items are"} running low in stock
+                  <T p={{ n: lowItems.length }}>{lowItems.length === 1 ? "{n} item is running low in stock" : "{n} items are running low in stock"}</T>
                 </span>
                 <span className="flex items-center gap-1 text-sm font-semibold">
-                  View <Icon name="chevron" className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+                  <T>View</T> <Icon name="chevron" className="h-4 w-4 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
                 </span>
               </Link>
             ) : (
               <div className="flex items-center gap-3 rounded-2xl border border-cell/20 bg-cell/10 px-4 py-3.5 text-cell-deep">
                 <Icon name="check" className="h-5 w-5" strokeWidth={2.4} />
-                <span className="text-[15px] font-medium">All {items.length} items are above their reorder level</span>
+                <span className="text-[15px] font-medium"><T p={{ length: items.length }}>{"All {length} items are above their reorder level"}</T></span>
               </div>
             )}
           </div>
@@ -293,7 +296,7 @@ export default async function HomePage() {
         <div className="mt-5 grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
           {/* Quick actions */}
           <section
-            aria-label="Quick actions"
+            aria-label={tt("Quick actions")}
             className="anim-rise grid grid-cols-3 gap-2.5 lg:col-start-2 lg:row-start-1 lg:grid-cols-2 lg:gap-3"
             style={delay(2)}
           >
@@ -308,7 +311,7 @@ export default async function HomePage() {
                 >
                   <Icon name={t.icon} className="h-6 w-6" />
                 </span>
-                <span className="text-[13px] font-semibold leading-tight lg:text-[15px]">{t.label}</span>
+                <span className="text-[13px] font-semibold leading-tight lg:text-[15px]"><T>{t.label}</T></span>
               </Link>
             ))}
           </section>
@@ -319,16 +322,14 @@ export default async function HomePage() {
             style={delay(3)}
           >
             <div className="flex items-center justify-between px-5 pb-2 pt-5">
-              <h2 className="font-display text-2xl font-semibold">Running low</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Running low</T></h2>
               {lowItems.length > 0 && (
-                <Link href="/inventory?filter=low" className="text-sm font-semibold text-focus hover:underline">
-                  See all {lowItems.length}
-                </Link>
+                <Link href="/inventory?filter=low" className="text-sm font-semibold text-focus hover:underline"><T p={{ length: lowItems.length }}>{"See all {length}"}</T></Link>
               )}
             </div>
             {inventory.error ? (
               <p className="px-5 pb-6 text-lead">
-                Stock could not be loaded. Open Inventory to see what went wrong.
+                <T>Stock could not be loaded. Open Inventory to see what went wrong.</T>
               </p>
             ) : lowItems.length === 0 ? (
               <div className="px-5 pb-8 pt-3 text-center">
@@ -340,16 +341,16 @@ export default async function HomePage() {
                   <Icon name={items.length === 0 ? "battery" : "check"} className="h-7 w-7" strokeWidth={2.2} />
                 </span>
                 <p className="mt-3 font-display text-xl font-semibold">
-                  {items.length === 0 ? "No stock yet" : "Nothing is running low"}
+                  <T>{items.length === 0 ? "No stock yet" : "Nothing is running low"}</T>
                 </p>
                 <p className="mx-auto mt-1 max-w-xs text-lead">
-                  {items.length === 0
+                  <T>{items.length === 0
                     ? "Add your first battery, panel or accessory."
-                    : "Items appear here when they reach their reorder level."}
+                    : "Items appear here when they reach their reorder level."}</T>
                 </p>
                 {items.length === 0 && (
                   <Link href="/inventory?add=1" className="btn btn-primary mt-4">
-                    Add first item
+                    <T>Add first item</T>
                   </Link>
                 )}
               </div>
@@ -368,14 +369,14 @@ export default async function HomePage() {
                         <span className="block truncate font-semibold">
                           {item.brand} {item.model}
                         </span>
-                        <span className="block truncate text-sm text-lead">{itemSpecs(item) || "No details"}</span>
+                        <span className="block truncate text-sm text-lead"><T>{itemSpecs(item) || "No details"}</T></span>
                       </span>
                       <span className="text-end">
                         <span className="block font-display text-2xl font-semibold leading-none tabular-nums text-terminal-deep">
                           {item.quantity}
                         </span>
                         <span className="block text-xs text-lead">
-                          {isOut(item) ? "Out of stock" : `reorder at ${item.reorder_level}`}
+                          <T>{isOut(item) ? "Out of stock" : `reorder at ${item.reorder_level}`}</T>
                         </span>
                       </span>
                       <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
@@ -389,27 +390,25 @@ export default async function HomePage() {
           {/* Recent customers */}
           <section className="card anim-rise overflow-hidden lg:col-start-2 lg:row-start-2" style={delay(4)}>
             <div className="flex items-center justify-between px-5 pb-2 pt-5">
-              <h2 className="font-display text-2xl font-semibold">Recent customers</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Recent customers</T></h2>
               {recentCustomers.length > 0 && (
                 <Link href="/customers" className="text-sm font-semibold text-focus hover:underline">
-                  See all
+                  <T>See all</T>
                 </Link>
               )}
             </div>
             {!customersReady ? (
-              <p className="px-5 pb-6 text-lead">
-                The customers table is not set up yet. In Supabase, open SQL Editor and run{" "}
-                <code className="rounded bg-plate px-1.5 py-0.5 text-casing">02_customers.sql</code>.
+              <p className="px-5 pb-6 text-lead"><T p={{ p: " " }}>{"The customers table is not set up yet. In Supabase, open SQL Editor and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">02_customers.sql</code>.
               </p>
             ) : recentCustomers.length === 0 ? (
               <div className="px-5 pb-8 pt-3 text-center">
                 <span className="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500/10 text-blue-700">
                   <Icon name="users" className="h-7 w-7" />
                 </span>
-                <p className="mt-3 font-display text-xl font-semibold">No customers yet</p>
-                <p className="mx-auto mt-1 max-w-xs text-lead">Save a customer once and find them again in one search.</p>
+                <p className="mt-3 font-display text-xl font-semibold"><T>No customers yet</T></p>
+                <p className="mx-auto mt-1 max-w-xs text-lead"><T>Save a customer once and find them again in one search.</T></p>
                 <Link href="/customers?add=1" className="btn btn-quiet mt-4">
-                  Add first customer
+                  <T>Add first customer</T>
                 </Link>
               </div>
             ) : (
@@ -440,20 +439,20 @@ export default async function HomePage() {
         {billsReady && (
           <section className="card anim-rise mt-5 overflow-hidden" style={delay(5)}>
             <div className="flex items-center justify-between px-5 pb-2 pt-5">
-              <h2 className="font-display text-2xl font-semibold">Recent bills</h2>
+              <h2 className="font-display text-2xl font-semibold"><T>Recent bills</T></h2>
               {bills.length > 0 && (
                 <Link href="/sales" className="text-sm font-semibold text-focus hover:underline">
-                  See all
+                  <T>See all</T>
                 </Link>
               )}
             </div>
             {bills.length === 0 ? (
               <div className="px-5 pb-8 pt-3 text-center">
-                <p className="font-display text-xl font-semibold">No bills yet</p>
-                <p className="mx-auto mt-1 max-w-xs text-lead">Your latest bills will show here.</p>
+                <p className="font-display text-xl font-semibold"><T>No bills yet</T></p>
+                <p className="mx-auto mt-1 max-w-xs text-lead"><T>Your latest bills will show here.</T></p>
                 {canBill && (
 <Link href="/sales/new" className="btn btn-primary mt-4">
-                  Make first bill
+                  <T>Make first bill</T>
                 </Link>
 )}
               </div>
@@ -465,7 +464,7 @@ export default async function HomePage() {
                       <span className="min-w-0 flex-1">
                         <span className="block truncate font-semibold">{b.buyer_name}</span>
                         <span className="block truncate text-sm text-lead">
-                          {b.invoice_number} · {formatDay(b.invoice_date)}
+                          {b.invoice_number} · <T>{formatDay(b.invoice_date)}</T>
                         </span>
                       </span>
                       <span className="hidden sm:block">
@@ -474,7 +473,7 @@ export default async function HomePage() {
                       <span className="text-end">
                         <span className="block font-semibold tabular-nums">{formatRs(b.total_value)}</span>
                         {b.status !== "Cancelled" && b.due_total > 0 && (
-                          <span className="block text-sm font-semibold tabular-nums text-terminal-deep">{formatRs(b.due_total)} due</span>
+                          <span className="block text-sm font-semibold tabular-nums text-terminal-deep"><T p={{ formatRs: formatRs(b.due_total) }}>{"{formatRs} due"}</T></span>
                         )}
                       </span>
                       <Icon name="chevron" className="h-4 w-4 text-lead/60 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />

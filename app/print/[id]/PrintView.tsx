@@ -20,8 +20,11 @@ import {
 import { formatDay, formatTime, methodLabel } from "@/lib/invoices";
 import type { InvoiceDocument } from "@/lib/invoiceDoc";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 /** The bill as it looks on paper (A4). "Print" also offers Save as PDF on every phone and computer. */
 export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: InvoiceDocument; fbr?: FbrPrintData | null }) {
+  const tt = useT();
   const { invoice: inv, items, payments, seller } = doc;
   const params = useSearchParams();
   const [pdfNote, setPdfNote] = useState<string | null>(null);
@@ -112,28 +115,28 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
     <div className="px-3 pb-10 pt-4 sm:px-6 print:p-0">
       <div className="no-print mx-auto mb-4 flex max-w-[210mm] flex-wrap items-center gap-2">
         <Link href={`/sales/${inv.id}`} className="btn btn-quiet">
-          <Icon name="back" className="h-5 w-5" /> Back to bill
+          <Icon name="back" className="h-5 w-5" /> <T>Back to bill</T>
         </Link>
         <button type="button" onClick={() => window.print()} className="btn btn-primary">
-          <Icon name="printer" className="h-5 w-5" /> Print
+          <Icon name="printer" className="h-5 w-5" /> <T>Print</T>
         </button>
         <button type="button" onClick={downloadPdf} className="btn btn-quiet">
-          <Icon name="download" className="h-5 w-5" /> Download PDF
+          <Icon name="download" className="h-5 w-5" /> <T>Download PDF</T>
         </button>
-        {pdfNote && <p className="w-full text-sm text-terminal-deep">{pdfNote}</p>}
+        {pdfNote && <p className="w-full text-sm text-terminal-deep"><T>{pdfNote}</T></p>}
         {isFbr && waiting && (
           <p className="w-full rounded-lg bg-sun/25 px-3 py-2 text-sm font-semibold text-amber-900" role="status">
-            Waiting for the FBR invoice number before the PDF and print carry it. It normally takes about 15 seconds.
+            <T>Waiting for the FBR invoice number before the PDF and print carry it. It normally takes about 15 seconds.</T>
           </p>
         )}
         {isFbr && needsNumber && !waiting && (
           <p className="w-full rounded-lg bg-sun/25 px-3 py-2 text-sm font-semibold text-amber-900" role="status">
-            {fbrHead!.status === "failed" || fbrHead!.status === "unknown"
+            <T>{fbrHead!.status === "failed" || fbrHead!.status === "unknown"
               ? "FBR has not accepted this bill. Please tell the Owner. You can still print, but the paper will have no FBR number."
-              : "The FBR number has not come yet. Check that the shop PC sender is running. You can print now, or open this page again later."}
+              : "The FBR number has not come yet. Check that the shop PC sender is running. You can print now, or open this page again later."}</T>
           </p>
         )}
-        <p className="w-full text-sm text-lead">To save a PDF from the print box, choose Save as PDF as the printer.</p>
+        <p className="w-full text-sm text-lead"><T>To save a PDF from the print box, choose Save as PDF as the printer.</T></p>
       </div>
 
       <article className="mx-auto max-w-[210mm] rounded-lg border border-line bg-white p-5 text-[13px] leading-snug shadow-card sm:p-[12mm] print:max-w-none print:rounded-none print:border-0 print:p-0 print:shadow-none">
@@ -146,30 +149,30 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
             </p>
           </div>
           <div className="text-end">
-            <p className="font-display text-3xl font-bold leading-none">{isFbr ? "Sales Tax Invoice" : "Sale Invoice"}</p>
+            <p className="font-display text-3xl font-bold leading-none"><T>{isFbr ? "Sales Tax Invoice" : "Sale Invoice"}</T></p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{inv.invoice_number}</p>
-            <p className="tabular-nums text-lead">{formatDay(inv.invoice_date)}</p>
-            {inv.status === "Cancelled" && <p className="mt-1 font-bold text-terminal">CANCELLED</p>}
+            <p className="tabular-nums text-lead"><T>{formatDay(inv.invoice_date)}</T></p>
+            {inv.status === "Cancelled" && <p className="mt-1 font-bold text-terminal"><T>CANCELLED</T></p>}
           </div>
         </header>
 
         {fbrHead?.environment === "sandbox" && (
           <p className="mt-3 rounded border-2 border-dashed border-terminal px-3 py-1.5 text-center font-bold text-terminal">
-            TEST INVOICE (FBR sandbox). Not a real FBR invoice.
+            <T>TEST INVOICE (FBR sandbox). Not a real FBR invoice.</T>
           </p>
         )}
 
         <section className="mt-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-lead">Billed to</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-lead"><T>Billed to</T></p>
           <p className="mt-1 text-base font-bold">{inv.buyer_name}</p>
           {inv.buyer_phone && <p>{formatPhone(inv.buyer_phone)}</p>}
           {inv.buyer_address && <p>{inv.buyer_address}</p>}
           {inv.buyer_cnic_or_ntn && (
             <p className="tabular-nums">
-              {kind} {formatRegNo(inv.buyer_cnic_or_ntn)}
+              <T>{kind}</T> {formatRegNo(inv.buyer_cnic_or_ntn)}
             </p>
           )}
-          {inv.note && <p className="mt-1">Note: {inv.note}</p>}
+          {inv.note && <p className="mt-1"><T p={{ note: inv.note }}>{"Note: {note}"}</T></p>}
         </section>
 
         {fbrCalc ? (
@@ -178,13 +181,13 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
               <thead>
                 <tr className="bg-plate">
                   <th className="w-6 px-1.5 py-2 font-bold">#</th>
-                  <th className="px-1.5 py-2 font-bold">Item</th>
-                  <th className="px-1.5 py-2 text-end font-bold">Qty</th>
-                  <th className="px-1.5 py-2 text-end font-bold">Rate</th>
-                  <th className="px-1.5 py-2 text-end font-bold">Value excl. tax</th>
-                  <th className="px-1.5 py-2 text-end font-bold">GST %</th>
-                  <th className="px-1.5 py-2 text-end font-bold">GST</th>
-                  <th className="px-1.5 py-2 text-end font-bold">Amount</th>
+                  <th className="px-1.5 py-2 font-bold"><T>Item</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>Qty</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>Rate</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>Value excl. tax</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>GST %</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>GST</T></th>
+                  <th className="px-1.5 py-2 text-end font-bold"><T>Amount</T></th>
                 </tr>
               </thead>
               <tbody>
@@ -194,16 +197,16 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
                     <tr key={it.id} className="break-inside-avoid border-b border-line/80">
                       <td className="px-1.5 py-2 align-top tabular-nums">{i + 1}</td>
                       <td className="px-1.5 py-2 align-top">
-                        {it.description}
-                        {it.hs_code && <span className="block text-[11px] text-lead">HS code {it.hs_code}</span>}
+                        <T>{it.description}</T>
+                        {it.hs_code && <span className="block text-[11px] text-lead"><T p={{ hs_code: it.hs_code }}>{"HS code {hs_code}"}</T></span>}
                       </td>
                       <td className="px-1.5 py-2 text-end align-top tabular-nums">{it.quantity}</td>
                       <td className="px-1.5 py-2 text-end align-top tabular-nums">{formatRs(it.rate)}</td>
-                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{r.known ? formatRs(r.valueExclTax) : "-"}</td>
-                      <td className="px-1.5 py-2 text-end align-top tabular-nums">{r.known ? r.rateDesc || "-" : "-"}</td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums"><T>{r.known ? formatRs(r.valueExclTax) : "-"}</T></td>
+                      <td className="px-1.5 py-2 text-end align-top tabular-nums"><T>{r.known ? r.rateDesc || "-" : "-"}</T></td>
                       <td className="px-1.5 py-2 text-end align-top tabular-nums">
-                        {r.known ? formatRs(r.taxAmount) : "-"}
-                        {r.known && r.taxInside && r.taxAmount > 0 && <span aria-label="included in price"> *</span>}
+                        <T>{r.known ? formatRs(r.taxAmount) : "-"}</T>
+                        {r.known && r.taxInside && r.taxAmount > 0 && <span aria-label={tt("included in price")}> *</span>}
                       </td>
                       <td className="px-1.5 py-2 text-end align-top font-bold tabular-nums">{formatRs(r.payable)}</td>
                     </tr>
@@ -217,10 +220,10 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
             <thead>
               <tr className="bg-plate text-[12px]">
                 <th className="w-8 px-2 py-2 font-bold">#</th>
-                <th className="px-2 py-2 font-bold">Item</th>
-                <th className="px-2 py-2 text-end font-bold">Qty</th>
-                <th className="px-2 py-2 text-end font-bold">Rate</th>
-                <th className="px-2 py-2 text-end font-bold">Amount</th>
+                <th className="px-2 py-2 font-bold"><T>Item</T></th>
+                <th className="px-2 py-2 text-end font-bold"><T>Qty</T></th>
+                <th className="px-2 py-2 text-end font-bold"><T>Rate</T></th>
+                <th className="px-2 py-2 text-end font-bold"><T>Amount</T></th>
               </tr>
             </thead>
             <tbody>
@@ -228,8 +231,8 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
                 <tr key={it.id} className="break-inside-avoid border-b border-line/80">
                   <td className="px-2 py-2 align-top tabular-nums">{i + 1}</td>
                   <td className="px-2 py-2 align-top">
-                    {it.description}
-                    {it.hs_code && <span className="block text-[11px] text-lead">HS code {it.hs_code}</span>}
+                    <T>{it.description}</T>
+                    {it.hs_code && <span className="block text-[11px] text-lead"><T p={{ hs_code: it.hs_code }}>{"HS code {hs_code}"}</T></span>}
                   </td>
                   <td className="px-2 py-2 text-end align-top tabular-nums">{it.quantity}</td>
                   <td className="px-2 py-2 text-end align-top tabular-nums">{formatRs(it.rate)}</td>
@@ -245,49 +248,47 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
             {fbrCalc && fbrCalc.taxAdded > 0 && (
               <>
                 <div className="flex justify-between">
-                  <dt className="text-lead">Items total</dt>
+                  <dt className="text-lead"><T>Items total</T></dt>
                   <dd className="tabular-nums">{formatRs(fbrCalc.subtotal)}</dd>
                 </div>
                 <div className="flex justify-between">
-                  <dt className="text-lead">GST added</dt>
+                  <dt className="text-lead"><T>GST added</T></dt>
                   <dd className="tabular-nums">{formatRs(fbrCalc.taxAdded)}</dd>
                 </div>
               </>
             )}
             <div className="flex items-baseline justify-between">
-              <dt className="text-base font-bold">Total</dt>
+              <dt className="text-base font-bold"><T>Total</T></dt>
               <dd className="text-xl font-bold tabular-nums">{formatRs(inv.total_value)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-lead">Paid</dt>
+              <dt className="text-lead"><T>Paid</T></dt>
               <dd className="tabular-nums">{formatRs(inv.paid_total)}</dd>
             </div>
             {inv.due_total > 0 ? (
               <div className="flex justify-between rounded bg-plate px-2 py-1.5 font-bold">
-                <dt>Balance due</dt>
+                <dt><T>Balance due</T></dt>
                 <dd className="tabular-nums">{formatRs(inv.due_total)}</dd>
               </div>
             ) : (
-              <p className="pt-1 font-bold">Paid in full</p>
+              <p className="pt-1 font-bold"><T>Paid in full</T></p>
             )}
           </dl>
         </div>
 
         {fbrCalc && fbrCalc.taxIncluded > 0 && (
-          <p className="mt-2 text-end text-[11px] text-lead">
-            * Sales tax of {formatRs(fbrCalc.taxIncluded)} is already included in the price of the marked items.
-          </p>
+          <p className="mt-2 text-end text-[11px] text-lead"><T p={{ formatRs: formatRs(fbrCalc.taxIncluded) }}>{"* Sales tax of {formatRs} is already included in the price of the marked items."}</T></p>
         )}
 
         {payments.length > 0 && (
           <section className="mt-5 break-inside-avoid">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-lead">Payments received</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-lead"><T>Payments received</T></p>
             <ul className="mt-1 space-y-0.5">
               {payments.map((p) => (
                 <li key={p.id} className="flex max-w-xs justify-between tabular-nums">
                   <span>
-                    {formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))},{" "}
-                    {formatTime(p.paid_at)} · {methodLabel(p.method)}
+                    <T>{formatDay(new Intl.DateTimeFormat("en-CA", { timeZone: (process.env.NEXT_PUBLIC_TIMEZONE ?? "UTC") }).format(new Date(p.paid_at)))}</T>,{" "}
+                    <T>{formatTime(p.paid_at)}</T> · <T>{methodLabel(p.method)}</T>
                   </span>
                   <span>{formatRs(p.amount)}</span>
                 </li>
@@ -297,27 +298,27 @@ export default function PrintView({ doc, fbr: fbrInitial = null }: { doc: Invoic
         )}
 
         {isFbr && fbrHead && (
-          <section className="mt-6 break-inside-avoid border-t border-line pt-4" aria-label="FBR digital invoice">
+          <section className="mt-6 break-inside-avoid border-t border-line pt-4" aria-label={tt("FBR digital invoice")}>
             {hasNumber ? (
               <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
                 <FbrQr value={fbrHead.number!} />
                 <div className="min-w-0">
                   <FbrLogo />
-                  <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-lead">FBR invoice number</p>
+                  <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-lead"><T>FBR invoice number</T></p>
                   <p className="break-all text-base font-bold tabular-nums">{fbrHead.number}</p>
-                  {sentAt && <p className="text-[11px] text-lead">Reported to FBR: {sentAt}</p>}
-                  <p className="mt-1 max-w-xs text-[11px] text-lead">{FBR_VERIFY_TEXT}</p>
+                  {sentAt && <p className="text-[11px] text-lead"><T p={{ sentAt: sentAt }}>{"Reported to FBR: {sentAt}"}</T></p>}
+                  <p className="mt-1 max-w-xs text-[11px] text-lead"><T>{FBR_VERIFY_TEXT}</T></p>
                 </div>
               </div>
             ) : (
               <p className="text-[12px] font-bold text-lead">
-                {cancelled ? "This bill is cancelled and was not sent to FBR." : "FBR invoice number: not received yet."}
+                <T>{cancelled ? "This bill is cancelled and was not sent to FBR." : "FBR invoice number: not received yet."}</T>
               </p>
             )}
           </section>
         )}
 
-        <footer className="mt-8 border-t border-line pt-3 text-center text-lead">Thank you for your business.</footer>
+        <footer className="mt-8 border-t border-line pt-3 text-center text-lead"><T>Thank you for your business.</T></footer>
       </article>
     </div>
   );

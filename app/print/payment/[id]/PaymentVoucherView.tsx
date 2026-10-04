@@ -9,6 +9,7 @@ import { formatDay, formatTime } from "@/lib/invoices";
 import { supplierMethodLabel } from "@/lib/purchases";
 import type { PaymentDocument } from "@/lib/paymentDoc";
 
+import { T } from "@/components/T";
 /** The payment voucher as it looks on paper (A4) -- an internal record for the shop's own files.
  * "Print" also offers Save as PDF on every phone and computer. */
 export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
@@ -25,12 +26,12 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
     <div className="px-3 pb-10 pt-4 sm:px-6 print:p-0">
       <div className="no-print mx-auto mb-4 flex max-w-[210mm] flex-wrap items-center gap-2">
         <Link href="/payments" className="btn btn-quiet">
-          <Icon name="back" className="h-5 w-5" /> Back to payments
+          <Icon name="back" className="h-5 w-5" /> <T>Back to payments</T>
         </Link>
         <button type="button" onClick={() => window.print()} className="btn btn-primary">
-          <Icon name="printer" className="h-5 w-5" /> Print
+          <Icon name="printer" className="h-5 w-5" /> <T>Print</T>
         </button>
-        <p className="w-full text-sm text-lead">To save a PDF from the print box, choose Save as PDF as the printer.</p>
+        <p className="w-full text-sm text-lead"><T>To save a PDF from the print box, choose Save as PDF as the printer.</T></p>
       </div>
 
       <article className="mx-auto max-w-[210mm] rounded-lg border border-line bg-white p-5 text-[13px] leading-snug shadow-card sm:p-[12mm] print:max-w-none print:rounded-none print:border-0 print:p-0 print:shadow-none">
@@ -43,39 +44,39 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
             </p>
           </div>
           <div className="text-end">
-            <p className="font-display text-3xl font-bold leading-none">Payment Voucher</p>
+            <p className="font-display text-3xl font-bold leading-none"><T>Payment Voucher</T></p>
             <p className="mt-1.5 text-base font-semibold tabular-nums">{p.payment_number}</p>
             <p className="tabular-nums text-lead">
-              {formatDay(p.paid_at)}, {formatTime(p.created_at)}
+              <T>{formatDay(p.paid_at)}</T>, <T>{formatTime(p.created_at)}</T>
             </p>
-            {p.status === "Cancelled" && <p className="mt-1 font-bold text-terminal">CANCELLED</p>}
+            {p.status === "Cancelled" && <p className="mt-1 font-bold text-terminal"><T>CANCELLED</T></p>}
           </div>
         </header>
 
         <section className="mt-4">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-lead">Paid to</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-lead"><T>Paid to</T></p>
           <p className="mt-1 text-base font-bold">{supplier.name}</p>
           {supplier.phone && <p>{supplier.phone}</p>}
           {supplier.address && <p>{supplier.address}</p>}
-          {supplier.ntn_or_cnic && <p className="tabular-nums">NTN/CNIC {supplier.ntn_or_cnic}</p>}
+          {supplier.ntn_or_cnic && <p className="tabular-nums"><T p={{ ntn_or_cnic: supplier.ntn_or_cnic }}>{"NTN/CNIC {ntn_or_cnic}"}</T></p>}
         </section>
 
         <section className="mt-5 rounded-lg bg-plate p-4">
           <div className="flex items-baseline justify-between">
-            <p className="text-base font-bold">Amount paid</p>
+            <p className="text-base font-bold"><T>Amount paid</T></p>
             <p className="text-2xl font-bold tabular-nums">{formatRs(p.amount)}</p>
           </div>
           <dl className="mt-3 grid grid-cols-2 gap-2">
             <div>
-              <dt className="text-[11px] uppercase tracking-widest text-lead">Method</dt>
-              <dd className="font-semibold">{supplierMethodLabel(p.method)}</dd>
+              <dt className="text-[11px] uppercase tracking-widest text-lead"><T>Method</T></dt>
+              <dd className="font-semibold"><T>{supplierMethodLabel(p.method)}</T></dd>
             </div>
             <div>
-              <dt className="text-[11px] uppercase tracking-widest text-lead">Against</dt>
+              <dt className="text-[11px] uppercase tracking-widest text-lead"><T>Against</T></dt>
               <dd className="font-semibold">
                 {purchase ? (
                   <>
-                    {purchase.purchase_number} <span className="font-normal text-lead">({formatDay(purchase.invoice_date)})</span>
+                    {purchase.purchase_number} <span className="font-normal text-lead">(<T>{formatDay(purchase.invoice_date)}</T>)</span>
                   </>
                 ) : (
                   "On account"
@@ -85,13 +86,13 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
             {p.method === "cheque" && (
               <>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-widest text-lead">Cheque number</dt>
+                  <dt className="text-[11px] uppercase tracking-widest text-lead"><T>Cheque number</T></dt>
                   <dd className="font-semibold tabular-nums">{p.cheque_number}</dd>
                 </div>
                 <div>
-                  <dt className="text-[11px] uppercase tracking-widest text-lead">Cheque date / bank</dt>
+                  <dt className="text-[11px] uppercase tracking-widest text-lead"><T>Cheque date / bank</T></dt>
                   <dd className="font-semibold">
-                    {p.cheque_date ? formatDay(p.cheque_date) : "-"}
+                    <T>{p.cheque_date ? formatDay(p.cheque_date) : "-"}</T>
                     {p.bank_name ? `, ${p.bank_name}` : ""}
                   </dd>
                 </div>
@@ -99,8 +100,8 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
             )}
             {p.reference && (
               <div className="col-span-2">
-                <dt className="text-[11px] uppercase tracking-widest text-lead">Reference</dt>
-                <dd className="font-semibold">{p.reference}</dd>
+                <dt className="text-[11px] uppercase tracking-widest text-lead"><T>Reference</T></dt>
+                <dd className="font-semibold"><T>{p.reference}</T></dd>
               </div>
             )}
           </dl>
@@ -108,21 +109,19 @@ export default function PaymentVoucherView({ doc }: { doc: PaymentDocument }) {
 
         {purchase && (
           <section className="mt-5 break-inside-avoid">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-lead">Bill it was paid against</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-lead"><T>Bill it was paid against</T></p>
             <div className="mt-1 flex justify-between tabular-nums">
-              <span>
-                {purchase.purchase_number}, total {formatRs(purchase.total_value)}
-              </span>
-              <span>{purchase.due_total > 0 ? `${formatRs(purchase.due_total)} still due` : "Now paid in full"}</span>
+              <span><T p={{ purchase_number: purchase.purchase_number, formatRs: formatRs(purchase.total_value) }}>{"{purchase_number}, total {formatRs}"}</T></span>
+              <span><T>{purchase.due_total > 0 ? `${formatRs(purchase.due_total)} still due` : "Now paid in full"}</T></span>
             </div>
           </section>
         )}
 
         {p.status === "Cancelled" && p.cancel_reason && (
-          <p className="mt-5 rounded bg-plate px-3 py-2 text-lead">Cancelled: {p.cancel_reason}</p>
+          <p className="mt-5 rounded bg-plate px-3 py-2 text-lead"><T p={{ cancel_reason: p.cancel_reason }}>{"Cancelled: {cancel_reason}"}</T></p>
         )}
 
-        <footer className="mt-8 border-t border-line pt-3 text-center text-lead">Internal record -- not a document for the supplier.</footer>
+        <footer className="mt-8 border-t border-line pt-3 text-center text-lead"><T>Internal record -- not a document for the supplier.</T></footer>
       </article>
     </div>
   );

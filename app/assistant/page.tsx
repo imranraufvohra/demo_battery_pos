@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import AssistantChat from "@/components/AssistantChat";
 import PageHeader from "@/components/PageHeader";
 
-export const metadata: Metadata = { title: "Assistant" };
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Assistant") };
+}
 
 export default function AssistantPage() {
   return (

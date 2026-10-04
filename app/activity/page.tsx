@@ -6,9 +6,14 @@ import { can } from "@/lib/roles";
 import { loadRoleInfo } from "@/lib/rolesServer";
 import ActivityClient, { type Person } from "./ActivityClient";
 
-export const metadata: Metadata = { title: "Activity log" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Activity log") };
+}
 
 export default async function ActivityPage() {
+  const t = await getT();
   const info = await loadRoleInfo();
   if (!can(info, "activity.view")) redirect("/");
 
@@ -18,12 +23,10 @@ export default async function ActivityPage() {
   if (error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Activity log could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          Open Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">16_roles_and_audit.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Activity log could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">16_roles_and_audit.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }
@@ -36,8 +39,8 @@ export default async function ActivityPage() {
   return (
     <div className="max-w-4xl">
       <PageHeader
-        title="Activity log"
-        subtitle="Every add, change and delete in the app: who did it, when, and what changed."
+        title={t("Activity log")}
+        subtitle={t("Every add, change and delete in the app: who did it, when, and what changed.")}
       />
       <ActivityClient people={people} />
     </div>

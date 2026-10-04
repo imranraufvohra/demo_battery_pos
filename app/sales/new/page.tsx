@@ -4,7 +4,11 @@ import type { Customer } from "@/lib/types";
 import type { BillProposal } from "@/lib/ai/proposalTypes";
 import NewBill, { type BillCustomer, type BillDraft, type BillItem } from "./NewBill";
 
-export const metadata: Metadata = { title: "New bill" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("New bill") };
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -24,11 +28,11 @@ export default async function NewBillPage({ searchParams }: { searchParams: Prom
   if (inventory.error || customers.error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">The bill screen could not be loaded</h1>
+        <h1 className="font-display text-3xl font-bold"><T>The bill screen could not be loaded</T></h1>
         <p className="mt-3 text-lead">
-          Stock or customers did not load. Open Inventory and Customers to check they work, then try again.
+          <T>Stock or customers did not load. Open Inventory and Customers to check they work, then try again.</T>
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {(inventory.error ?? customers.error)?.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ p: (inventory.error ?? customers.error)?.message }}>{"Details: {p}"}</T></p>
       </div>
     );
   }

@@ -26,6 +26,8 @@ import BatteryClaimForm from "./BatteryClaimForm";
 import ClaimStatusForm from "./ClaimStatusForm";
 import ChargingHandoverForm from "./ChargingHandoverForm";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Tab = "charging" | "claims";
 
 const delay = (i: number) => ({ "--i": Math.min(i, 8) }) as React.CSSProperties;
@@ -60,6 +62,7 @@ export default function BatteryServicesClient({
   customers: Pick<Customer, "id" | "name" | "phone">[];
   setupIncomplete: boolean;
 }) {
+  const t = useT();
   const router = useRouter();
   const searchParams = useSearchParams();
   // Lets the Home screen's "Claim" and "Charging" buttons land directly on a
@@ -214,7 +217,7 @@ export default function BatteryServicesClient({
   return (
     <div>
       <PageHeader
-        title={soloMode ? (tab === "claims" ? "Battery claims" : "Charging jobs") : "Battery services"}
+        title={t(soloMode ? (tab === "claims" ? "Battery claims" : "Charging jobs") : "Battery services")}
         subtitle={
           soloMode
             ? tab === "claims"
@@ -226,20 +229,20 @@ export default function BatteryServicesClient({
           soloMode ? (
             tab === "claims" ? (
               <button type="button" onClick={() => setClaimFormOpen(true)} className="btn btn-primary">
-                <Icon name="shield" className="h-5 w-5" /> New claim
+                <Icon name="shield" className="h-5 w-5" /> <T>New claim</T>
               </button>
             ) : (
               <button type="button" onClick={() => setJobFormOpen(true)} className="btn btn-primary">
-                <Icon name="plug" className="h-5 w-5" /> New charging slip
+                <Icon name="plug" className="h-5 w-5" /> <T>New charging slip</T>
               </button>
             )
           ) : (
             <div className="flex gap-2">
               <button type="button" onClick={() => setClaimFormOpen(true)} className="btn btn-quiet">
-                <Icon name="shield" className="h-5 w-5" /> New claim
+                <Icon name="shield" className="h-5 w-5" /> <T>New claim</T>
               </button>
               <button type="button" onClick={() => setJobFormOpen(true)} className="btn btn-primary">
-                <Icon name="plug" className="h-5 w-5" /> New charging slip
+                <Icon name="plug" className="h-5 w-5" /> <T>New charging slip</T>
               </button>
             </div>
           )
@@ -247,10 +250,7 @@ export default function BatteryServicesClient({
       />
 
       {setupIncomplete && (
-        <p className="anim-rise mt-4 rounded-xl bg-sun/20 px-4 py-3 text-sm" style={delay(1)}>
-          Some battery-service data could not be loaded. Make sure{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">06_battery_services.sql</code> has been run in
-          Supabase.
+        <p className="anim-rise mt-4 rounded-xl bg-sun/20 px-4 py-3 text-sm" style={delay(1)}><T p={{ p: " " }}>{"Some battery-service data could not be loaded. Make sure{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">06_battery_services.sql</code> <T>{"has been run in Supabase."}</T>
         </p>
       )}
 
@@ -260,24 +260,24 @@ export default function BatteryServicesClient({
       >
         {(!soloMode || tab === "charging") && (
           <div className="card p-4">
-            <p className="text-sm text-lead">In shop for charging</p>
+            <p className="text-sm text-lead"><T>In shop for charging</T></p>
             <p className="mt-1 font-display text-3xl font-semibold tabular-nums">{chargingInShop}</p>
             <p className="mt-1 text-sm text-lead">
-              {chargingInShop === 0 ? "No customer batteries in right now." : "Customer batteries currently being charged."}
+              <T>{chargingInShop === 0 ? "No customer batteries in right now." : "Customer batteries currently being charged."}</T>
             </p>
           </div>
         )}
         {(!soloMode || tab === "claims") && (
           <div className="card p-4">
-            <p className="text-sm text-lead">Claimed batteries in stock</p>
+            <p className="text-sm text-lead"><T>Claimed batteries in stock</T></p>
             <p className="mt-1 font-display text-3xl font-semibold tabular-nums">{claimStock.total}</p>
             {claimStock.byHolder.length === 0 ? (
-              <p className="mt-1 text-sm text-lead">None held right now.</p>
+              <p className="mt-1 text-sm text-lead"><T>None held right now.</T></p>
             ) : (
               <ul className="mt-2 space-y-1">
                 {claimStock.byHolder.map(([holder, n]) => (
                   <li key={holder} className="flex items-center justify-between text-sm">
-                    <span className="text-lead">{holder}</span>
+                    <span className="text-lead"><T>{holder}</T></span>
                     <span className="font-semibold tabular-nums">{n}</span>
                   </li>
                 ))}
@@ -290,7 +290,7 @@ export default function BatteryServicesClient({
       <div className="anim-rise mt-4 space-y-3" style={delay(2)}>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {!soloMode && (
-            <div role="tablist" aria-label="Battery services" className="inline-flex rounded-2xl bg-plate p-1.5">
+            <div role="tablist" aria-label={t("Battery services")} className="inline-flex rounded-2xl bg-plate p-1.5">
               <button
                 type="button"
                 role="tab"
@@ -300,7 +300,7 @@ export default function BatteryServicesClient({
                   tab === "charging" ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                 }`}
               >
-                Charging jobs <span className="tabular-nums">({jobs.length})</span>
+                <T>Charging jobs</T> <span className="tabular-nums">({jobs.length})</span>
               </button>
               <button
                 type="button"
@@ -311,14 +311,14 @@ export default function BatteryServicesClient({
                   tab === "claims" ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                 }`}
               >
-                Battery claims <span className="tabular-nums">({claims.length})</span>
+                <T>Battery claims</T> <span className="tabular-nums">({claims.length})</span>
               </button>
             </div>
           )}
 
           <div className="relative sm:max-w-xs sm:flex-1">
             <label htmlFor="bs-search" className="sr-only">
-              Search
+              <T>Search</T>
             </label>
             <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
@@ -326,7 +326,7 @@ export default function BatteryServicesClient({
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search slip, customer or battery"
+              placeholder={t("Search slip, customer or battery")}
               className="input ps-11"
             />
           </div>
@@ -335,7 +335,7 @@ export default function BatteryServicesClient({
 
       {actionError && (
         <p role="alert" className="anim-rise mt-4 rounded-xl bg-terminal/10 px-4 py-3 text-sm text-terminal-deep" style={delay(3)}>
-          {actionError}
+          <T>{actionError}</T>
         </p>
       )}
 
@@ -344,7 +344,7 @@ export default function BatteryServicesClient({
           visibleJobs.length === 0 ? (
             <EmptyState
               icon="plug"
-              title={jobs.length === 0 ? "No charging jobs yet" : "Nothing matches"}
+              title={t(jobs.length === 0 ? "No charging jobs yet" : "Nothing matches")}
               hint={
                 jobs.length === 0
                   ? "Take in a customer's battery for charging and print their slip."
@@ -353,7 +353,7 @@ export default function BatteryServicesClient({
               action={
                 jobs.length === 0 && (
                   <button type="button" onClick={() => setJobFormOpen(true)} className="btn btn-primary mt-6">
-                    <Icon name="plus" className="h-5 w-5" /> New charging slip
+                    <Icon name="plus" className="h-5 w-5" /> <T>New charging slip</T>
                   </button>
                 )
               }
@@ -369,11 +369,11 @@ export default function BatteryServicesClient({
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="font-display text-lg font-semibold tabular-nums">{job.slip_number}</span>
                           <span className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${CHARGING_TONE[job.status]}`}>
-                            {chargingStatusLabel(job.status)}
+                            <T>{chargingStatusLabel(job.status)}</T>
                           </span>
                           {overdue && (
                             <span className="rounded-full bg-terminal/10 px-2.5 py-0.5 text-sm font-medium text-terminal-deep">
-                              Past due
+                              <T>Past due</T>
                             </span>
                           )}
                           {job.outcome && (
@@ -382,7 +382,7 @@ export default function BatteryServicesClient({
                                 job.outcome === "charged" ? "bg-cell/10 text-cell-deep" : "bg-terminal/10 text-terminal-deep"
                               }`}
                             >
-                              {job.outcome === "charged" ? "Charged fine" : "Was faulty"}
+                              <T>{job.outcome === "charged" ? "Charged fine" : "Was faulty"}</T>
                             </span>
                           )}
                         </div>
@@ -394,23 +394,21 @@ export default function BatteryServicesClient({
                           {job.customer_name}
                           {job.customer_phone ? ` · ${formatPhone(job.customer_phone)}` : ""}
                         </p>
-                        <p className="mt-1 text-sm text-lead">
-                          Received {formatDay(job.received_date)} · due {formatDay(job.due_date)}
-                        </p>
-                        {job.handover_note && <p className="mt-1 text-sm text-lead">Note: {job.handover_note}</p>}
+                        <p className="mt-1 text-sm text-lead"><T p={{ formatDay: formatDay(job.received_date), formatDay2: formatDay(job.due_date) }}>{"Received {formatDay} · due {formatDay2}"}</T></p>
+                        {job.handover_note && <p className="mt-1 text-sm text-lead"><T p={{ handover_note: job.handover_note }}>{"Note: {handover_note}"}</T></p>}
                       </div>
                       <div className="text-end">
                         <p className="font-display text-2xl font-semibold tabular-nums leading-none">
                           {formatRs(job.price)}
                         </p>
                         {job.handover_amount != null && (
-                          <p className="text-sm text-lead">{formatRs(job.handover_amount)} received</p>
+                          <p className="text-sm text-lead"><T p={{ formatRs: formatRs(job.handover_amount) }}>{"{formatRs} received"}</T></p>
                         )}
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2 border-t border-line/70 pt-3">
                       <Link href={`/print/charging/${job.id}`} className="btn btn-quiet btn-sm">
-                        <Icon name="printer" className="h-4 w-4" /> Slip
+                        <Icon name="printer" className="h-4 w-4" /> <T>Slip</T>
                       </Link>
                       {job.status === "in_shop" && (
                         <>
@@ -420,7 +418,7 @@ export default function BatteryServicesClient({
                             onClick={() => setHandoverTarget(job)}
                             className="btn btn-sm bg-cell/10 text-cell-deep hover:bg-cell/15"
                           >
-                            <Icon name="check" className="h-4 w-4" /> Mark collected
+                            <Icon name="check" className="h-4 w-4" /> <T>Mark collected</T>
                           </button>
                           <button
                             type="button"
@@ -428,7 +426,7 @@ export default function BatteryServicesClient({
                             onClick={() => setJobStatus(job, "unclaimed")}
                             className="btn btn-quiet btn-sm text-terminal-deep"
                           >
-                            Mark unclaimed
+                            <T>Mark unclaimed</T>
                           </button>
                         </>
                       )}
@@ -440,7 +438,7 @@ export default function BatteryServicesClient({
                         }}
                         className="btn btn-quiet btn-sm text-terminal-deep"
                       >
-                        <Icon name="trash" className="h-4 w-4" /> Delete
+                        <Icon name="trash" className="h-4 w-4" /> <T>Delete</T>
                       </button>
                     </div>
                   </li>
@@ -451,7 +449,7 @@ export default function BatteryServicesClient({
         ) : visibleClaims.length === 0 ? (
           <EmptyState
             icon="shield"
-            title={claims.length === 0 ? "No battery claims yet" : "Nothing matches"}
+            title={t(claims.length === 0 ? "No battery claims yet" : "Nothing matches")}
             hint={
               claims.length === 0
                 ? "Take in a battery under warranty and send it to a distributor."
@@ -460,7 +458,7 @@ export default function BatteryServicesClient({
             action={
               claims.length === 0 && (
                 <button type="button" onClick={() => setClaimFormOpen(true)} className="btn btn-primary mt-6">
-                  <Icon name="plus" className="h-5 w-5" /> New claim
+                  <Icon name="plus" className="h-5 w-5" /> <T>New claim</T>
                 </button>
               )
             }
@@ -478,11 +476,11 @@ export default function BatteryServicesClient({
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-display text-lg font-semibold tabular-nums">{claim.claim_number}</span>
                         <span className={`rounded-full px-2.5 py-0.5 text-sm font-medium ${CLAIM_TONE[claim.status]}`}>
-                          {claimStatusLabel(claim.status)}
+                          <T>{claimStatusLabel(claim.status)}</T>
                         </span>
                         {claimHoldsBattery(claim.status) && (
                           <span className="rounded-full bg-plate px-2.5 py-0.5 text-sm font-medium text-lead">
-                            Battery with {claim.status === "received" ? "us" : dist ?? "distributor"}
+                            {claim.status === "received" ? <T>Battery with us</T> : <T p={{ who: dist ?? "distributor" }}>{"Battery with {who}"}</T>}
                           </span>
                         )}
                       </div>
@@ -495,8 +493,7 @@ export default function BatteryServicesClient({
                         {claim.customer_phone ? ` · ${formatPhone(claim.customer_phone)}` : ""}
                       </p>
                       <p className="mt-1 text-sm text-lead">
-                        Received {formatDay(claim.received_date)}
-                        {dist ? ` · ${dist}` : ""}
+                        <T p={{ date: formatDay(claim.received_date) }}>{"Received {date}"}</T><T>{dist ? ` · ${dist}` : ""}</T>
                       </p>
                     </div>
                     <div className="text-end">
@@ -506,17 +503,17 @@ export default function BatteryServicesClient({
                         </p>
                       )}
                       {claim.extra_charges != null && (
-                        <p className="text-sm text-lead">+{formatRs(claim.extra_charges)} extra</p>
+                        <p className="text-sm text-lead"><T p={{ formatRs: formatRs(claim.extra_charges) }}>{"+{formatRs} extra"}</T></p>
                       )}
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2 border-t border-line/70 pt-3">
                     <Link href={`/print/claim/${claim.id}`} className="btn btn-quiet btn-sm">
-                      <Icon name="printer" className="h-4 w-4" /> Slip
+                      <Icon name="printer" className="h-4 w-4" /> <T>Slip</T>
                     </Link>
                     {canAdvance && (
                       <button type="button" onClick={() => setStatusTarget(claim)} className="btn btn-sm btn-primary">
-                        <Icon name="chevron" className="h-4 w-4" /> Move status
+                        <Icon name="chevron" className="h-4 w-4" /> <T>Move status</T>
                       </button>
                     )}
                     <button
@@ -527,7 +524,7 @@ export default function BatteryServicesClient({
                       }}
                       className="btn btn-quiet btn-sm text-terminal-deep"
                     >
-                      <Icon name="trash" className="h-4 w-4" /> Delete
+                      <Icon name="trash" className="h-4 w-4" /> <T>Delete</T>
                     </button>
                   </div>
                 </li>
@@ -577,25 +574,21 @@ export default function BatteryServicesClient({
             aria-describedby="del-bs-text"
             className="anim-pop w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
           >
-            <h2 id="del-bs-title" className="font-display text-2xl font-bold">
-              Delete {deleteTarget.kind === "charging" ? deleteTarget.job.slip_number : deleteTarget.claim.claim_number}?
-            </h2>
+            <h2 id="del-bs-title" className="font-display text-2xl font-bold"><T p={{ claim_number: deleteTarget.kind === "charging" ? deleteTarget.job.slip_number : deleteTarget.claim.claim_number }}>{"Delete {claim_number}?"}</T></h2>
             <p id="del-bs-text" className="mt-2 text-lead">
-              This permanently deletes this {deleteTarget.kind === "charging" ? "charging slip" : "battery claim"} for{" "}
-              {deleteTarget.kind === "charging" ? deleteTarget.job.customer_name : deleteTarget.claim.customer_name}. It
-              cannot be undone.
+              <T p={{ what: deleteTarget.kind === "charging" ? "charging slip" : "battery claim", name: deleteTarget.kind === "charging" ? deleteTarget.job.customer_name : deleteTarget.claim.customer_name }}>{"This permanently deletes this {what} for {name}. It cannot be undone."}</T>
             </p>
             {deleteError && (
               <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-                {deleteError}
+                <T>{deleteError}</T>
               </p>
             )}
             <div className="mt-6 flex justify-end gap-3">
               <button type="button" onClick={() => setDeleteTarget(null)} disabled={deleteBusy} autoFocus className="btn btn-quiet">
-                Keep it
+                <T>Keep it</T>
               </button>
               <button type="button" onClick={confirmDelete} disabled={deleteBusy} className="btn btn-danger">
-                {deleteBusy ? "Deleting" : deleteTarget.kind === "charging" ? "Delete slip" : "Delete claim"}
+                <T>{deleteBusy ? "Deleting" : deleteTarget.kind === "charging" ? "Delete slip" : "Delete claim"}</T>
               </button>
             </div>
           </div>
@@ -623,8 +616,8 @@ function EmptyState({
       <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-sun/25 text-amber-800">
         <Icon name={icon} className="h-8 w-8" />
       </span>
-      <p className="mt-4 font-display text-3xl font-semibold">{title}</p>
-      <p className="mx-auto mt-2 max-w-sm text-lead">{hint}</p>
+      <p className="mt-4 font-display text-3xl font-semibold"><T>{title}</T></p>
+      <p className="mx-auto mt-2 max-w-sm text-lead"><T>{hint}</T></p>
       {action}
     </div>
   );

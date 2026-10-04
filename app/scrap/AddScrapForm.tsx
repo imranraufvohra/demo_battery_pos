@@ -7,6 +7,8 @@ import { BATTERY_TYPES } from "@/lib/inventory";
 import { parseAmount, parseQty, todayKarachi } from "@/lib/invoices";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function AddScrapForm({
   onClose,
   onAdded,
@@ -14,6 +16,7 @@ export default function AddScrapForm({
   onClose: () => void;
   onAdded: (message: string) => void;
 }) {
+  const tt = useT();
   const [customerName, setCustomerName] = useState("");
   const [brand, setBrand] = useState("");
   const [model, setModel] = useState("");
@@ -82,13 +85,13 @@ export default function AddScrapForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="add-scrap-title" className="font-display text-2xl font-bold">
-            Add scrap battery
+            <T>Add scrap battery</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={tt("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -97,16 +100,15 @@ export default function AddScrapForm({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
           <p className="text-sm text-lead">
-            For an old battery that didn't come through a bill — e.g. one brought in on its own, or one missed on
-            the New bill screen. This goes straight to the scrap pile, not sellable stock.
+            <T>{"For an old battery that didn't come through a bill — e.g. one brought in on its own, or one missed on the New bill screen. This goes straight to the scrap pile, not sellable stock."}</T>
           </p>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Battery</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Battery</T></legend>
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label htmlFor="as-brand" className="mb-1.5 block text-sm font-medium">
-                  Brand
+                  <T>Brand</T>
                 </label>
                 <input
                   id="as-brand"
@@ -119,7 +121,7 @@ export default function AddScrapForm({
               </div>
               <div>
                 <label htmlFor="as-model" className="mb-1.5 block text-sm font-medium">
-                  Model
+                  <T>Model</T>
                 </label>
                 <input
                   id="as-model"
@@ -131,14 +133,14 @@ export default function AddScrapForm({
               </div>
               <div>
                 <label htmlFor="as-type" className="mb-1.5 block text-sm font-medium">
-                  Type (optional)
+                  <T>Type (optional)</T>
                 </label>
                 <input
                   id="as-type"
                   list="as-battery-types"
                   value={batteryType}
                   onChange={(e) => setBatteryType(e.target.value)}
-                  placeholder="Unknown"
+                  placeholder={tt("Unknown")}
                   className="input"
                 />
                 <datalist id="as-battery-types">
@@ -149,7 +151,7 @@ export default function AddScrapForm({
               </div>
               <div>
                 <label htmlFor="as-qty" className="mb-1.5 block text-sm font-medium">
-                  Qty
+                  <T>Qty</T>
                 </label>
                 <input
                   id="as-qty"
@@ -163,7 +165,7 @@ export default function AddScrapForm({
             </div>
             <div>
               <label htmlFor="as-number" className="mb-1.5 block text-sm font-medium">
-                Serial / plate number (optional)
+                <T>Serial / plate number (optional)</T>
               </label>
               <input
                 id="as-number"
@@ -174,36 +176,36 @@ export default function AddScrapForm({
             </div>
             <div>
               <label htmlFor="as-weight" className="mb-1.5 block text-sm font-medium">
-                Weight in kg (optional)
+                <T>Weight in kg (optional)</T>
               </label>
               <input
                 id="as-weight"
                 inputMode="decimal"
                 value={weightText}
                 onChange={(e) => setWeightText(e.target.value)}
-                placeholder="Usually weighed together at sale time"
+                placeholder={tt("Usually weighed together at sale time")}
                 className="input tabular-nums"
               />
             </div>
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Where it came from</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Where it came from</T></legend>
             <div>
               <label htmlFor="as-customer" className="mb-1.5 block text-sm font-medium">
-                Customer name (optional)
+                <T>Customer name (optional)</T>
               </label>
               <input
                 id="as-customer"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                placeholder="Leave blank if unknown"
+                placeholder={tt("Leave blank if unknown")}
                 className="input"
               />
             </div>
             <div>
               <label htmlFor="as-date" className="mb-1.5 block text-sm font-medium">
-                Received date
+                <T>Received date</T>
               </label>
               <input
                 id="as-date"
@@ -216,7 +218,7 @@ export default function AddScrapForm({
             </div>
             <div>
               <label htmlFor="as-note" className="mb-1.5 block text-sm font-medium">
-                Note (optional)
+                <T>Note (optional)</T>
               </label>
               <textarea
                 id="as-note"
@@ -232,15 +234,15 @@ export default function AddScrapForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {error && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : "Add to scrap"}
+              <T>{saving ? "Saving" : "Add to scrap"}</T>
             </button>
           </div>
         </div>

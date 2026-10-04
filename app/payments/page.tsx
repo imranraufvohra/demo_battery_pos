@@ -3,7 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import type { PaymentDetails, PurchaseInvoice, SupplierBalance } from "@/lib/types";
 import PaymentsClient from "./PaymentsClient";
 
-export const metadata: Metadata = { title: "Payments" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Payments") };
+}
 
 type Tab = "payments" | "purchases" | "suppliers";
 
@@ -31,12 +35,10 @@ export default async function PaymentsPage({
   if (payments.error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Payments could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          Open Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">13_supplier_payments.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Payments could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">13_supplier_payments.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {payments.error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: payments.error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }

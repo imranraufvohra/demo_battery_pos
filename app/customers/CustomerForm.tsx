@@ -24,6 +24,8 @@ import type { Customer } from "@/lib/types";
 import { FALLBACK_PROVINCES } from "@/lib/fbr";
 import { useFbrRef } from "@/lib/fbrRef";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type CustomerLite = Pick<Customer, "id" | "name" | "phone">;
 
 export default function CustomerForm({
@@ -38,6 +40,7 @@ export default function CustomerForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const [form, setForm] = useState<CustomerFormValues>(() => customerToForm(customer));
   const [errors, setErrors] = useState<CustomerErrors>({});
   const [saving, setSaving] = useState(false);
@@ -95,13 +98,13 @@ export default function CustomerForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="customer-form-title" className="font-display text-2xl font-bold">
-            {customer ? "Edit customer" : "Add customer"}
+            <T>{customer ? "Edit customer" : "Add customer"}</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -110,7 +113,7 @@ export default function CustomerForm({
 
         <div className="flex-1 space-y-7 overflow-y-auto px-5 py-6">
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Who is it</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Who is it</T></legend>
 
             <ContactPickButton
               className="mb-1"
@@ -122,14 +125,14 @@ export default function CustomerForm({
 
             <div>
               <label htmlFor="c-name" className="mb-1.5 block text-sm font-medium">
-                Name
+                <T>Name</T>
               </label>
               <input
                 id="c-name"
                 type="text"
                 autoFocus
                 autoComplete="off"
-                placeholder="Ali Khan"
+                placeholder={t("Ali Khan")}
                 value={form.name}
                 onChange={(e) => set("name", e.target.value)}
                 aria-invalid={errors.name ? true : undefined}
@@ -145,7 +148,7 @@ export default function CustomerForm({
 
             <div>
               <label htmlFor="c-phone" className="mb-1.5 block text-sm font-medium">
-                Phone
+                <T>Phone</T>
               </label>
               <input
                 id="c-phone"
@@ -164,25 +167,23 @@ export default function CustomerForm({
                   {errors.phone}
                 </p>
               ) : duplicate ? (
-                <p id="c-phone-hint" className="mt-1 rounded-lg bg-sun/20 px-3 py-2 text-sm">
-                  {duplicate.name} already uses {formatPhone(phoneNormalized)}. You can still save this customer.
-                </p>
+                <p id="c-phone-hint" className="mt-1 rounded-lg bg-sun/20 px-3 py-2 text-sm"><T p={{ name: duplicate.name, formatPhone: formatPhone(phoneNormalized) }}>{"{name} already uses {formatPhone}. You can still save this customer."}</T></p>
               ) : (
                 <p id="c-phone-hint" className="mt-1 text-sm text-lead">
-                  Optional. Used for the Call and WhatsApp buttons.
+                  <T>Optional. Used for the Call and WhatsApp buttons.</T>
                 </p>
               )}
             </div>
 
             <div>
               <label htmlFor="c-address" className="mb-1.5 block text-sm font-medium">
-                Address
+                <T>Address</T>
               </label>
               <textarea
                 id="c-address"
                 rows={2}
                 autoComplete="off"
-                placeholder="Shop or house number, area, city"
+                placeholder={t("Shop or house number, area, city")}
                 value={form.address}
                 onChange={(e) => set("address", e.target.value)}
                 className="input resize-none"
@@ -191,7 +192,7 @@ export default function CustomerForm({
 
             <div>
               <label htmlFor="c-province" className="mb-1.5 block text-sm font-medium">
-                Province
+                <T>Province</T>
               </label>
               <select
                 id="c-province"
@@ -199,22 +200,22 @@ export default function CustomerForm({
                 onChange={(e) => set("province", e.target.value)}
                 className="input"
               >
-                <option value="">Not chosen</option>
+                <Opt value="">Not chosen</Opt>
                 {provinceOptions.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
+                  <Opt key={p} value={p}>
+                    <T>{p}</T>
+                  </Opt>
                 ))}
-                {form.province && !provinceOptions.includes(form.province) && <option value={form.province}>{form.province}</option>}
+                {form.province && !provinceOptions.includes(form.province) && <Opt value={form.province}><T>{form.province}</T></Opt>}
               </select>
-              <p className="mt-1 text-sm text-lead">FBR bills need the buyer&apos;s province.</p>
+              <p className="mt-1 text-sm text-lead"><T>{"FBR bills need the buyer's province."}</T></p>
             </div>
           </fieldset>
 
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Tax details for FBR</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Tax details for FBR</T></legend>
 
-            <div role="radiogroup" aria-label="Registration type" className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
+            <div role="radiogroup" aria-label={t("Registration type")} className="grid grid-cols-2 gap-2 rounded-2xl bg-plate p-1.5">
               {REGISTRATION_TYPES.map((r) => {
                 const on = form.registration_type === r.value;
                 return (
@@ -231,25 +232,25 @@ export default function CustomerForm({
                       on ? "bg-white text-casing shadow-card" : "text-lead hover:text-casing"
                     }`}
                   >
-                    {r.label}
+                    <T>{r.label}</T>
                   </button>
                 );
               })}
             </div>
             <p className="-mt-1 text-sm text-lead">
-              {REGISTRATION_TYPES.find((r) => r.value === form.registration_type)?.hint}
+              <T>{REGISTRATION_TYPES.find((r) => r.value === form.registration_type)?.hint}</T>
             </p>
 
             <div>
               <label htmlFor="c-reg" className="mb-1.5 block text-sm font-medium">
-                CNIC or NTN {registered ? "" : "(optional)"}
+                {registered ? <T>CNIC or NTN</T> : <T>CNIC or NTN (optional)</T>}
               </label>
               <input
                 id="c-reg"
                 type="text"
                 inputMode="numeric"
                 autoComplete="off"
-                placeholder="42101-1234567-1 or 1234567"
+                placeholder={t("42101-1234567-1 or 1234567")}
                 value={form.cnic_or_ntn}
                 onChange={(e) => set("cnic_or_ntn", e.target.value)}
                 aria-invalid={errors.cnic_or_ntn ? true : undefined}
@@ -263,11 +264,11 @@ export default function CustomerForm({
               ) : kind ? (
                 <p id="c-reg-hint" className="mt-1 flex items-center gap-1.5 text-sm font-medium text-cell">
                   <Icon name="check" className="h-4 w-4" strokeWidth={2.4} />
-                  {kind}: {formatRegNo(reg)}
+                  <T>{kind}</T>: {formatRegNo(reg)}
                 </p>
               ) : (
                 <p id="c-reg-hint" className="mt-1 text-sm text-lead">
-                  13 digits for a CNIC, 7 digits for an NTN. Dashes are fine.
+                  <T>13 digits for a CNIC, 7 digits for an NTN. Dashes are fine.</T>
                 </p>
               )}
             </div>
@@ -277,15 +278,15 @@ export default function CustomerForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {saveError && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {saveError}
+              <T>{saveError}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : customer ? "Save changes" : "Save customer"}
+              <T>{saving ? "Saving" : customer ? "Save changes" : "Save customer"}</T>
             </button>
           </div>
         </div>

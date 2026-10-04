@@ -8,6 +8,8 @@ import { formatDay, todayKarachi } from "@/lib/invoices";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { Customer, Distributor, Invoice } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type CustomerLite = Pick<Customer, "id" | "name" | "phone">;
 type InvoiceHit = Pick<Invoice, "id" | "invoice_number" | "buyer_name" | "invoice_date">;
 
@@ -22,6 +24,7 @@ export default function BatteryClaimForm({
   onClose: () => void;
   onCreated: (id: string) => void;
 }) {
+  const tt = useT();
   const [customerId, setCustomerId] = useState<string | null>(null);
   const [customerQuery, setCustomerQuery] = useState("");
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -138,13 +141,13 @@ export default function BatteryClaimForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="claim-form-title" className="font-display text-2xl font-bold">
-            New battery claim
+            <T>New battery claim</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={tt("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -153,7 +156,7 @@ export default function BatteryClaimForm({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Customer</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Customer</T></legend>
             {customer ? (
               <div className="flex items-center justify-between rounded-xl border border-line px-3.5 py-3">
                 <div>
@@ -161,7 +164,7 @@ export default function BatteryClaimForm({
                   {customer.phone && <p className="text-sm text-lead">{formatPhone(customer.phone)}</p>}
                 </div>
                 <button type="button" onClick={() => setCustomerId(null)} className="btn btn-quiet btn-sm">
-                  Change
+                  <T>Change</T>
                 </button>
               </div>
             ) : (
@@ -176,7 +179,7 @@ export default function BatteryClaimForm({
                       setPickerOpen(true);
                     }}
                     onFocus={() => setPickerOpen(true)}
-                    placeholder="Search a saved customer, or leave blank for walk-in"
+                    placeholder={tt("Search a saved customer, or leave blank for walk-in")}
                     className="input ps-11"
                   />
                   {pickerOpen && hits.length > 0 && (
@@ -205,7 +208,7 @@ export default function BatteryClaimForm({
                     type="text"
                     value={walkinName}
                     onChange={(e) => setWalkinName(e.target.value)}
-                    placeholder="Walk-in name (optional)"
+                    placeholder={tt("Walk-in name (optional)")}
                     className="input"
                   />
                   <input
@@ -213,7 +216,7 @@ export default function BatteryClaimForm({
                     inputMode="tel"
                     value={walkinPhone}
                     onChange={(e) => setWalkinPhone(e.target.value)}
-                    placeholder="Phone (optional)"
+                    placeholder={tt("Phone (optional)")}
                     className="input"
                   />
                 </div>
@@ -222,21 +225,21 @@ export default function BatteryClaimForm({
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Battery</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Battery</T></legend>
             <div className="grid gap-3 sm:grid-cols-2">
               <input
                 type="text"
                 autoFocus
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
-                placeholder="Brand"
+                placeholder={tt("Brand")}
                 className="input"
               />
               <input
                 type="text"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                placeholder="Model"
+                placeholder={tt("Model")}
                 className="input"
               />
             </div>
@@ -244,23 +247,23 @@ export default function BatteryClaimForm({
               type="text"
               value={number}
               onChange={(e) => setNumber(e.target.value)}
-              placeholder="Battery number (optional)"
+              placeholder={tt("Battery number (optional)")}
               className="input"
             />
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Original bill (optional)</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Original bill (optional)</T></legend>
             {originalInvoice ? (
               <div className="flex items-center justify-between rounded-xl border border-line px-3.5 py-3">
                 <div>
                   <p className="font-semibold">{originalInvoice.invoice_number}</p>
                   <p className="text-sm text-lead">
-                    {originalInvoice.buyer_name} · {formatDay(originalInvoice.invoice_date)}
+                    {originalInvoice.buyer_name} · <T>{formatDay(originalInvoice.invoice_date)}</T>
                   </p>
                 </div>
                 <button type="button" onClick={() => setOriginalInvoice(null)} className="btn btn-quiet btn-sm">
-                  Remove
+                  <T>Remove</T>
                 </button>
               </div>
             ) : (
@@ -270,13 +273,13 @@ export default function BatteryClaimForm({
                   type="text"
                   value={invoiceQuery}
                   onChange={(e) => searchInvoices(e.target.value)}
-                  placeholder="Bill number or customer name"
+                  placeholder={tt("Bill number or customer name")}
                   className="input ps-11"
                 />
                 {invoiceQuery.trim().length >= 2 && (invoiceLoading || invoiceHits.length > 0) && (
                   <ul className="absolute z-10 mt-1 w-full overflow-hidden rounded-xl border border-line bg-white shadow-lift">
                     {invoiceLoading ? (
-                      <li className="px-3.5 py-2.5 text-sm text-lead">Searching…</li>
+                      <li className="px-3.5 py-2.5 text-sm text-lead"><T>{"Searching…"}</T></li>
                     ) : (
                       invoiceHits.map((inv) => (
                         <li key={inv.id}>
@@ -302,8 +305,8 @@ export default function BatteryClaimForm({
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Distributor (optional for now)</legend>
-            <p className="text-sm text-lead">Pick one now, or leave blank and choose it when you send the battery off.</p>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Distributor (optional for now)</T></legend>
+            <p className="text-sm text-lead"><T>Pick one now, or leave blank and choose it when you send the battery off.</T></p>
             {distributors.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {distributors.map((d) => (
@@ -333,17 +336,17 @@ export default function BatteryClaimForm({
                 setNewDistributor(e.target.value);
                 if (e.target.value.trim()) setDistributorId(null);
               }}
-              placeholder="Or type a new distributor's name"
+              placeholder={tt("Or type a new distributor's name")}
               className="input"
             />
           </fieldset>
 
           <fieldset className="space-y-3">
-            <legend className="mb-1 font-display text-xl font-semibold">Money</legend>
+            <legend className="mb-1 font-display text-xl font-semibold"><T>Money</T></legend>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
                 <label htmlFor="clm-amount" className="mb-1.5 block text-sm font-medium">
-                  Claim amount (optional)
+                  <T>Claim amount (optional)</T>
                 </label>
                 <input
                   id="clm-amount"
@@ -351,13 +354,13 @@ export default function BatteryClaimForm({
                   inputMode="decimal"
                   value={claimAmountText}
                   onChange={(e) => setClaimAmountText(e.target.value)}
-                  placeholder="Recovered from distributor"
+                  placeholder={tt("Recovered from distributor")}
                   className="input"
                 />
               </div>
               <div>
                 <label htmlFor="clm-extra" className="mb-1.5 block text-sm font-medium">
-                  Extra charges (optional)
+                  <T>Extra charges (optional)</T>
                 </label>
                 <input
                   id="clm-extra"
@@ -365,7 +368,7 @@ export default function BatteryClaimForm({
                   inputMode="decimal"
                   value={extraChargesText}
                   onChange={(e) => setExtraChargesText(e.target.value)}
-                  placeholder="Acid, service charges etc."
+                  placeholder={tt("Acid, service charges etc.")}
                   className="input"
                 />
               </div>
@@ -373,7 +376,7 @@ export default function BatteryClaimForm({
 
             <div>
               <label htmlFor="clm-date" className="mb-1.5 block text-sm font-medium">
-                Date received
+                <T>Date received</T>
               </label>
               <input
                 id="clm-date"
@@ -389,7 +392,7 @@ export default function BatteryClaimForm({
               rows={2}
               value={note}
               onChange={(e) => setNote(e.target.value)}
-              placeholder="Note (optional)"
+              placeholder={tt("Note (optional)")}
               className="input resize-none"
             />
           </fieldset>
@@ -398,15 +401,15 @@ export default function BatteryClaimForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {error && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : "Save and print"}
+              <T>{saving ? "Saving" : "Save and print"}</T>
             </button>
           </div>
         </div>

@@ -3,7 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import type { PurchaseInvoice, SupplierBalance } from "@/lib/types";
 import NewPayment from "./NewPayment";
 
-export const metadata: Metadata = { title: "Make payment" };
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Make payment") };
+}
 
 export default async function NewPaymentPage({
   searchParams,

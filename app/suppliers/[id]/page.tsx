@@ -4,7 +4,10 @@ import { createClient } from "@/lib/supabase/server";
 import type { LedgerRow, PurchaseInvoice, Supplier, SupplierBalance } from "@/lib/types";
 import SupplierLedger from "./SupplierLedger";
 
-export const metadata: Metadata = { title: "Supplier" };
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Supplier") };
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 

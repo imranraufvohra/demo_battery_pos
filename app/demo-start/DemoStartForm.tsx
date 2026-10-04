@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import Spinner from "@/components/Spinner";
 
+import { T } from "@/components/T";
 /**
  * Wraps the demo login form. The form still posts natively to /api/demo-login (the server sets the
  * session cookie and answers with a 303 redirect), so we do not cancel the submit. We only flip a
@@ -54,16 +55,16 @@ export default function DemoStartForm({ children, footer }: { children: ReactNod
           {pending ? (
             <>
               <Spinner className="h-5 w-5" />
-              <span>Starting demo...</span>
+              <span><T>Starting demo...</T></span>
             </>
           ) : (
-            <span>Log in to demo</span>
+            <span><T>Log in to demo</T></span>
           )}
         </button>
 
         {/* Screen readers: announce the state change, since a disabled button loses focus. */}
         <span role="status" aria-live="polite" className="sr-only">
-          {pending ? "Starting demo, please wait" : ""}
+          <T>{pending ? "Starting demo, please wait" : ""}</T>
         </span>
 
         {footer}
@@ -75,7 +76,7 @@ export default function DemoStartForm({ children, footer }: { children: ReactNod
           className="anim-fade fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-[#1c2b33]/90 text-white backdrop-blur-sm"
         >
           <Spinner className="h-12 w-12 text-amber-400" />
-          <p className="font-display text-xl font-semibold tracking-wide">Opening your demo...</p>
+          <p className="font-display text-xl font-semibold tracking-wide"><T>Opening your demo...</T></p>
         </div>
       )}
     </>

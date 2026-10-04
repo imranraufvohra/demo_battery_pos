@@ -7,6 +7,7 @@ import { emailBillLink, whatsappBillLink } from "@/lib/invoiceShare";
 import { fbrHasNumber } from "@/lib/fbrPrint";
 import type { InvoiceDocument } from "@/lib/invoiceDoc";
 
+import { T } from "@/components/T";
 /** Print, PDF, WhatsApp and email for one bill. The PDF code is only downloaded when someone taps a PDF button. */
 export default function InvoiceActions({ doc, onDark = false }: { doc: InvoiceDocument; onDark?: boolean }) {
   const { invoice, items, seller, fbr } = doc;
@@ -77,13 +78,13 @@ export default function InvoiceActions({ doc, onDark = false }: { doc: InvoiceDo
     <div>
       <div className="flex flex-wrap gap-2.5">
         <Link href={`/print/${invoice.id}?auto=1`} className={quiet}>
-          <Icon name="printer" className="h-5 w-5" /> Print
+          <Icon name="printer" className="h-5 w-5" /> <T>Print</T>
         </Link>
         <button type="button" onClick={download} disabled={busy} className={quiet}>
-          <Icon name="download" className="h-5 w-5" /> Download PDF
+          <Icon name="download" className="h-5 w-5" /> <T>Download PDF</T>
         </button>
         <button type="button" onClick={sharePdf} disabled={busy} className={`${quiet} sm:hidden`}>
-          <Icon name="share" className="h-5 w-5" /> Share PDF
+          <Icon name="share" className="h-5 w-5" /> <T>Share PDF</T>
         </button>
         <a
           href={whatsappBillLink(invoice, items, seller, fbr)}
@@ -92,15 +93,15 @@ export default function InvoiceActions({ doc, onDark = false }: { doc: InvoiceDo
           onClick={() => sendClick(numberReady)}
           className="on-dark btn bg-[#25a35a] text-white hover:bg-[#1f8f4e]"
         >
-          <Icon name="chat" className="h-5 w-5" /> WhatsApp
+          <Icon name="chat" className="h-5 w-5" /> <T>WhatsApp</T>
         </a>
         <a href={emailBillLink(invoice, items, seller, fbr)} onClick={() => sendClick(numberReady)} className={quiet}>
-          <Icon name="mail" className="h-5 w-5" /> Email
+          <Icon name="mail" className="h-5 w-5" /> <T>Email</T>
         </a>
       </div>
       {note && (
         <p role="status" className={`mt-2 text-sm ${onDark ? "text-white/80" : "text-lead"}`}>
-          {note}
+          <T>{note}</T>
         </p>
       )}
     </div>

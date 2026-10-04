@@ -6,6 +6,8 @@ import { formatMoney } from "@/lib/format";
 import { addDays, todayKarachi } from "@/lib/invoices";
 import { ROLE_LABEL, type Role } from "@/lib/roles";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type Person = { id: string; name: string };
 
 type LogRow = {
@@ -151,32 +153,31 @@ function Row({ r, open, onToggle }: { r: LogRow; open: boolean; onToggle: () => 
   return (
     <li className={`px-4 py-3.5 ${r.is_detail ? "bg-plate/50" : ""}`}>
       <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${a.cls}`}>{a.label}</span>
+        <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${a.cls}`}><T>{a.label}</T></span>
         <span className="text-xs font-medium uppercase tracking-wide text-lead">{AREA_LABEL[r.table_name] ?? r.table_name}</span>
-        {r.is_detail && <span className="text-xs text-lead">(automatic)</span>}
+        {r.is_detail && <span className="text-xs text-lead"><T>(automatic)</T></span>}
         <span className="ms-auto text-sm tabular-nums text-lead">{fmtTime.format(new Date(r.created_at))}</span>
       </div>
-      <p className="mt-1.5 break-words text-[15px] font-medium">{r.summary}</p>
+      <p className="mt-1.5 break-words text-[15px] font-medium"><T>{r.summary}</T></p>
       <div className="mt-1 flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm text-lead">
-          By <b className="text-casing">{r.actor_name}</b>
-          {roleText ? ` (${roleText})` : ""}
+          <T>By</T> <b className="text-casing">{r.actor_name}</b>
+          <T>{roleText ? ` (${roleText})` : ""}</T>
         </p>
         <button type="button" onClick={onToggle} className="text-sm font-medium text-focus hover:underline">
-          {open ? "Hide details" : "Show details"}
+          <T>{open ? "Hide details" : "Show details"}</T>
         </button>
       </div>
       {open && (
         <dl className="mt-2 space-y-1 rounded-xl bg-plate/70 px-3 py-2 text-sm">
-          {lines.length === 0 && <p className="text-lead">No more details.</p>}
+          {lines.length === 0 && <p className="text-lead"><T>No more details.</T></p>}
           {lines.map((l) => (
             <div key={l.key} className="flex flex-wrap gap-x-2">
-              <dt className="capitalize text-lead">{l.key}:</dt>
+              <dt className="capitalize text-lead"><T>{l.key}</T>:</dt>
               <dd className="break-words">
                 {l.before !== undefined ? (
                   <>
-                    <span className="text-terminal-deep line-through">{l.before}</span> &rarr;{" "}
-                    <span className="font-semibold text-cell-deep">{l.after}</span>
+                    <span className="text-terminal-deep line-through"><T>{l.before}</T></span> → <span className="font-semibold text-cell-deep"><T>{l.after}</T></span>
                   </>
                 ) : (
                   l.after
@@ -191,6 +192,7 @@ function Row({ r, open, onToggle }: { r: LogRow; open: boolean; onToggle: () => 
 }
 
 export default function ActivityClient({ people }: { people: Person[] }) {
+  const tt = useT();
   const [who, setWho] = useState("");
   const [area, setArea] = useState("");
   const [action, setAction] = useState("");
@@ -264,9 +266,9 @@ export default function ActivityClient({ people }: { people: Person[] }) {
       <section className="card anim-rise p-4" style={{ "--i": 1 } as React.CSSProperties}>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">Who</span>
+            <span className="mb-1 block text-sm font-medium"><T>Who</T></span>
             <select className="input w-full" value={who} onChange={(e) => setWho(e.target.value)}>
-              <option value="">Everyone</option>
+              <Opt value="">Everyone</Opt>
               {people.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -275,32 +277,32 @@ export default function ActivityClient({ people }: { people: Person[] }) {
             </select>
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">What</span>
+            <span className="mb-1 block text-sm font-medium"><T>What</T></span>
             <select className="input w-full" value={area} onChange={(e) => setArea(e.target.value)}>
               {AREAS.map((a) => (
-                <option key={a.value} value={a.value}>
-                  {a.label}
-                </option>
+                <Opt key={a.value} value={a.value}>
+                  <T>{a.label}</T>
+                </Opt>
               ))}
             </select>
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">Action</span>
+            <span className="mb-1 block text-sm font-medium"><T>Action</T></span>
             <select className="input w-full" value={action} onChange={(e) => setAction(e.target.value)}>
               {ACTIONS.map((a) => (
-                <option key={a.value} value={a.value}>
-                  {a.label}
-                </option>
+                <Opt key={a.value} value={a.value}>
+                  <T>{a.label}</T>
+                </Opt>
               ))}
             </select>
           </label>
           <label className="block">
-            <span className="mb-1 block text-sm font-medium">When</span>
+            <span className="mb-1 block text-sm font-medium"><T>When</T></span>
             <select className="input w-full" value={when} onChange={(e) => setWhen(e.target.value)}>
               {WHEN.map((w) => (
-                <option key={w.value} value={w.value}>
-                  {w.label}
-                </option>
+                <Opt key={w.value} value={w.value}>
+                  <T>{w.label}</T>
+                </Opt>
               ))}
             </select>
           </label>
@@ -311,25 +313,25 @@ export default function ActivityClient({ people }: { people: Person[] }) {
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search, e.g. a bill number, customer or item"
-            aria-label="Search the activity log"
+            placeholder={tt("Search, e.g. a bill number, customer or item")}
+            aria-label={tt("Search the activity log")}
           />
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" className="h-5 w-5" checked={showAuto} onChange={(e) => setShowAuto(e.target.checked)} />
-            Show automatic changes (stock counts after a sale, bill lines)
+            <T>Show automatic changes (stock counts after a sale, bill lines)</T>
           </label>
         </div>
       </section>
 
       {error && (
         <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-terminal-deep">
-          {error}
+          <T>{error}</T>
         </p>
       )}
 
       <section className="card anim-rise mt-4 overflow-hidden" style={{ "--i": 2 } as React.CSSProperties}>
         {rows.length === 0 && !loading && !error ? (
-          <p className="p-6 text-center text-lead">Nothing matches. Try a longer time range or fewer filters.</p>
+          <p className="p-6 text-center text-lead"><T>Nothing matches. Try a longer time range or fewer filters.</T></p>
         ) : (
           <ul className="divide-y divide-line/60">
             {rows.map((r) => (
@@ -337,11 +339,11 @@ export default function ActivityClient({ people }: { people: Person[] }) {
             ))}
           </ul>
         )}
-        {loading && <p className="p-4 text-center text-lead">Loading…</p>}
+        {loading && <p className="p-4 text-center text-lead"><T>{"Loading…"}</T></p>}
         {hasMore && !loading && (
           <div className="border-t border-line/60 p-3 text-center">
             <button type="button" className="btn btn-quiet btn-sm" onClick={() => void load(rows.length)}>
-              Show older
+              <T>Show older</T>
             </button>
           </div>
         )}

@@ -6,6 +6,8 @@ import Avatar from "@/components/Avatar";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import { ROLES, ROLE_HINT, ROLE_LABEL, type Role } from "@/lib/roles";
 
+import { T, Opt } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export type TeamMember = {
   user_id: string;
   email: string | null;
@@ -33,6 +35,7 @@ function lastSeen(iso: string | null) {
 }
 
 function MemberCard({ m, isMe, index }: { m: TeamMember; isMe: boolean; index: number }) {
+  const t = useT();
   const router = useRouter();
   const [name, setName] = useState(m.full_name);
   const [role, setRole] = useState<Role | "">(m.role ?? "");
@@ -79,40 +82,40 @@ function MemberCard({ m, isMe, index }: { m: TeamMember; isMe: boolean; index: n
         <div className="min-w-0 flex-1">
           <p className="truncate font-semibold" title={m.email ?? ""}>
             {m.email ?? "(no email)"}
-            {isMe && <span className="ms-2 rounded-full bg-plate px-2 py-0.5 text-xs font-medium text-lead">You</span>}
+            {isMe && <span className="ms-2 rounded-full bg-plate px-2 py-0.5 text-xs font-medium text-lead"><T>You</T></span>}
           </p>
-          <p className="text-sm text-lead">{lastSeen(m.last_sign_in_at)}</p>
+          <p className="text-sm text-lead"><T>{lastSeen(m.last_sign_in_at)}</T></p>
           {!m.has_role && (
-            <p className="mt-1 text-sm font-medium text-amber-800">Needs a name and a role before this person can use the app.</p>
+            <p className="mt-1 text-sm font-medium text-amber-800"><T>Needs a name and a role before this person can use the app.</T></p>
           )}
         </div>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1 block text-sm font-medium">Name (shown in the activity log)</span>
+          <span className="mb-1 block text-sm font-medium"><T>Name (shown in the activity log)</T></span>
           <input
             className="input w-full"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="e.g. Ali Ahmed"
+            placeholder={t("e.g. Ali Ahmed")}
             maxLength={60}
           />
         </label>
         <label className="block">
-          <span className="mb-1 block text-sm font-medium">Role</span>
+          <span className="mb-1 block text-sm font-medium"><T>Role</T></span>
           <select className="input w-full" value={role} onChange={(e) => setRole(e.target.value as Role | "")}>
-            <option value="">Choose a role</option>
+            <Opt value="">Choose a role</Opt>
             {ROLES.map((r) => (
-              <option key={r} value={r}>
-                {ROLE_LABEL[r]}
-              </option>
+              <Opt key={r} value={r}>
+                <T>{ROLE_LABEL[r]}</T>
+              </Opt>
             ))}
           </select>
         </label>
       </div>
 
-      {role !== "" && <p className="mt-2 text-sm text-lead">{ROLE_HINT[role]}</p>}
+      {role !== "" && <p className="mt-2 text-sm text-lead"><T>{ROLE_HINT[role]}</T></p>}
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
         <label className={`flex items-center gap-2 ${isMe ? "opacity-60" : ""}`}>
@@ -123,19 +126,19 @@ function MemberCard({ m, isMe, index }: { m: TeamMember; isMe: boolean; index: n
             disabled={isMe}
             onChange={(e) => setActive(e.target.checked)}
           />
-          <span className="text-[15px]">{isMe ? "Account is on (you cannot turn off yourself)" : "Account is on"}</span>
+          <span className="text-[15px]"><T>{isMe ? "Account is on (you cannot turn off yourself)" : "Account is on"}</T></span>
         </label>
         <button type="button" onClick={save} disabled={!changed || !ready || busy} className="btn btn-primary btn-sm">
-          {busy ? "Saving" : m.has_role ? "Save changes" : "Give access"}
+          <T>{busy ? "Saving" : m.has_role ? "Save changes" : "Give access"}</T>
         </button>
       </div>
 
       {error && (
         <p role="alert" className="mt-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-          {error}
+          <T>{error}</T>
         </p>
       )}
-      {saved && !error && !changed && <p className="mt-3 text-sm text-cell-deep">Saved.</p>}
+      {saved && !error && !changed && <p className="mt-3 text-sm text-cell-deep"><T>Saved.</T></p>}
     </li>
   );
 }
@@ -144,16 +147,16 @@ export default function TeamClient({ members, myId }: { members: TeamMember[]; m
   return (
     <div className="mt-6">
       <section className="card anim-rise p-5" style={{ "--i": 0 } as React.CSSProperties}>
-        <h2 className="font-display text-2xl font-semibold">Adding a new person</h2>
+        <h2 className="font-display text-2xl font-semibold"><T>Adding a new person</T></h2>
         <ol className="mt-2 list-decimal space-y-1 ps-5 text-[15px] text-lead">
           <li>
-            Open Supabase, then <b className="text-casing">Authentication &rarr; Users &rarr; Add user</b>.
+            <T>Open Supabase, then</T> <b className="text-casing"><T>Authentication &rarr; Users &rarr; Add user</T></b>.
           </li>
-          <li>Enter their email and a password, and switch on &ldquo;Auto Confirm User&rdquo;.</li>
-          <li>Come back here and refresh. They appear below with a yellow border.</li>
-          <li>Type their name, choose a role, and press &ldquo;Give access&rdquo;. Tell them their email and password.</li>
+          <li><T>{"Enter their email and a password, and switch on “Auto Confirm User”."}</T></li>
+          <li><T>Come back here and refresh. They appear below with a yellow border.</T></li>
+          <li><T>{"Type their name, choose a role, and press “Give access”. Tell them their email and password."}</T></li>
         </ol>
-        <p className="mt-2 text-sm text-lead">Everybody signs in with their own login, so the activity log always shows who did what. Never share one login.</p>
+        <p className="mt-2 text-sm text-lead"><T>Everybody signs in with their own login, so the activity log always shows who did what. Never share one login.</T></p>
       </section>
 
       <ul className="mt-4 space-y-3">

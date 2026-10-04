@@ -6,9 +6,14 @@ import { can } from "@/lib/roles";
 import { loadRoleInfo } from "@/lib/rolesServer";
 import TeamClient, { type TeamMember } from "./TeamClient";
 
-export const metadata: Metadata = { title: "Team" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Team") };
+}
 
 export default async function TeamPage() {
+  const t = await getT();
   const info = await loadRoleInfo();
   if (!can(info, "team.manage")) redirect("/");
 
@@ -21,19 +26,17 @@ export default async function TeamPage() {
   if (error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Team could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          Open Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">16_roles_and_audit.sql</code>.
+        <h1 className="font-display text-3xl font-bold"><T>Team could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">16_roles_and_audit.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl">
-      <PageHeader title="Team" subtitle="Everyone who can sign in to PowerCell POS, and what each person may do." />
+      <PageHeader title={t("Team")} subtitle={t("Everyone who can sign in to PowerCell POS, and what each person may do.")} />
       <TeamClient members={(data ?? []) as TeamMember[]} myId={user?.id ?? ""} />
     </div>
   );

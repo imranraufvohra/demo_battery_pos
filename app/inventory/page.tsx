@@ -4,7 +4,11 @@ import type { InventoryItem } from "@/lib/types";
 import BatteryStockCard from "./BatteryStockCard";
 import InventoryClient from "./InventoryClient";
 
-export const metadata: Metadata = { title: "Inventory" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Inventory") };
+}
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -24,17 +28,13 @@ export default async function InventoryPage({ searchParams }: { searchParams: Se
   if (error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Inventory could not be loaded</h1>
-        <p className="mt-3 text-lead">
-          The app is connected, but Supabase did not return the stock list. The
-          most common reason is that the database table has not been created
-          yet. Open Supabase, go to SQL Editor, and run{" "}
-          <code className="rounded bg-plate px-1.5 py-0.5 text-casing">
+        <h1 className="font-display text-3xl font-bold"><T>Inventory could not be loaded</T></h1>
+        <p className="mt-3 text-lead"><T p={{ p: " " }}>{"The app is connected, but Supabase did not return the stock list. The most common reason is that the database table has not been created yet. Open Supabase, go to SQL Editor, and run{p}"}</T><code className="rounded bg-plate px-1.5 py-0.5 text-casing">
             01_inventory.sql
           </code>
           .
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {error.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: error.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }

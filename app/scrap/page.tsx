@@ -6,7 +6,11 @@ import { loadRoleInfo } from "@/lib/rolesServer";
 import type { ScrapBatteryInventory, ScrapBatterySale } from "@/lib/types";
 import ScrapClient from "./ScrapClient";
 
-export const metadata: Metadata = { title: "Scrap" };
+import { T } from "@/components/T";
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Scrap") };
+}
 
 export default async function ScrapPage() {
   if (!canOpen(await loadRoleInfo(), "/scrap")) redirect("/");
@@ -35,12 +39,11 @@ export default async function ScrapPage() {
   if (stockRes.error && salesRes.error) {
     return (
       <div className="card max-w-xl border-terminal/40 p-6">
-        <h1 className="font-display text-3xl font-bold">Scrap could not be loaded</h1>
+        <h1 className="font-display text-3xl font-bold"><T>Scrap could not be loaded</T></h1>
         <p className="mt-3 text-lead">
-          The app is connected, but Supabase did not return the scrap battery data. Open Supabase, go to SQL
-          Editor, and run <code className="rounded bg-plate px-1.5 py-0.5 text-casing">07_scrap_battery.sql</code>.
+          <T>{"The app is connected, but Supabase did not return the scrap battery data. Open Supabase, go to SQL Editor, and run "}</T> <code className="rounded bg-plate px-1.5 py-0.5 text-casing">07_scrap_battery.sql</code>.
         </p>
-        <p className="mt-3 text-sm text-lead">Details: {stockRes.error?.message ?? salesRes.error?.message}</p>
+        <p className="mt-3 text-sm text-lead"><T p={{ message: stockRes.error?.message ?? salesRes.error?.message }}>{"Details: {message}"}</T></p>
       </div>
     );
   }

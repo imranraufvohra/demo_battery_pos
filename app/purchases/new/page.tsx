@@ -3,7 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import type { InventoryItem, SupplierBalance } from "@/lib/types";
 import NewPurchase, { type PurchaseStockItem } from "./NewPurchase";
 
-export const metadata: Metadata = { title: "Receive stock" };
+import { getT } from "@/lib/i18n/server";
+export async function generateMetadata(): Promise<Metadata> {
+  return { title: (await getT())("Receive stock") };
+}
 
 const STOCK_COLUMNS =
   "id,category,brand,model,type,voltage,plates,ah_rating,wattage,cost_price,quantity";

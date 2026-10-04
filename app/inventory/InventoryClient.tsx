@@ -20,6 +20,8 @@ import { friendlyDeleteError } from "@/lib/invoices";
 import ItemForm from "./ItemForm";
 import StockGauge from "./StockGauge";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type CategoryFilter = "all" | Category;
 
 const CHIP: Record<Category, { icon: "battery" | "sun" | "plug"; tone: string }> = {
@@ -45,7 +47,7 @@ function StockCell({ item }: { item: InventoryItem }) {
       <span className="font-display text-2xl font-semibold tabular-nums leading-none">{item.quantity}</span>
       {low && (
         <span className="whitespace-nowrap rounded-full bg-terminal/10 px-2.5 py-0.5 text-sm font-medium text-terminal-deep">
-          {isOut(item) ? "Out of stock" : "Low"}
+          <T>{isOut(item) ? "Out of stock" : "Low"}</T>
         </span>
       )}
     </div>
@@ -70,6 +72,7 @@ export default function InventoryClient({
   initialLow?: boolean;
   banner?: React.ReactNode;
 }) {
+  const tt = useT();
   const wantsAdd = useSearchParams().get("add") === "1";
   const roleInfo = useRoleInfo();
   const canEditStock = can(roleInfo, "inventory.edit");
@@ -219,7 +222,7 @@ export default function InventoryClient({
   return (
     <div>
       <PageHeader
-        title="Inventory"
+        title={tt("Inventory")}
         subtitle={
           items.length === 0
             ? "No items yet."
@@ -229,12 +232,12 @@ export default function InventoryClient({
           <div className="flex gap-2.5">
             {canReceive && (
 <Link href="/purchases/new" className="btn btn-quiet">
-              <Icon name="truck" className="h-5 w-5" /> Receive stock
+              <Icon name="truck" className="h-5 w-5" /> <T>Receive stock</T>
             </Link>
 )}
             {canEditStock && (
 <button type="button" onClick={openAdd} className="btn btn-primary">
-              <Icon name="plus" className="h-5 w-5" /> Add item
+              <Icon name="plus" className="h-5 w-5" /> <T>Add item</T>
             </button>
 )}
           </div>
@@ -252,7 +255,7 @@ export default function InventoryClient({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1 sm:max-w-md">
               <label htmlFor="search" className="sr-only">
-                Search stock
+                <T>Search stock</T>
               </label>
               <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
               <input
@@ -260,7 +263,7 @@ export default function InventoryClient({
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search brand, model or type"
+                placeholder={tt("Search brand, model or type")}
                 className="input ps-11"
               />
             </div>
@@ -271,7 +274,7 @@ export default function InventoryClient({
               className={`btn ${lowOnly ? "btn-danger" : "btn-quiet"}`}
             >
               <Icon name="alert" className="h-[18px] w-[18px]" />
-              {lowOnly ? "Showing low stock" : "Low stock"}
+              <T>{lowOnly ? "Showing low stock" : "Low stock"}</T>
               <span className="tabular-nums">({lowCount})</span>
             </button>
           </div>
@@ -294,7 +297,7 @@ export default function InventoryClient({
                       : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
                   }`}
                 >
-                  {tab.label} <span className={`tabular-nums ${active ? "text-white/70" : "text-lead/80"}`}>{tab.count}</span>
+                  <T>{tab.label}</T> <span className={`tabular-nums ${active ? "text-white/70" : "text-lead/80"}`}>{tab.count}</span>
                 </button>
               );
             })}
@@ -303,7 +306,7 @@ export default function InventoryClient({
           {typeTabs.length > 0 && (
             <div
               role="group"
-              aria-label="Filter by type"
+              aria-label={tt("Filter by type")}
               className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0"
             >
               {[{ value: "all", label: `All ${CATEGORIES.find((c) => c.value === category)?.plural.toLowerCase()}`, count: counts[category as Category] }, ...typeTabs].map((tab) => {
@@ -322,7 +325,7 @@ export default function InventoryClient({
                           : "border-line bg-white text-casing hover:border-lead/40"
                     }`}
                   >
-                    {tab.label} <span className={`tabular-nums ${active ? "text-white/80" : "text-lead/80"}`}>{tab.count}</span>
+                    <T>{tab.label}</T> <span className={`tabular-nums ${active ? "text-white/80" : "text-lead/80"}`}>{tab.count}</span>
                   </button>
                 );
               })}
@@ -330,8 +333,8 @@ export default function InventoryClient({
           )}
 
           <p className="text-sm text-lead" aria-live="polite">
-            Showing {visible.length} {visible.length === 1 ? "item" : "items"}, {viewUnits} units in stock
-            {viewLow > 0 && <span className="font-semibold text-terminal-deep"> · {viewLow} low</span>}
+            <T p={{ n: visible.length, units: viewUnits }}>{visible.length === 1 ? "Showing {n} item, {units} units in stock" : "Showing {n} items, {units} units in stock"}</T>
+            {viewLow > 0 && <span className="font-semibold text-terminal-deep"> <T p={{ viewLow: viewLow }}>{"· {viewLow} low"}</T></span>}
           </p>
         </div>
       )}
@@ -342,23 +345,23 @@ export default function InventoryClient({
             <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-sun/25 text-amber-800">
               <Icon name="battery" className="h-8 w-8" />
             </span>
-            <p className="mt-4 font-display text-3xl font-semibold">Your stock list is empty</p>
+            <p className="mt-4 font-display text-3xl font-semibold"><T>Your stock list is empty</T></p>
             <p className="mx-auto mt-2 max-w-sm text-lead">
-              Add your first battery, solar panel or accessory to start tracking stock.
+              <T>Add your first battery, solar panel or accessory to start tracking stock.</T>
             </p>
             {canEditStock && (
 <button type="button" onClick={openAdd} className="btn btn-primary mt-6">
-              <Icon name="plus" className="h-5 w-5" /> Add first item
+              <Icon name="plus" className="h-5 w-5" /> <T>Add first item</T>
             </button>
 )}
           </div>
         ) : visible.length === 0 ? (
           <div className="card px-6 py-12 text-center">
-            <p className="font-display text-2xl font-semibold">Nothing matches</p>
-            <p className="mt-2 text-lead">Try a different word, or clear the filters.</p>
+            <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+            <p className="mt-2 text-lead"><T>Try a different word, or clear the filters.</T></p>
             {filtersActive && (
               <button type="button" onClick={clearFilters} className="btn btn-quiet mt-5">
-                Clear filters
+                <T>Clear filters</T>
               </button>
             )}
           </div>
@@ -369,13 +372,13 @@ export default function InventoryClient({
               <table className="w-full text-start text-[15px]">
                 <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                   <tr>
-                    <th scope="col" className="px-5 py-3.5 font-medium">Item</th>
+                    <th scope="col" className="px-5 py-3.5 font-medium"><T>Item</T></th>
                     {seeCost && (
-<th scope="col" className="px-4 py-3.5 text-end font-medium">Cost</th>
+<th scope="col" className="px-4 py-3.5 text-end font-medium"><T>Cost</T></th>
 )}
-                    <th scope="col" className="px-4 py-3.5 text-end font-medium">Price</th>
-                    <th scope="col" className="px-4 py-3.5 font-medium">In stock</th>
-                    <th scope="col" className="px-4 py-3.5"><span className="sr-only">Actions</span></th>
+                    <th scope="col" className="px-4 py-3.5 text-end font-medium"><T>Price</T></th>
+                    <th scope="col" className="px-4 py-3.5 font-medium"><T>In stock</T></th>
+                    <th scope="col" className="px-4 py-3.5"><span className="sr-only"><T>Actions</T></span></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/70">
@@ -389,8 +392,8 @@ export default function InventoryClient({
                               {item.brand} {item.model}
                             </div>
                             <div className="text-sm text-lead">
-                              {categoryLabel(item.category)}
-                              {itemSpecs(item) ? `, ${itemSpecs(item)}` : ""}
+                              <T>{categoryLabel(item.category)}</T>
+                              <T>{itemSpecs(item) ? `, ${itemSpecs(item)}` : ""}</T>
                             </div>
                           </div>
                         </div>
@@ -408,7 +411,7 @@ export default function InventoryClient({
 <Link
                             href={`/purchases/new?item=${item.id}`}
                             aria-label={`Restock ${item.brand} ${item.model}`}
-                            title="Restock"
+                            title={tt("Restock")}
                             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-casing transition-colors hover:bg-plate"
                           >
                             <Icon name="truck" className="h-[18px] w-[18px]" />
@@ -419,7 +422,7 @@ export default function InventoryClient({
                             type="button"
                             onClick={() => openEdit(item)}
                             aria-label={`Edit ${item.brand} ${item.model}`}
-                            title="Edit"
+                            title={tt("Edit")}
                             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-casing transition-colors hover:bg-plate"
                           >
                             <Icon name="edit" className="h-[18px] w-[18px]" />
@@ -430,7 +433,7 @@ export default function InventoryClient({
                             type="button"
                             onClick={() => askDelete(item)}
                             aria-label={`Delete ${item.brand} ${item.model}`}
-                            title="Delete"
+                            title={tt("Delete")}
                             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-terminal-deep transition-colors hover:bg-terminal/10"
                           >
                             <Icon name="trash" className="h-[18px] w-[18px]" />
@@ -455,8 +458,8 @@ export default function InventoryClient({
                         {item.brand} {item.model}
                       </div>
                       <div className="text-sm text-lead">
-                        {categoryLabel(item.category)}
-                        {itemSpecs(item) ? `: ${itemSpecs(item)}` : ""}
+                        <T>{categoryLabel(item.category)}</T>
+                        <T>{itemSpecs(item) ? `: ${itemSpecs(item)}` : ""}</T>
                       </div>
                     </div>
                   </div>
@@ -467,13 +470,13 @@ export default function InventoryClient({
                         {formatRs(item.sale_price)}
                       </span>
                       {seeCost && (
-<span className="text-lead">cost {formatRs(item.cost_price)}</span>
+<span className="text-lead"><T p={{ formatRs: formatRs(item.cost_price) }}>{"cost {formatRs}"}</T></span>
 )}
                     </div>
                     <div className="flex gap-2">
                       {canReceive && (
 <Link href={`/purchases/new?item=${item.id}`} aria-label={`Restock ${item.brand} ${item.model}`} className="btn btn-quiet btn-sm">
-                        <Icon name="truck" className="h-4 w-4" /> Restock
+                        <Icon name="truck" className="h-4 w-4" /> <T>Restock</T>
                       </Link>
 )}
                       {canEditStock && (
@@ -483,7 +486,7 @@ export default function InventoryClient({
                         aria-label={`Edit ${item.brand} ${item.model}`}
                         className="btn btn-quiet btn-sm"
                       >
-                        <Icon name="edit" className="h-4 w-4" /> Edit
+                        <Icon name="edit" className="h-4 w-4" /> <T>Edit</T>
                       </button>
 )}
                       {canEditStock && (
@@ -511,8 +514,8 @@ export default function InventoryClient({
         <ConfirmDialog
           title={`Delete ${deleting.brand} ${deleting.model}?`}
           body={`This removes the item and its ${deleting.quantity} units from your stock list. It cannot be undone. An item that is on a bill cannot be deleted. Set its quantity to 0 instead.`}
-          confirmLabel="Delete item"
-          cancelLabel="Keep item"
+          confirmLabel={tt("Delete item")}
+          cancelLabel={tt("Keep item")}
           busy={deleteBusy}
           error={deleteError}
           onCancel={() => setDeleting(null)}

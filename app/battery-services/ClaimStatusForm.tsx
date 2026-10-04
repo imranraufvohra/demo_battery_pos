@@ -7,6 +7,8 @@ import { claimStatusLabel } from "@/lib/batteryClaims";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { BatteryClaim, BatteryClaimStatus, Distributor } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 /** What a claim can move to next. Rejected and approved both still hand a battery back eventually. */
 const NEXT_STATUSES: Record<BatteryClaimStatus, BatteryClaimStatus[]> = {
   received: ["sent_to_distributor"],
@@ -28,6 +30,7 @@ export default function ClaimStatusForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const options = NEXT_STATUSES[claim.status];
   const [target, setTarget] = useState<BatteryClaimStatus | null>(options.length === 1 ? options[0] : null);
   const [distributorId, setDistributorId] = useState<string | null>(claim.distributor_id);
@@ -77,7 +80,7 @@ export default function ClaimStatusForm({
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -86,8 +89,8 @@ export default function ClaimStatusForm({
 
         <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
           <div>
-            <p className="mb-2 text-sm font-medium">Currently: {claimStatusLabel(claim.status)}</p>
-            <p className="mb-3 font-display text-xl font-semibold">What happened next?</p>
+            <p className="mb-2 text-sm font-medium"><T p={{ claimStatusLabel: claimStatusLabel(claim.status) }}>{"Currently: {claimStatusLabel}"}</T></p>
+            <p className="mb-3 font-display text-xl font-semibold"><T>What happened next?</T></p>
             <div className="flex flex-wrap gap-2">
               {options.map((s) => (
                 <button
@@ -101,7 +104,7 @@ export default function ClaimStatusForm({
                       : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
                   }`}
                 >
-                  {claimStatusLabel(s)}
+                  <T>{claimStatusLabel(s)}</T>
                 </button>
               ))}
             </div>
@@ -109,7 +112,7 @@ export default function ClaimStatusForm({
 
           {needsDistributor && (
             <fieldset className="space-y-3">
-              <legend className="mb-1 font-display text-xl font-semibold">Send to which distributor?</legend>
+              <legend className="mb-1 font-display text-xl font-semibold"><T>Send to which distributor?</T></legend>
               {distributors.length > 0 && (
                 <div className="flex flex-wrap gap-2">
                   {distributors.map((d) => (
@@ -139,7 +142,7 @@ export default function ClaimStatusForm({
                   setNewDistributor(e.target.value);
                   if (e.target.value.trim()) setDistributorId(null);
                 }}
-                placeholder="Or type a new distributor's name"
+                placeholder={t("Or type a new distributor's name")}
                 className="input"
               />
             </fieldset>
@@ -147,7 +150,7 @@ export default function ClaimStatusForm({
 
           <div>
             <label htmlFor="clm-status-note" className="mb-1.5 block text-sm font-medium">
-              Note (optional)
+              <T>Note (optional)</T>
             </label>
             <textarea
               id="clm-status-note"
@@ -162,15 +165,15 @@ export default function ClaimStatusForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {error && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {error}
+              <T>{error}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving || !target} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : "Save"}
+              <T>{saving ? "Saving" : "Save"}</T>
             </button>
           </div>
         </div>
