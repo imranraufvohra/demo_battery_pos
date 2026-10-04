@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+import { T } from "@/components/T";
 export default function ConfirmDialog({
   title,
   body,
@@ -44,22 +45,22 @@ export default function ConfirmDialog({
           </svg>
         </span>
         <h2 id="confirm-title" className="font-display text-2xl font-bold">
-          {title}
+          <T>{title}</T>
         </h2>
         <p id="confirm-text" className="mt-2 text-lead">
-          {body}
+          <T>{body}</T>
         </p>
         {error && (
           <p role="alert" className="mt-4 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-            {error}
+            <T>{error}</T>
           </p>
         )}
         <div className="mt-6 flex justify-end gap-3">
           <button type="button" onClick={onCancel} disabled={busy} autoFocus className="btn btn-quiet">
-            {cancelLabel}
+            <T>{cancelLabel}</T>
           </button>
           <button type="button" onClick={onConfirm} disabled={busy} className="btn btn-danger">
-            {busy ? "Deleting" : confirmLabel}
+            <T>{busy ? "Deleting" : confirmLabel}</T>
           </button>
         </div>
       </div>

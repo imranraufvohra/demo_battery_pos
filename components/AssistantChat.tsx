@@ -6,12 +6,15 @@ import AssistantProposalCard from "./AssistantProposalCard";
 import type { ProposalCard } from "@/lib/ai/proposalTypes";
 import { getRecognition, VOICE_LOCALE, type RecognitionLike, type VoiceLang } from "@/lib/speech";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type Msg = { role: "user" | "assistant"; content: string; looked?: string[]; cards?: ProposalCard[] };
 
 // Shown as a small "Looked up: …" note so people can see where an answer came from.
 const LOOKUP_LABELS: Record<string, string> = { lookup_inventory: "stock", lookup_customer: "customers", lookup_scrap: "scrap" };
 
 export default function AssistantChat() {
+  const tt = useT();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -140,11 +143,7 @@ export default function AssistantChat() {
               <Icon name="sparkle" className="h-6 w-6" />
             </span>
             <p className="font-semibold text-casing">{personaName}</p>
-            <p className="max-w-sm text-sm text-lead">
-              Ask about stock, prices or a customer&apos;s credit. You can also ask it to prepare a bill, a new item or a
-              new customer — nothing is saved until you tap Confirm.
-              {voiceOk && " Tap the microphone to speak instead of typing."}
-            </p>
+            <p className="max-w-sm text-sm text-lead"><T p={{ typing: voiceOk && " Tap the microphone to speak instead of typing." }}>{"Ask about stock, prices or a customer's credit. You can also ask it to prepare a bill, a new item or a new customer — nothing is saved until you tap Confirm.{typing}"}</T></p>
           </div>
         ) : (
           <ul className="space-y-3">
@@ -155,9 +154,9 @@ export default function AssistantChat() {
                     m.role === "user" ? "bg-casing text-white" : "border border-line bg-plate text-casing"
                   }`}
                 >
-                  {m.content}
+                  <T>{m.content}</T>
                   {m.looked && m.looked.length > 0 && (
-                    <p className="mt-1.5 text-xs text-lead">Looked up: {m.looked.join(" · ")}</p>
+                    <p className="mt-1.5 text-xs text-lead"><T p={{ join: m.looked.join(" · ") }}>{"Looked up: {join}"}</T></p>
                   )}
                 </div>
                 {m.cards?.map((c) => (
@@ -167,7 +166,7 @@ export default function AssistantChat() {
             ))}
             {sending && (
               <li className="flex justify-start">
-                <div className="rounded-2xl border border-line bg-plate px-4 py-2.5 text-sm text-lead">Thinking…</div>
+                <div className="rounded-2xl border border-line bg-plate px-4 py-2.5 text-sm text-lead"><T>{"Thinking…"}</T></div>
               </li>
             )}
             <div ref={bottomRef} />
@@ -177,14 +176,14 @@ export default function AssistantChat() {
 
       {error && (
         <p className="mt-3 rounded-xl bg-terminal/10 px-3.5 py-2.5 text-sm text-terminal-deep" role="alert">
-          {error}
+          <T>{error}</T>
         </p>
       )}
 
       {voiceOk && (
         <div className="mt-3 flex items-center gap-2 text-sm text-lead">
-          <span>Voice language</span>
-          <div role="group" aria-label="Voice language" className="flex rounded-full bg-plate p-0.5 ring-1 ring-line">
+          <span><T>Voice language</T></span>
+          <div role="group" aria-label={tt("Voice language")} className="flex rounded-full bg-plate p-0.5 ring-1 ring-line">
             {(["en", "ur"] as VoiceLang[]).map((l) => (
               <button
                 key={l}
@@ -195,7 +194,7 @@ export default function AssistantChat() {
                   voiceLang === l ? "bg-casing text-white" : "text-lead hover:text-casing"
                 }`}
               >
-                {l === "en" ? "English" : "Urdu"}
+                <T>{l === "en" ? "English" : "Urdu"}</T>
               </button>
             ))}
           </div>
@@ -203,7 +202,7 @@ export default function AssistantChat() {
       )}
       {voiceNote && (
         <p role="status" className="mt-2 rounded-xl bg-sun/15 px-3.5 py-2 text-sm">
-          {voiceNote}
+          <T>{voiceNote}</T>
         </p>
       )}
 
@@ -212,7 +211,7 @@ export default function AssistantChat() {
           ref={inputRef}
           className="input min-h-11 flex-1 resize-none"
           rows={1}
-          placeholder={listening ? "Listening…" : "Ask, or e.g. bill Ali Traders 2 Phoenix 150Ah on credit"}
+          placeholder={tt(listening ? "Listening…" : "Ask, or e.g. bill Ali Traders 2 Phoenix 150Ah on credit")}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
@@ -233,7 +232,7 @@ export default function AssistantChat() {
           </button>
         )}
         <button type="button" className="btn btn-primary shrink-0" onClick={send} disabled={sending || !input.trim()}>
-          Send
+          <T>Send</T>
         </button>
       </div>
     </div>

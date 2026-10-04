@@ -2,6 +2,8 @@
 
 import { useSyncStatus } from "@/lib/offline/useSyncStatus";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 const CONFIG: Record<
   string,
   { dot: string; label: string; bg: string; text: string }
@@ -13,6 +15,7 @@ const CONFIG: Record<
 };
 
 export default function SyncStatusBadge() {
+  const t = useT();
   const { status, pendingCount } = useSyncStatus();
   const c = CONFIG[status] ?? CONFIG.offline;
 
@@ -25,11 +28,11 @@ export default function SyncStatusBadge() {
 
   return (
     <span
-      title={label}
+      title={t(label)}
       className={`inline-flex h-9 items-center gap-2 rounded-full px-3 text-[13px] font-medium ${c.bg} ${c.text}`}
     >
       <span className={`h-2 w-2 shrink-0 rounded-full ${c.dot}`} />
-      <span className="hidden sm:inline">{label}</span>
+      <span className="hidden sm:inline"><T>{label}</T></span>
     </span>
   );
 }

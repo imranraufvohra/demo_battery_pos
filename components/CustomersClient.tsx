@@ -12,17 +12,20 @@ import type { Customer, RegistrationType } from "@/lib/types";
 import CustomerForm from "./CustomerForm";
 import RegistrationBadge from "./RegistrationBadge";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type TypeFilter = "all" | RegistrationType;
 
 const delay = (i: number) => ({ "--i": Math.min(i, 8) }) as React.CSSProperties;
 
 function ContactButtons({ phone, name }: { phone: string | null; name: string }) {
+  const tt = useT();
   if (!phone) return null;
   const base =
     "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white transition-colors";
   return (
     <>
-      <a href={`tel:${phone}`} aria-label={`Call ${name}`} title="Call" className={`${base} text-casing hover:bg-plate`}>
+      <a href={`tel:${phone}`} aria-label={`Call ${name}`} title={tt("Call")} className={`${base} text-casing hover:bg-plate`}>
         <Icon name="phone" className="h-[18px] w-[18px]" />
       </a>
       <a
@@ -30,7 +33,7 @@ function ContactButtons({ phone, name }: { phone: string | null; name: string })
         target="_blank"
         rel="noopener noreferrer"
         aria-label={`WhatsApp ${name}`}
-        title="WhatsApp"
+        title={tt("WhatsApp")}
         className={`${base} text-cell hover:bg-cell/10`}
       >
         <Icon name="chat" className="h-[18px] w-[18px]" />
@@ -40,6 +43,7 @@ function ContactButtons({ phone, name }: { phone: string | null; name: string })
 }
 
 export default function CustomersClient({ customers }: { customers: Customer[] }) {
+  const tt = useT();
   const router = useRouter();
   const wantsAdd = useSearchParams().get("add") === "1";
   const [query, setQuery] = useState("");
@@ -107,7 +111,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
   return (
     <div>
       <PageHeader
-        title="Customers"
+        title={tt("Customers")}
         subtitle={
           customers.length === 0
             ? "No customers yet."
@@ -115,7 +119,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
         }
         action={
           <button type="button" onClick={openAdd} className="btn btn-primary">
-            <Icon name="userplus" className="h-5 w-5" /> Add customer
+            <Icon name="userplus" className="h-5 w-5" /> <T>Add customer</T>
           </button>
         }
       />
@@ -124,7 +128,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
         <div className="anim-rise mt-6 space-y-3" style={delay(1)}>
           <div className="relative sm:max-w-md">
             <label htmlFor="customer-search" className="sr-only">
-              Search customers
+              <T>Search customers</T>
             </label>
             <Icon name="search" className="pointer-events-none absolute start-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-lead" />
             <input
@@ -132,7 +136,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search name, phone or CNIC"
+              placeholder={tt("Search name, phone or CNIC")}
               className="input ps-11"
             />
           </div>
@@ -151,7 +155,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                       : "border-line bg-white text-lead hover:border-lead/40 hover:text-casing"
                   }`}
                 >
-                  {tab.label} <span className={`tabular-nums ${active ? "text-white/70" : "text-lead/80"}`}>{tab.count}</span>
+                  <T>{tab.label}</T> <span className={`tabular-nums ${active ? "text-white/70" : "text-lead/80"}`}>{tab.count}</span>
                 </button>
               );
             })}
@@ -165,18 +169,18 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
             <span className="mx-auto inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500/10 text-blue-700">
               <Icon name="users" className="h-8 w-8" />
             </span>
-            <p className="mt-4 font-display text-3xl font-semibold">No customers yet</p>
+            <p className="mt-4 font-display text-3xl font-semibold"><T>No customers yet</T></p>
             <p className="mx-auto mt-2 max-w-sm text-lead">
-              Save a customer once. Later you can find their name, number and full history in one search.
+              <T>Save a customer once. Later you can find their name, number and full history in one search.</T>
             </p>
             <button type="button" onClick={openAdd} className="btn btn-primary mt-6">
-              <Icon name="userplus" className="h-5 w-5" /> Add first customer
+              <Icon name="userplus" className="h-5 w-5" /> <T>Add first customer</T>
             </button>
           </div>
         ) : visible.length === 0 ? (
           <div className="card px-6 py-12 text-center">
-            <p className="font-display text-2xl font-semibold">Nothing matches</p>
-            <p className="mt-2 text-lead">Try a different name or number, or clear the filters.</p>
+            <p className="font-display text-2xl font-semibold"><T>Nothing matches</T></p>
+            <p className="mt-2 text-lead"><T>Try a different name or number, or clear the filters.</T></p>
             {filtersActive && (
               <button
                 type="button"
@@ -186,7 +190,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                 }}
                 className="btn btn-quiet mt-5"
               >
-                Clear filters
+                <T>Clear filters</T>
               </button>
             )}
           </div>
@@ -197,10 +201,10 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
               <table className="w-full text-start text-[15px]">
                 <thead className="border-b border-line bg-plate/60 text-xs uppercase tracking-[0.1em] text-lead">
                   <tr>
-                    <th scope="col" className="px-5 py-3.5 font-medium">Customer</th>
-                    <th scope="col" className="px-4 py-3.5 font-medium">Phone</th>
-                    <th scope="col" className="px-4 py-3.5 font-medium">FBR</th>
-                    <th scope="col" className="px-4 py-3.5"><span className="sr-only">Actions</span></th>
+                    <th scope="col" className="px-5 py-3.5 font-medium"><T>Customer</T></th>
+                    <th scope="col" className="px-4 py-3.5 font-medium"><T>Phone</T></th>
+                    <th scope="col" className="px-4 py-3.5 font-medium"><T>FBR</T></th>
+                    <th scope="col" className="px-4 py-3.5"><span className="sr-only"><T>Actions</T></span></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-line/70">
@@ -224,7 +228,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                         </div>
                       </td>
                       <td className="px-4 py-3.5 tabular-nums">
-                        {c.phone ? formatPhone(c.phone) : <span className="text-lead">No phone</span>}
+                        {c.phone ? formatPhone(c.phone) : <span className="text-lead"><T>No phone</T></span>}
                       </td>
                       <td className="px-4 py-3.5">
                         <RegistrationBadge type={c.registration_type} />
@@ -239,7 +243,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                             type="button"
                             onClick={() => openEdit(c)}
                             aria-label={`Edit ${c.name}`}
-                            title="Edit"
+                            title={tt("Edit")}
                             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-white text-casing transition-colors hover:bg-plate"
                           >
                             <Icon name="edit" className="h-[18px] w-[18px]" />
@@ -272,7 +276,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                   {c.phone && (
                     <div className="flex gap-2 border-t border-line/70 bg-plate/40 px-4 py-2.5">
                       <a href={`tel:${c.phone}`} className="btn btn-quiet btn-sm flex-1">
-                        <Icon name="phone" className="h-4 w-4" /> Call
+                        <Icon name="phone" className="h-4 w-4" /> <T>Call</T>
                       </a>
                       <a
                         href={whatsappLink(c.phone)}
@@ -280,7 +284,7 @@ export default function CustomersClient({ customers }: { customers: Customer[] }
                         rel="noopener noreferrer"
                         className="btn btn-quiet btn-sm flex-1 text-cell"
                       >
-                        <Icon name="chat" className="h-4 w-4" /> WhatsApp
+                        <Icon name="chat" className="h-4 w-4" /> <T>WhatsApp</T>
                       </a>
                     </div>
                   )}

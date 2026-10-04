@@ -6,6 +6,7 @@ import { getBrowserClient } from "@/lib/supabase/lazy";
 import Icon from "./Icons";
 import { useT } from "@/lib/i18n/client";
 
+import { T } from "@/components/T";
 export default function SignOutButton({ className = "btn btn-quiet w-full" }: { className?: string }) {
   const router = useRouter();
   const t = useT();
@@ -21,7 +22,7 @@ export default function SignOutButton({ className = "btn btn-quiet w-full" }: { 
   return (
     <button type="button" onClick={signOut} disabled={busy} className={className}>
       <Icon name="logout" className="h-[18px] w-[18px]" />
-      {busy ? t("shell.signingOut") : t("shell.signOut")}
+      <T>{busy ? t("shell.signingOut") : t("shell.signOut")}</T>
     </button>
   );
 }

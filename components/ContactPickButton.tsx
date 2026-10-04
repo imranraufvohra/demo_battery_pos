@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Icon from "@/components/Icons";
 import { contactPickerSupported, pickContact, type PickedContact } from "@/lib/contactPicker";
 
+import { T } from "@/components/T";
 /** "Pick from phone contacts". Shows only on phones/browsers that support it, otherwise renders nothing. */
 export default function ContactPickButton({
   onPick,
@@ -32,9 +33,9 @@ export default function ContactPickButton({
   return (
     <div className={className}>
       <button type="button" onClick={choose} className="btn btn-quiet btn-sm">
-        <Icon name="userplus" className="h-4 w-4" /> Pick from phone contacts
+        <Icon name="userplus" className="h-4 w-4" /> <T>Pick from phone contacts</T>
       </button>
-      {note && <p className="mt-1 text-sm text-lead">{note}</p>}
+      {note && <p className="mt-1 text-sm text-lead"><T>{note}</T></p>}
     </div>
   );
 }

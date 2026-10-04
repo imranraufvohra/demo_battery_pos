@@ -2,6 +2,7 @@ import Link from "next/link";
 import Icon from "@/components/Icons";
 import { SENDER_OFFLINE_AFTER_MINUTES, hasFbrWarning, type FbrHomeWarnings } from "@/lib/fbrHome";
 
+import { T } from "@/components/T";
 function BillList({
   rows,
   count,
@@ -19,7 +20,7 @@ function BillList({
           - {r.buyerName}
         </li>
       ))}
-      {count > rows.length && <li className="opacity-80">+ {count - rows.length} more</li>}
+      {count > rows.length && <li className="opacity-80"><T p={{ length: count - rows.length }}>{"+ {length} more"}</T></li>}
     </ul>
   );
 }
@@ -34,8 +35,7 @@ export default function FbrHomeWarnings({ w }: { w: FbrHomeWarnings }) {
         <div className="flex items-start gap-3 rounded-2xl border border-terminal/20 bg-terminal/10 px-4 py-3.5 text-terminal-deep">
           <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0" />
           <p className="text-[15px] font-medium">
-            The FBR sender on the shop PC has not been seen for over {SENDER_OFFLINE_AFTER_MINUTES} minutes
-            {w.senderLastSeen ? "" : " (never)"}. New FBR bills will wait until it is running again.
+            <T p={{ n: SENDER_OFFLINE_AFTER_MINUTES }}>{w.senderLastSeen ? "The FBR sender on the shop PC has not been seen for over {n} minutes. New FBR bills will wait until it is running again." : "The FBR sender on the shop PC has not been seen for over {n} minutes (never). New FBR bills will wait until it is running again."}</T>
           </p>
         </div>
       )}
@@ -45,8 +45,7 @@ export default function FbrHomeWarnings({ w }: { w: FbrHomeWarnings }) {
           <div className="flex items-start gap-3">
             <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0" />
             <p className="text-[15px] font-medium">
-              {w.failedCount} {w.failedCount === 1 ? "bill" : "bills"} {w.failedCount === 1 ? "was" : "were"} refused by FBR.
-              Open each bill to see FBR's reason and the retry command.
+              <T p={{ n: w.failedCount }}>{w.failedCount === 1 ? "{n} bill was refused by FBR. Open each bill to see FBR's reason and the retry command." : "{n} bills were refused by FBR. Open each bill to see FBR's reason and the retry command."}</T>
             </p>
           </div>
           <BillList rows={w.failedSample} count={w.failedCount} />
@@ -58,8 +57,7 @@ export default function FbrHomeWarnings({ w }: { w: FbrHomeWarnings }) {
           <div className="flex items-start gap-3">
             <Icon name="alert" className="mt-0.5 h-5 w-5 shrink-0" />
             <p className="text-[15px] font-medium">
-              {w.unknownCount} {w.unknownCount === 1 ? "bill has" : "bills have"} no clear answer from FBR. Check the FBR portal
-              before retrying.
+              <T p={{ n: w.unknownCount }}>{w.unknownCount === 1 ? "{n} bill has no clear answer from FBR. Check the FBR portal before retrying." : "{n} bills have no clear answer from FBR. Check the FBR portal before retrying."}</T>
             </p>
           </div>
           <BillList rows={w.unknownSample} count={w.unknownCount} />

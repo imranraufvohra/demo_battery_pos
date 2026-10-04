@@ -11,6 +11,8 @@ import { checkRealConnectivity } from "@/lib/offline/net";
 import { getBrowserClient } from "@/lib/supabase/lazy";
 import type { ExpenseCategory, ExpenseDetails, SupplierPaymentMethod } from "@/lib/types";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 export default function ExpenseForm({
   expense,
   categories,
@@ -23,6 +25,7 @@ export default function ExpenseForm({
   onClose: () => void;
   onSaved: (message: string) => void;
 }) {
+  const t = useT();
   const clientId = useRef(crypto.randomUUID());
   const sorted = activeCategoriesSorted(categories);
 
@@ -102,13 +105,13 @@ export default function ExpenseForm({
       <form onSubmit={onSubmit} noValidate className="flex min-h-0 flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 id="expense-form-title" className="font-display text-2xl font-bold">
-            {expense ? "Edit expense" : "Add expense"}
+            <T>{expense ? "Edit expense" : "Add expense"}</T>
           </h2>
           <button
             type="button"
             onClick={onClose}
             disabled={saving}
-            aria-label="Close"
+            aria-label={t("Close")}
             className="inline-flex h-10 w-10 items-center justify-center rounded-full text-lead transition-colors hover:bg-plate disabled:opacity-60"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -118,7 +121,7 @@ export default function ExpenseForm({
         <div className="flex-1 space-y-7 overflow-y-auto px-5 py-6">
           {/* Category */}
           <fieldset>
-            <legend className="mb-3 font-display text-xl font-semibold">Category</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Category</T></legend>
             <div className="flex flex-wrap gap-2">
               {sorted.map((c) => (
                 <button
@@ -137,16 +140,16 @@ export default function ExpenseForm({
                 </button>
               ))}
             </div>
-            {errors.category && <p className="mt-1.5 text-sm text-terminal-deep">{errors.category}</p>}
+            {errors.category && <p className="mt-1.5 text-sm text-terminal-deep"><T>{errors.category}</T></p>}
           </fieldset>
 
           {/* Amount, date */}
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Amount</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Amount</T></legend>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="ex-amount" className="mb-1.5 block text-sm font-medium">
-                  Amount (Rs)
+                  <T>Amount (Rs)</T>
                 </label>
                 <input
                   id="ex-amount"
@@ -165,7 +168,7 @@ export default function ExpenseForm({
               </div>
               <div>
                 <label htmlFor="ex-date" className="mb-1.5 block text-sm font-medium">
-                  Date
+                  <T>Date</T>
                 </label>
                 <input
                   id="ex-date"
@@ -179,14 +182,14 @@ export default function ExpenseForm({
                   aria-invalid={errors.expense_date ? true : undefined}
                   className="input"
                 />
-                {errors.expense_date && <p className="mt-1 text-sm text-terminal-deep">{errors.expense_date}</p>}
+                {errors.expense_date && <p className="mt-1 text-sm text-terminal-deep"><T>{errors.expense_date}</T></p>}
               </div>
             </div>
           </fieldset>
 
           {/* Method */}
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Method</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Method</T></legend>
             <div className="flex flex-wrap gap-2">
               {SUPPLIER_PAYMENT_METHODS.map((m) => (
                 <button
@@ -198,7 +201,7 @@ export default function ExpenseForm({
                     method === m.value ? "border-casing bg-casing text-white" : "border-line bg-white text-lead hover:border-lead/40"
                   }`}
                 >
-                  {m.label}
+                  <T>{m.label}</T>
                 </button>
               ))}
             </div>
@@ -207,7 +210,7 @@ export default function ExpenseForm({
               <div className="grid grid-cols-1 gap-3 rounded-2xl bg-plate/60 p-3.5 sm:grid-cols-3">
                 <div>
                   <label htmlFor="ex-cheque-number" className="mb-1.5 block text-sm font-medium">
-                    Cheque number
+                    <T>Cheque number</T>
                   </label>
                   <input
                     id="ex-cheque-number"
@@ -223,13 +226,13 @@ export default function ExpenseForm({
                 </div>
                 <div>
                   <label htmlFor="ex-cheque-date" className="mb-1.5 block text-sm font-medium">
-                    Cheque date
+                    <T>Cheque date</T>
                   </label>
                   <input id="ex-cheque-date" type="date" value={chequeDate} onChange={(e) => setChequeDate(e.target.value)} className="input" />
                 </div>
                 <div>
                   <label htmlFor="ex-bank-name" className="mb-1.5 block text-sm font-medium">
-                    Bank
+                    <T>Bank</T>
                   </label>
                   <input id="ex-bank-name" value={bankName} onChange={(e) => setBankName(e.target.value)} className="input" />
                 </div>
@@ -239,28 +242,28 @@ export default function ExpenseForm({
 
           {/* Extra details */}
           <fieldset className="space-y-4">
-            <legend className="mb-3 font-display text-xl font-semibold">Details (optional)</legend>
+            <legend className="mb-3 font-display text-xl font-semibold"><T>Details (optional)</T></legend>
             <div>
               <label htmlFor="ex-paid-to" className="mb-1.5 block text-sm font-medium">
-                Paid to
+                <T>Paid to</T>
               </label>
               <input
                 id="ex-paid-to"
                 value={paidTo}
                 onChange={(e) => setPaidTo(e.target.value)}
-                placeholder="Landlord, employee name, petrol pump, etc."
+                placeholder={t("Landlord, employee name, petrol pump, etc.")}
                 className="input"
               />
             </div>
             <div>
               <label htmlFor="ex-reference" className="mb-1.5 block text-sm font-medium">
-                Reference
+                <T>Reference</T>
               </label>
-              <input id="ex-reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder="Receipt no., transaction ID, etc." className="input" />
+              <input id="ex-reference" value={reference} onChange={(e) => setReference(e.target.value)} placeholder={t("Receipt no., transaction ID, etc.")} className="input" />
             </div>
             <div>
               <label htmlFor="ex-note" className="mb-1.5 block text-sm font-medium">
-                Note
+                <T>Note</T>
               </label>
               <textarea id="ex-note" rows={2} value={note} onChange={(e) => setNote(e.target.value)} className="input resize-none" />
             </div>
@@ -270,15 +273,15 @@ export default function ExpenseForm({
         <div className="pb-safe border-t border-line bg-white px-5 py-4">
           {saveError && (
             <p role="alert" className="mb-3 rounded-xl bg-terminal/10 px-3 py-2 text-sm text-terminal-deep">
-              {saveError}
+              <T>{saveError}</T>
             </p>
           )}
           <div className="flex justify-end gap-3">
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-quiet">
-              Cancel
+              <T>Cancel</T>
             </button>
             <button type="submit" disabled={saving} className="btn btn-primary min-w-36">
-              {saving ? "Saving" : expense ? "Save changes" : "Save expense"}
+              <T>{saving ? "Saving" : expense ? "Save changes" : "Save expense"}</T>
             </button>
           </div>
         </div>

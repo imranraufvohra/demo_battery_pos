@@ -31,7 +31,7 @@ export default function TopBar({ email }: { email: string }) {
           className="hidden h-11 w-full max-w-lg items-center gap-3 rounded-xl border border-line bg-white px-4 text-start text-lead shadow-sm transition-colors hover:border-lead/40 lg:flex"
         >
           <Icon name="search" className="h-5 w-5" />
-          <span className="flex-1">{t("shell.searchPlaceholder")}</span>
+          <span className="min-w-0 flex-1 truncate">{t("shell.searchPlaceholder")}</span>
           <kbd dir="ltr" className="rounded-md border border-line bg-plate px-1.5 py-0.5 text-xs font-medium text-lead">Ctrl K</kbd>
         </button>
 

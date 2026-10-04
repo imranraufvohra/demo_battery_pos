@@ -5,8 +5,11 @@ import { openCommand } from "@/lib/command";
 import { getRecognition } from "@/lib/speech";
 import Icon from "./Icons";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 /** Phone only: the "Type or speak" bar that sits above the tab bar on Home. Tapping it opens the search box. */
 export default function HomeCommandBar() {
+  const t = useT();
   const [voiceOk, setVoiceOk] = useState(false);
   useEffect(() => setVoiceOk(getRecognition() !== null), []);
 
@@ -19,13 +22,13 @@ export default function HomeCommandBar() {
           className="flex min-h-11 flex-1 items-center gap-2.5 rounded-full px-3 text-start text-[15px] text-lead"
         >
           <Icon name="sparkle" className="h-5 w-5 text-sun-deep" />
-          Search or speak
+          <T>Search or speak</T>
         </button>
         {voiceOk && (
           <button
             type="button"
             onClick={() => openCommand({ listen: true })}
-            aria-label="Speak to search"
+            aria-label={t("Speak to search")}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-casing text-white shadow-md transition-transform active:scale-95"
           >
             <Icon name="mic" className="h-5 w-5" />

@@ -13,6 +13,8 @@ import { getRecognition, VOICE_LOCALE, type RecognitionLike, type VoiceLang } fr
 import type { Category, Customer } from "@/lib/types";
 import Icon, { type IconName } from "./Icons";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 type StockRow = {
   id: string;
   brand: string;
@@ -62,6 +64,7 @@ export default function CommandPalette({
   startListening: boolean;
   onClose: () => void;
 }) {
+  const t = useT();
   const router = useRouter();
   const roleInfo = useRoleInfo();
   const [query, setQuery] = useState("");
@@ -278,7 +281,7 @@ export default function CommandPalette({
       <div
         role="dialog"
         aria-modal="true"
-        aria-label="Search stock, customers and bills"
+        aria-label={t("Search stock, customers and bills")}
         onKeyDown={onKeyDown}
         className="anim-pop mx-auto flex h-dvh w-full flex-col overflow-hidden bg-white sm:mt-[9vh] sm:h-auto sm:max-h-[72vh] sm:max-w-xl sm:rounded-3xl sm:shadow-2xl"
       >
@@ -296,8 +299,8 @@ export default function CommandPalette({
             aria-expanded="true"
             aria-controls="cmd-list"
             aria-activedescendant={hits[active] ? `cmd-opt-${active}` : undefined}
-            aria-label="Search"
-            placeholder={listening ? "Listening" : "Type or speak: VoltMax 200Ah, Sam Carter, INV-000012"}
+            aria-label={t("Search")}
+            placeholder={t(listening ? "Listening" : "Type or speak: VoltMax 200Ah, Sam Carter, INV-000012")}
             autoComplete="off"
             spellCheck={false}
             className="min-w-0 flex-1 bg-transparent py-1.5 text-base outline-none placeholder:text-lead/70"
@@ -306,7 +309,7 @@ export default function CommandPalette({
             <button
               type="button"
               onClick={listening ? stopListening : listen}
-              aria-label={listening ? "Stop listening" : "Speak to search"}
+              aria-label={t(listening ? "Stop listening" : "Speak to search")}
               aria-pressed={listening}
               className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
                 listening ? "mic-live bg-terminal text-white" : "bg-casing text-white hover:bg-casing-2"
@@ -318,7 +321,7 @@ export default function CommandPalette({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close search"
+            aria-label={t("Close search")}
             className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lead hover:bg-plate"
           >
             <Icon name="x" className="h-5 w-5" />
@@ -327,8 +330,8 @@ export default function CommandPalette({
 
         {voiceOk && (
           <div className="flex items-center gap-2 border-b border-line/70 bg-plate/60 px-4 py-2 text-sm text-lead">
-            <span>Voice language</span>
-            <div role="group" aria-label="Voice language" className="flex rounded-full bg-white p-0.5 ring-1 ring-line">
+            <span><T>Voice language</T></span>
+            <div role="group" aria-label={t("Voice language")} className="flex rounded-full bg-white p-0.5 ring-1 ring-line">
               {(["en", "ur"] as VoiceLang[]).map((l) => (
                 <button
                   key={l}
@@ -339,7 +342,7 @@ export default function CommandPalette({
                     lang === l ? "bg-casing text-white" : "text-lead hover:text-casing"
                   }`}
                 >
-                  {l === "en" ? "English" : "Urdu"}
+                  <T>{l === "en" ? "English" : "Urdu"}</T>
                 </button>
               ))}
             </div>
@@ -347,11 +350,11 @@ export default function CommandPalette({
         )}
         {voiceNote && (
           <p role="status" className="border-b border-line/70 bg-sun/15 px-4 py-2 text-sm">
-            {voiceNote}
+            <T>{voiceNote}</T>
           </p>
         )}
 
-        <div id="cmd-list" role="listbox" aria-label="Results" className="min-h-0 flex-1 overflow-y-auto p-2">
+        <div id="cmd-list" role="listbox" aria-label={t("Results")} className="min-h-0 flex-1 overflow-y-auto p-2">
           {searching && !loaded && (
             <div className="space-y-2 p-2" aria-hidden="true">
               <div className="skeleton h-12 rounded-xl" />
@@ -361,8 +364,8 @@ export default function CommandPalette({
 
           {searching && loaded && hits.length === 0 && (
             <div className="px-4 py-10 text-center">
-              <p className="font-display text-2xl font-semibold">Nothing found</p>
-              <p className="mt-1 text-lead">Check the spelling, or try just a brand, a name or a phone number.</p>
+              <p className="font-display text-2xl font-semibold"><T>Nothing found</T></p>
+              <p className="mt-1 text-lead"><T>Check the spelling, or try just a brand, a name or a phone number.</T></p>
             </div>
           )}
 
@@ -372,7 +375,7 @@ export default function CommandPalette({
             return (
               <div key={hit.key}>
                 {showGroup && (
-                  <p className="px-3 pb-1 pt-3 text-xs font-medium uppercase tracking-[0.12em] text-lead">{hit.group}</p>
+                  <p className="px-3 pb-1 pt-3 text-xs font-medium uppercase tracking-[0.12em] text-lead"><T>{hit.group}</T></p>
                 )}
                 <button
                   id={`cmd-opt-${i}`}
@@ -389,12 +392,12 @@ export default function CommandPalette({
                     <Icon name={hit.icon} className="h-5 w-5" />
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold">{hit.title}</span>
-                    <span className="block truncate text-sm text-lead">{hit.sub}</span>
+                    <span className="block truncate font-semibold"><T>{hit.title}</T></span>
+                    <span className="block truncate text-sm text-lead"><T>{hit.sub}</T></span>
                   </span>
                   {hit.tag && (
                     <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-medium ${TAG_STYLE[hit.tag.tone]}`}>
-                      {hit.tag.text}
+                      <T>{hit.tag.text}</T>
                     </span>
                   )}
                 </button>
@@ -406,13 +409,13 @@ export default function CommandPalette({
         <div className="hidden items-center gap-4 border-t border-line bg-plate/60 px-4 py-2.5 text-xs text-lead sm:flex">
           <span>
             <kbd className="rounded border border-line bg-white px-1.5 py-0.5">↑</kbd>{" "}
-            <kbd className="rounded border border-line bg-white px-1.5 py-0.5">↓</kbd> to move
+            <kbd className="rounded border border-line bg-white px-1.5 py-0.5">↓</kbd> <T>to move</T>
           </span>
           <span>
-            <kbd className="rounded border border-line bg-white px-1.5 py-0.5">Enter</kbd> to open
+            <kbd className="rounded border border-line bg-white px-1.5 py-0.5"><T>Enter</T></kbd> <T>to open</T>
           </span>
           <span>
-            <kbd className="rounded border border-line bg-white px-1.5 py-0.5">Esc</kbd> to close
+            <kbd className="rounded border border-line bg-white px-1.5 py-0.5"><T>Esc</T></kbd> <T>to close</T>
           </span>
         </div>
       </div>

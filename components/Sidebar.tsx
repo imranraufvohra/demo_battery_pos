@@ -6,6 +6,7 @@ import NavLinks from "./NavLinks";
 import SignOutButton from "./SignOutButton";
 import { getT } from "@/lib/i18n/server";
 
+import { T } from "@/components/T";
 const SIGN_OUT_DARK =
   "on-dark inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/15 px-3 text-sm font-medium text-white/85 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-60";
 
@@ -29,9 +30,9 @@ export default async function Sidebar({ email, name, roleLabel }: { email: strin
         <div className="flex items-center gap-3">
           <Avatar name={shown} size="sm" />
           <div className="min-w-0">
-            <p className="text-xs text-white/50">{roleLabel ? t("shell.signedInRole", { role: roleLabel }) : t("shell.signedIn")}</p>
+            <p className="text-xs text-white/50"><T>{roleLabel ? t("shell.signedInRole", { role: roleLabel }) : t("shell.signedIn")}</T></p>
             <p className="truncate text-sm font-medium text-white/90" title={email}>
-              {shown}
+              <T>{shown}</T>
             </p>
           </div>
         </div>

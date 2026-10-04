@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import type { FbrRefRow } from "@/lib/fbr";
 
+import { T } from "@/components/T";
+import { useT } from "@/lib/i18n/client";
 /**
  * A text box that suggests values from an FBR list while you type (used for HS codes and units).
  * If the list has not been loaded yet (rows is empty) it behaves like a normal text box.
@@ -31,6 +33,7 @@ export default function FbrPicker({
   placeholder?: string;
   inputMode?: "text" | "numeric" | "decimal";
 }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const matches = useMemo(() => {
     if (rows.length === 0) return [];
@@ -46,14 +49,14 @@ export default function FbrPicker({
   return (
     <div className="relative">
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
-        {label}
+        <T>{label}</T>
       </label>
       <input
         id={id}
         type="text"
         inputMode={inputMode}
         autoComplete="off"
-        placeholder={placeholder}
+        placeholder={t(placeholder)}
         value={value}
         onChange={(e) => {
           onChange(e.target.value);
@@ -78,18 +81,18 @@ export default function FbrPicker({
                 }}
               >
                 <span className="font-medium">{pick === "code" ? r.code : r.label ?? r.code}</span>
-                {pick === "code" && r.label ? <span className="block text-xs text-lead">{r.label}</span> : null}
+                {pick === "code" && r.label ? <span className="block text-xs text-lead"><T>{r.label}</T></span> : null}
               </button>
             </li>
           ))}
         </ul>
       )}
       {error ? (
-        <p className="mt-1 text-sm text-terminal-deep">{error}</p>
+        <p className="mt-1 text-sm text-terminal-deep"><T>{error}</T></p>
       ) : hint ? (
-        <p className="mt-1 text-sm text-lead">{hint}</p>
+        <p className="mt-1 text-sm text-lead"><T>{hint}</T></p>
       ) : rows.length === 0 ? null : known ? (
-        <p className="mt-1 text-sm text-cell-deep">In the FBR list.</p>
+        <p className="mt-1 text-sm text-cell-deep"><T>In the FBR list.</T></p>
       ) : null}
     </div>
   );
